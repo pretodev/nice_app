@@ -1,0 +1,12 @@
+include: package:flutter_lints/flutter.yaml
+
+formatter:
+  trailing_commas: preserve
+
+linter:
+  rules:
+    - prefer_single_quotes
+
+analyzer:
+  enable-experiment:
+    - dot-shorthands
