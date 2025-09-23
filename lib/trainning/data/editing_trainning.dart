@@ -15,57 +15,69 @@ class EditingTrainning {
   }
 
   void linkExercises(List<int> indices) {
-    if (indices.length < 2 || indices.length > 3) {
-      throw ArgumentError(
-        'Deve fornecer 2 ou 3 índices para linkar exercícios',
-      );
+    if (indices.length < 2) {
+      throw ArgumentError('At least 2 indices are required to link exercises');
     }
 
-    if (indices.any((index) => index < 0 || index >= sets.length)) {
-      throw ArgumentError('Índices inválidos');
-    }
-
-    final uniqueIndices = indices.toSet().toList()..sort();
-
-    if (uniqueIndices.length != indices.length) {
-      throw ArgumentError('Índices duplicados não são permitidos');
-    }
-
-    final setsToLink = uniqueIndices.map((index) => sets[index]).toList();
-    if (!setsToLink.every((set) => set is StraightSet)) {
-      throw ArgumentError(
-        'Só é possível linkar exercícios que sejam StraightSet',
-      );
-    }
-
-    final exercisesToLink = setsToLink
-        .cast<StraightSet>()
-        .map((set) => set.data)
-        .toList();
-
-    final newSets = <ExerciseSet>[];
-    final linkedIndicesSet = uniqueIndices.toSet();
-
-    for (int i = 0; i < uniqueIndices.first; i++) {
-      if (!linkedIndicesSet.contains(i)) {
-        newSets.add(sets[i]);
+    for (final index in indices) {
+      if (index < 0 || index >= sets.length) {
+        throw RangeError('Index $index is out of range');
       }
     }
 
-    final ExerciseSet newSet;
+    if (indices.toSet().length != indices.length) {
+      throw ArgumentError('Duplicate indices are not allowed');
+    }
+
+    final sortedIndices = List<int>.from(indices)..sort();
+
+    for (final index in sortedIndices) {
+      if (sets[index] is TriSet) {
+        throw ArgumentError('Cannot link exercises to a TriSet');
+      }
+    }
+
+    final exercisesToLink = <Exercise>[];
+    for (final index in sortedIndices) {
+      final set = sets[index];
+      if (set is StraightSet) {
+        exercisesToLink.add(set.data);
+      } else if (set is BiSet) {
+        exercisesToLink.addAll([set.first, set.second]);
+      }
+    }
+
+    ExerciseSet newSet;
     if (exercisesToLink.length == 2) {
-      newSet = BiSet(exercisesToLink[0], exercisesToLink[1]);
-    } else {
+      newSet = BiSet(
+        exercisesToLink[0],
+        exercisesToLink[1],
+      );
+    } else if (exercisesToLink.length == 3) {
       newSet = TriSet(
         exercisesToLink[0],
         exercisesToLink[1],
         exercisesToLink[2],
       );
+    } else {
+      throw ArgumentError(
+        'Cannot create a set with ${exercisesToLink.length} exercises',
+      );
     }
+
+    final newSets = <ExerciseSet>[];
+    final firstIndex = sortedIndices.first;
+
+    for (int i = 0; i < firstIndex; i++) {
+      if (!sortedIndices.contains(i)) {
+        newSets.add(sets[i]);
+      }
+    }
+
     newSets.add(newSet);
 
-    for (int i = uniqueIndices.first + 1; i < sets.length; i++) {
-      if (!linkedIndicesSet.contains(i)) {
+    for (int i = firstIndex + 1; i < sets.length; i++) {
+      if (!sortedIndices.contains(i)) {
         newSets.add(sets[i]);
       }
     }
