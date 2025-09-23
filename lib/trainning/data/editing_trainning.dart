@@ -21,41 +21,57 @@ class EditingTrainning {
       );
     }
 
-    indices.sort();
-    for (int i = 0; i < indices.length - 1; i++) {
-      if (indices[i + 1] - indices[i] != 1) {
-        throw ArgumentError('Os índices devem ser consecutivos');
-      }
-    }
-
     if (indices.any((index) => index < 0 || index >= sets.length)) {
       throw ArgumentError('Índices inválidos');
     }
 
-    final setsToLink = indices.map((index) => sets[index]).toList();
+    final uniqueIndices = indices.toSet().toList()..sort();
+
+    if (uniqueIndices.length != indices.length) {
+      throw ArgumentError('Índices duplicados não são permitidos');
+    }
+
+    final setsToLink = uniqueIndices.map((index) => sets[index]).toList();
     if (!setsToLink.every((set) => set is StraightSet)) {
       throw ArgumentError(
         'Só é possível linkar exercícios que sejam StraightSet',
       );
     }
 
-    final exercises = setsToLink
+    final exercisesToLink = setsToLink
         .cast<StraightSet>()
         .map((set) => set.data)
         .toList();
 
-    for (int i = indices.length - 1; i >= 0; i--) {
-      sets.removeAt(indices[i]);
+    final newSets = <ExerciseSet>[];
+    final linkedIndicesSet = uniqueIndices.toSet();
+
+    for (int i = 0; i < uniqueIndices.first; i++) {
+      if (!linkedIndicesSet.contains(i)) {
+        newSets.add(sets[i]);
+      }
     }
 
     final ExerciseSet newSet;
-    if (exercises.length == 2) {
-      newSet = BiSet(exercises[0], exercises[1]);
+    if (exercisesToLink.length == 2) {
+      newSet = BiSet(exercisesToLink[0], exercisesToLink[1]);
     } else {
-      newSet = TriSet(exercises[0], exercises[1], exercises[2]);
+      newSet = TriSet(
+        exercisesToLink[0],
+        exercisesToLink[1],
+        exercisesToLink[2],
+      );
+    }
+    newSets.add(newSet);
+
+    for (int i = uniqueIndices.first + 1; i < sets.length; i++) {
+      if (!linkedIndicesSet.contains(i)) {
+        newSets.add(sets[i]);
+      }
     }
 
-    sets.insert(indices.first, newSet);
+    sets.clear();
+    sets.addAll(newSets);
   }
 
   void removeExercise(int setIndex, int exerciseIndex) {
