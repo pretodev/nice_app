@@ -1,13 +1,16 @@
+import 'package:nice/core/data/entity.dart';
 import 'package:nice/trainning/data/exercise.dart';
 import 'package:nice/trainning/data/exercise_set.dart';
 
-class EditingTrainning {
-  EditingTrainning({
-    this.id,
+class Training extends Entity {
+  Training({
+    super.id,
     List<ExerciseSet>? sets,
+    this.date,
   }) : sets = sets ?? [];
 
-  final String? id;
+  DateTime? date;
+
   final List<ExerciseSet> sets;
 
   void addExercise(Exercise exercise) {

@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nice/trainning/data/editing_trainning.dart';
 import 'package:nice/trainning/data/exercise.dart';
 import 'package:nice/trainning/data/exercise_execution.dart';
 import 'package:nice/trainning/data/exercise_set.dart';
+import 'package:nice/trainning/data/training.dart';
 
 void main() {
   group('EditingTrainning Constructor', () {
     test('should create with empty sets when no sets provided', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       expect(trainning.sets, isEmpty);
       expect(trainning.id, isNull);
     });
@@ -21,7 +21,7 @@ void main() {
       );
       final sets = [StraightSet(exercise)];
 
-      final trainning = EditingTrainning(id: 'test-id', sets: sets);
+      final trainning = Training(id: 'test-id', sets: sets);
       expect(trainning.id, equals('test-id'));
       expect(trainning.sets, equals(sets));
     });
@@ -29,7 +29,7 @@ void main() {
 
   group('addExercise', () {
     test('should add single exercise as StraightSet', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       final exercise = Exercise(
         name: 'Test Exercise',
         execution: SerializedExerciseExecution([10, 10, 10]),
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('should add multiple exercises as separate StraightSets', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       final exercises = List.generate(
         5,
         (index) => Exercise(
@@ -66,11 +66,11 @@ void main() {
   });
 
   group('linkExercises', () {
-    late EditingTrainning trainning;
+    late Training trainning;
     late List<Exercise> exercises;
 
     setUp(() {
-      trainning = EditingTrainning();
+      trainning = Training();
       exercises = List.generate(
         10,
         (index) => Exercise(
@@ -196,11 +196,11 @@ void main() {
   });
 
   group('removeExercise', () {
-    late EditingTrainning trainning;
+    late Training trainning;
     late List<Exercise> exercises;
 
     setUp(() {
-      trainning = EditingTrainning();
+      trainning = Training();
       exercises = List.generate(
         6,
         (index) => Exercise(
@@ -373,11 +373,11 @@ void main() {
   });
 
   group('reorderSet', () {
-    late EditingTrainning trainning;
+    late Training trainning;
     late List<Exercise> exercises;
 
     setUp(() {
-      trainning = EditingTrainning();
+      trainning = Training();
       exercises = List.generate(
         5,
         (index) => Exercise(
@@ -475,11 +475,11 @@ void main() {
   });
 
   group('getExercisesFromSet', () {
-    late EditingTrainning trainning;
+    late Training trainning;
     late List<Exercise> exercises;
 
     setUp(() {
-      trainning = EditingTrainning();
+      trainning = Training();
       exercises = List.generate(
         6,
         (index) => Exercise(
@@ -571,12 +571,12 @@ void main() {
 
   group('totalExercises', () {
     test('should return 0 for empty training', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       expect(trainning.totalExercises, equals(0));
     });
 
     test('should count exercises correctly with mixed set types', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       final exercises = List.generate(
         10,
         (index) => Exercise(
@@ -602,7 +602,7 @@ void main() {
     });
 
     test('should handle random number of exercises', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       final randomN = Random().nextInt(50) + 1;
       final exercises = List.generate(
         randomN,
@@ -622,7 +622,7 @@ void main() {
 
   group('Integration Tests', () {
     test('should handle complex sequence of operations', () {
-      final trainning = EditingTrainning();
+      final trainning = Training();
       final exercises = List.generate(
         20,
         (index) => Exercise(
