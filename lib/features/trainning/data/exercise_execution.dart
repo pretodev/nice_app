@@ -2,12 +2,18 @@ import 'package:flutter/foundation.dart';
 
 sealed class ExerciseExecution {
   const ExerciseExecution();
+
+  String get formatted;
 }
 
 class TimedExerciseExecution extends ExerciseExecution {
   final Duration duration;
 
   TimedExerciseExecution(this.duration);
+
+  @override
+  String get formatted =>
+      '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
 
   @override
   bool operator ==(Object other) {
@@ -48,6 +54,9 @@ class SerializedExerciseExecution extends ExerciseExecution {
   }
 
   int get countSeries => repeats.length;
+
+  @override
+  String get formatted => '$countSeries x ${repeats.first}';
 
   @override
   bool operator ==(Object other) {
