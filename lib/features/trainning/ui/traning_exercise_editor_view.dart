@@ -10,26 +10,26 @@ import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 
 import 'widgets/series_counter.dart';
 
-class TraningExerciceEditorView extends ConsumerStatefulWidget {
+class TraningExerciseEditorView extends ConsumerStatefulWidget {
   static PageRoute<void> route({required Training training}) {
     return MaterialPageRoute<void>(
-      builder: (context) => TraningExerciceEditorView(
+      builder: (context) => TraningExerciseEditorView(
         training: training,
       ),
     );
   }
 
-  const TraningExerciceEditorView({super.key, required this.training});
+  const TraningExerciseEditorView({super.key, required this.training});
 
   final Training training;
 
   @override
-  ConsumerState<TraningExerciceEditorView> createState() =>
-      _TraningExerciceEditorViewState();
+  ConsumerState<TraningExerciseEditorView> createState() =>
+      _TraningExerciseEditorViewState();
 }
 
-class _TraningExerciceEditorViewState
-    extends ConsumerState<TraningExerciceEditorView> {
+class _TraningExerciseEditorViewState
+    extends ConsumerState<TraningExerciseEditorView> {
   SerializedExerciseExecution _execution =
       SerializedExerciseExecution.initial();
 

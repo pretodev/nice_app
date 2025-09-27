@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
-import 'package:nice/features/trainning/ui/traning_exercice_editor_view.dart';
+import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
 
 class TrainingEditorView extends ConsumerStatefulWidget {
   const TrainingEditorView({super.key});
@@ -21,7 +21,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   void _addExercise() {
     Navigator.push(
       context,
-      TraningExerciceEditorView.route(training: _training),
+      TraningExerciseEditorView.route(training: _training),
     );
   }
 
