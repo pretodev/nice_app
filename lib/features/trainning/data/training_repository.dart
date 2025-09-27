@@ -3,14 +3,14 @@ import 'package:nice/features/trainning/data/training.dart';
 
 class TrainingRepository {
   AsyncResult<Unit> store(Training trainning) async {
-    return .done;
+    return Result.done;
   }
 
   AsyncResult<Unit> delete(Training trainning) async {
-    return .done;
+    return Result.done;
   }
 
   Stream<Training> fromId(String id) {
-    return .value(Training());
+    return Stream.value(Training());
   }
 }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/trainning/ui/training_editor_view.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    ProviderScope(
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

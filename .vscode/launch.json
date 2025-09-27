@@ -4,22 +4,19 @@
     {
       "name": "debug mode",
       "request": "launch",
-      "type": "dart",
-      "args": ["--enable-experiment=dot-shorthands"]
+      "type": "dart"
     },
     {
       "name": "profile mode",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "profile",
-      "args": ["--enable-experiment=dot-shorthands"]
+      "flutterMode": "profile"
     },
     {
       "name": "release mode",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "release",
-      "args": ["--enable-experiment=dot-shorthands"]
+      "flutterMode": "release"
     }
   ]
 }

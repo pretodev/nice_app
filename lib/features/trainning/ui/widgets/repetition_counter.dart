@@ -50,12 +50,12 @@ class _RepetitionCounterState extends State<RepetitionCounter> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: .symmetric(
+      padding: EdgeInsets.symmetric(
         vertical: 8.0,
         horizontal: 16.0,
       ),
       child: Row(
-        mainAxisAlignment: .spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Text(

@@ -22,7 +22,8 @@ class TraningExerciceEditorView extends ConsumerStatefulWidget {
       _TraningExerciceEditorViewState();
 }
 
-class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEditorView> {
+class _TraningExerciceEditorViewState
+    extends ConsumerState<TraningExerciceEditorView> {
   SerializedExerciseExecution _execution = SerializedExerciseExecution(
     [12, 12, 12],
   );
@@ -97,10 +98,10 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
-          }, 
-          icon: Icon(Symbols.close)
+          },
+          icon: Icon(Symbols.close),
         ),
       ),
       body: CustomScrollView(
@@ -117,7 +118,7 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Ex: Abdominal',
-                  border: .none,
+                  border: InputBorder.none,
                 ),
               ),
             ),
@@ -138,7 +139,7 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: .symmetric(
+              padding: EdgeInsets.symmetric(
                 vertical: 8.0,
                 horizontal: 16.0,
               ),
@@ -151,9 +152,7 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
                           ? Icons.expand_more_rounded
                           : Icons.expand_less_rounded,
                     ),
-                    onPressed: _execution.isAllEquals
-                        ? _toggleExpanded
-                        : null,
+                    onPressed: _execution.isAllEquals ? _toggleExpanded : null,
                   ),
                 ],
               ),
@@ -163,7 +162,7 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return Padding(
-                  padding: .only(bottom: 8.0),
+                  padding: EdgeInsets.only(bottom: 8.0),
                   child: RepetitionCounter(
                     key: Key('repetition_counter_$index'),
                     value: _execution.repeats[index],
@@ -177,10 +176,10 @@ class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEdito
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _submit, 
+        onPressed: _submit,
         child: Icon(Symbols.check),
       ),
-      floatingActionButtonLocation: .centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
