@@ -80,7 +80,6 @@ class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
       name: _nameController.text,
       execution: _execution,
     );
-    print(exercise);
     Navigator.pop(context, exercise);
   }
 
@@ -95,14 +94,18 @@ class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Adicionar exercício'),
         backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          }, 
+          icon: Icon(Symbols.close)
+        ),
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Field(
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Field(
               icon: Icon(
                 Symbols.edit,
                 color: Colors.black26,
@@ -110,13 +113,16 @@ class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
               label: 'Nome do exercício',
               child: TextField(
                 controller: _nameController,
+                autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Ex: Abdominal',
-                  border: InputBorder.none,
+                  border: .none,
                 ),
               ),
             ),
-            Field(
+          ),
+          SliverToBoxAdapter(
+            child: Field(
               icon: Icon(
                 Symbols.format_list_numbered,
                 color: Colors.black26,
@@ -128,8 +134,10 @@ class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
                 onDecrementClicked: _removeSeries,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: .symmetric(
                 vertical: 8.0,
                 horizontal: 16.0,
               ),
@@ -142,50 +150,36 @@ class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
                           ? Icons.expand_more_rounded
                           : Icons.expand_less_rounded,
                     ),
-                    onPressed: _execution.isAllEquals ? _toggleExpanded : null,
+                    onPressed: _execution.isAllEquals
+                        ? _toggleExpanded
+                        : null,
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _expanded ? _execution.countSeries : 1,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: RepetitionCounter(
-                      key: Key('repetition_counter_$index'),
-                      value: _execution.repeats[index],
-                      onChanged: (value) => _setSeriesCount(index, value),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 16.0,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Cancelar'),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Padding(
+                  padding: .only(bottom: 8.0),
+                  child: RepetitionCounter(
+                    key: Key('repetition_counter_$index'),
+                    value: _execution.repeats[index],
+                    onChanged: (value) => _setSeriesCount(index, value),
                   ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: _submit,
-                    child: Text('Adicionar'),
-                  ),
-                ),
-              ],
+                );
+              },
+              childCount: _expanded ? _execution.countSeries : 1,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _submit, 
+        child: Icon(Symbols.check),
+      ),
+      floatingActionButtonLocation: .centerDocked,
     );
   }
 }
