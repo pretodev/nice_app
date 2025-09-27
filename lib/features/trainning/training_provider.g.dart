@@ -55,4 +55,4 @@ final class TrainingRepositoryProvider
 }
 
 String _$trainingRepositoryHash() =>
-    r'a2e4b2da0634f164c194f5d1f7fc59f11172c3ac';
+    r'8ccab3e48bd00bad0184b9f8fbc92ff8eee5f169';

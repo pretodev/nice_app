@@ -1,6 +1,6 @@
 import 'package:nice/features/trainning/data/exercise.dart';
 
-class ExerciseSet {
+sealed class ExerciseSet {
   factory ExerciseSet.straightSet(
     Exercise exercise,
   ) {
@@ -21,6 +21,10 @@ class ExerciseSet {
   ) {
     return TriSet(first, second, third);
   }
+
+  const ExerciseSet();
+
+  List<Exercise> toList();
 }
 
 class StraightSet implements ExerciseSet {
@@ -36,6 +40,9 @@ class StraightSet implements ExerciseSet {
 
   @override
   int get hashCode => data.hashCode;
+
+  @override
+  List<Exercise> toList() => [data];
 }
 
 class BiSet implements ExerciseSet {
@@ -52,6 +59,9 @@ class BiSet implements ExerciseSet {
 
   @override
   int get hashCode => first.hashCode ^ second.hashCode;
+
+  @override
+  List<Exercise> toList() => [first, second];
 }
 
 class TriSet implements ExerciseSet {
@@ -72,4 +82,7 @@ class TriSet implements ExerciseSet {
 
   @override
   int get hashCode => first.hashCode ^ second.hashCode ^ third.hashCode;
+
+  @override
+  List<Exercise> toList() => [first, second, third];
 }

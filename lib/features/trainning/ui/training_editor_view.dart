@@ -11,10 +11,14 @@ class TrainingEditorView extends ConsumerStatefulWidget {
 }
 
 class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
+  final _training = Training(
+    id: 'teste',
+  );
+
   void _addExercise() {
     Navigator.push(
       context,
-      TraningExerciceEditorView.route(training: Training()),
+      TraningExerciceEditorView.route(training: _training),
     );
   }
 
