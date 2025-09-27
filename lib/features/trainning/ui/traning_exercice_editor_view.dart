@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/app/widgets/field.dart';
+import 'package:nice/features/trainning/commands/add_exercise.dart';
 import 'package:nice/features/trainning/data/exercise.dart';
 import 'package:nice/features/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 
 import 'widgets/series_counter.dart';
 
 class TraningExerciceEditorView extends ConsumerStatefulWidget {
-  static PageRoute<void> get route {
+  static PageRoute<void> route({required Training training}) {
     return MaterialPageRoute<void>(
-      builder: (context) => TraningExerciceEditorView(),
+      builder: (context) => TraningExerciceEditorView(
+        training: training,
+      ),
     );
   }
 
-  const TraningExerciceEditorView({super.key});
+  const TraningExerciceEditorView({super.key, required this.training});
+
+  final Training training;
 
   @override
   ConsumerState<TraningExerciceEditorView> createState() =>
@@ -24,13 +30,14 @@ class TraningExerciceEditorView extends ConsumerStatefulWidget {
 
 class _TraningExerciceEditorViewState
     extends ConsumerState<TraningExerciceEditorView> {
-  SerializedExerciseExecution _execution = SerializedExerciseExecution(
-    [12, 12, 12],
-  );
+  SerializedExerciseExecution _execution =
+      SerializedExerciseExecution.initial();
 
   bool _expanded = false;
 
   final _nameController = TextEditingController();
+
+  late final _addExercise = ref.read(addExerciseProvider.notifier);
 
   void _addSeries() {
     setState(() {
@@ -74,7 +81,7 @@ class _TraningExerciceEditorViewState
     setState(() => _expanded = !_expanded);
   }
 
-  void _submit() {
+  void _submit() async {
     if (_nameController.text.isEmpty) {
       return;
     }
@@ -82,7 +89,10 @@ class _TraningExerciceEditorViewState
       name: _nameController.text,
       execution: _execution,
     );
-    Navigator.pop(context, exercise);
+    await _addExercise(widget.training, exercise);
+    if (mounted) {
+      Navigator.pop(context, exercise);
+    }
   }
 
   @override
@@ -93,6 +103,8 @@ class _TraningExerciceEditorViewState
 
   @override
   Widget build(BuildContext context) {
+    final addExerciseState = ref.watch(addExerciseProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -175,10 +187,18 @@ class _TraningExerciceEditorViewState
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _submit,
-        child: Icon(Symbols.check),
-      ),
+      floatingActionButton: switch (addExerciseState) {
+        AsyncLoading() => FloatingActionButton(
+          onPressed: null,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        _ => FloatingActionButton(
+          onPressed: _submit,
+          child: Icon(Symbols.check),
+        ),
+      },
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

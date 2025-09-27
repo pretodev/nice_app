@@ -27,6 +27,10 @@ class TimedExerciseExecution extends ExerciseExecution {
 class SerializedExerciseExecution extends ExerciseExecution {
   final List<int> repeats;
 
+  factory SerializedExerciseExecution.initial() {
+    return SerializedExerciseExecution([12, 12, 12]);
+  }
+
   const SerializedExerciseExecution(this.repeats);
 
   bool get isAllEquals {
