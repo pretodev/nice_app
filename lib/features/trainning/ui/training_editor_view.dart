@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/ui/traning_exercice_editor_view.dart';
 
-class TrainingEditorView extends StatefulWidget {
+class TrainingEditorView extends ConsumerStatefulWidget {
   const TrainingEditorView({super.key});
 
   @override
-  State<TrainingEditorView> createState() => _TrainingEditorViewState();
+  ConsumerState<TrainingEditorView> createState() => _TrainingEditorViewState();
 }
 
-class _TrainingEditorViewState extends State<TrainingEditorView> {
+class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   final Training _training = Training();
 
   @override

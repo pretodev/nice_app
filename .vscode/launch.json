@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug mode",
+      "request": "launch",
+      "type": "dart",
+      "args": ["--enable-experiment=dot-shorthands"]
+    },
+    {
+      "name": "profile mode",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "args": ["--enable-experiment=dot-shorthands"]
+    },
+    {
+      "name": "release mode",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "args": ["--enable-experiment=dot-shorthands"]
+    }
+  ]
+}

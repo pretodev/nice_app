@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/app/widgets/field.dart';
 import 'package:nice/features/trainning/data/exercise.dart';
@@ -7,7 +8,7 @@ import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 
 import 'widgets/series_counter.dart';
 
-class TraningExerciceEditorView extends StatefulWidget {
+class TraningExerciceEditorView extends ConsumerStatefulWidget {
   static PageRoute<void> get route {
     return MaterialPageRoute<void>(
       builder: (context) => TraningExerciceEditorView(),
@@ -17,11 +18,11 @@ class TraningExerciceEditorView extends StatefulWidget {
   const TraningExerciceEditorView({super.key});
 
   @override
-  State<TraningExerciceEditorView> createState() =>
+  ConsumerState<TraningExerciceEditorView> createState() =>
       _TraningExerciceEditorViewState();
 }
 
-class _TraningExerciceEditorViewState extends State<TraningExerciceEditorView> {
+class _TraningExerciceEditorViewState extends ConsumerState<TraningExerciceEditorView> {
   SerializedExerciseExecution _execution = SerializedExerciseExecution(
     [12, 12, 12],
   );
