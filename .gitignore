@@ -46,3 +46,7 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Firabase
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
