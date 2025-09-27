@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/training_provider.dart';
 import 'package:nice/features/trainning/ui/traning_exercice_editor_view.dart';
 
 class TrainingEditorView extends ConsumerStatefulWidget {
@@ -11,9 +14,9 @@ class TrainingEditorView extends ConsumerStatefulWidget {
 }
 
 class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
-  final _training = Training(
-    id: 'teste',
-  );
+  Training _training = Training(id: 'teste');
+
+  late final repo = ref.read(trainingRepositoryProvider);
 
   void _addExercise() {
     Navigator.push(
@@ -22,9 +25,31 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
+  StreamSubscription<Training>? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = repo.fromId('teste').listen((training) {
+      setState(() {
+        _training = training;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Training Editor'),
+      ),
+      body: Text(_training.toString()),
       floatingActionButton: FloatingActionButton(
         onPressed: _addExercise,
         tooltip: 'Add training',

@@ -43,6 +43,9 @@ class StraightSet implements ExerciseSet {
 
   @override
   List<Exercise> toList() => [data];
+
+  @override
+  String toString() => '''StraightSet(data: $data)''';
 }
 
 class BiSet implements ExerciseSet {
@@ -62,6 +65,9 @@ class BiSet implements ExerciseSet {
 
   @override
   List<Exercise> toList() => [first, second];
+
+  @override
+  String toString() => '''BiSet(first: $first, second: $second)''';
 }
 
 class TriSet implements ExerciseSet {
@@ -85,4 +91,8 @@ class TriSet implements ExerciseSet {
 
   @override
   List<Exercise> toList() => [first, second, third];
+
+  @override
+  String toString() =>
+      '''TriSet(first: $first, second: $second, third: $third)''';
 }

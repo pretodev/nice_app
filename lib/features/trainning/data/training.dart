@@ -156,4 +156,7 @@ class Training extends Entity {
       return total;
     });
   }
+
+  @override
+  String toString() => '''Training(id: $id, date: $date, sets: $sets)''';
 }

@@ -22,6 +22,9 @@ class TrainingRepository {
   }
 
   Stream<Training> fromId(String id) {
-    return Stream.value(Training());
+    return _trainingDocument
+        .ref(id)
+        .snapshots()
+        .map((snapshot) => snapshot.data() ?? Training(id: id));
   }
 }

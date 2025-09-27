@@ -15,8 +15,70 @@ class FirestoreTrainningDocument
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
-    // TODO: implement fromFirestore
-    throw UnimplementedError();
+    final data = snapshot.data();
+    if (data == null) {
+      return Training(id: snapshot.id);
+    }
+
+    final date = data['date'] as Timestamp?;
+    final setsData = data['sets'] as List<dynamic>? ?? [];
+
+    final sets = setsData
+        .map((setData) => _setFromFirestore(setData as Map<String, dynamic>))
+        .toList();
+
+    return Training(
+      id: snapshot.id,
+      date: date?.toDate(),
+      sets: sets,
+    );
+  }
+
+  ExerciseSet _setFromFirestore(Map<String, dynamic> data) {
+    final exercisesData = data['exercises'] as List<dynamic>;
+    final exercises = exercisesData
+        .map(
+          (exerciseData) =>
+              _exerciseFromFirestore(exerciseData as Map<String, dynamic>),
+        )
+        .toList();
+
+    return switch (exercises.length) {
+      1 => StraightSet(exercises[0]),
+      2 => BiSet(exercises[0], exercises[1]),
+      3 => TriSet(exercises[0], exercises[1], exercises[2]),
+      _ => throw ArgumentError(
+        'Invalid number of exercises in set: ${exercises.length}',
+      ),
+    };
+  }
+
+  Exercise _exerciseFromFirestore(Map<String, dynamic> data) {
+    final name = data['name'] as String;
+    final observation = data['observation'] as String?;
+    final load = (data['load'] as num?)?.toDouble();
+    final executionData = data['execution'] as Map<String, dynamic>;
+
+    return Exercise(
+      name: name,
+      observation: observation,
+      load: load,
+      execution: _executionFromFirestore(executionData),
+    );
+  }
+
+  ExerciseExecution _executionFromFirestore(Map<String, dynamic> data) {
+    final type = data['type'] as String;
+
+    return switch (type) {
+      'timed' => TimedExerciseExecution(
+        Duration(seconds: data['duration'] as int),
+      ),
+      'serialized' => SerializedExerciseExecution(
+        List<int>.from(data['repeats'] as List<dynamic>),
+      ),
+      _ => throw ArgumentError('Unknown execution type: $type'),
+    };
   }
 
   Map<String, Object?> _executionToFirestore(ExerciseExecution execution) {
