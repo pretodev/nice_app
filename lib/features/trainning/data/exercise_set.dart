@@ -1,4 +1,4 @@
-import 'package:nice/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
 
 class ExerciseSet {
   factory ExerciseSet.straightSet(

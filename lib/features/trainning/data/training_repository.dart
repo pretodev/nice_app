@@ -1,5 +1,5 @@
 import 'package:nice/core/data/result.dart';
-import 'package:nice/trainning/data/training.dart';
+import 'package:nice/features/trainning/data/training.dart';
 
 class TrainingRepository {
   AsyncResult<Unit> store(Training trainning) async {

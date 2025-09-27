@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nice/trainning/data/exercise.dart';
-import 'package:nice/trainning/data/exercise_execution.dart';
-import 'package:nice/trainning/data/exercise_set.dart';
-import 'package:nice/trainning/data/training.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
+import 'package:nice/features/trainning/data/training.dart';
 
 void main() {
   group('EditingTrainning Constructor', () {

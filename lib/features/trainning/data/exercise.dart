@@ -1,4 +1,4 @@
-import 'package:nice/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_execution.dart';
 
 class Exercise {
   Exercise({
@@ -30,5 +30,10 @@ class Exercise {
         execution.hashCode ^
         observation.hashCode ^
         load.hashCode;
+  }
+
+  @override
+  String toString() {
+    return '''Exercise(name: $name, execution: $execution, observation: $observation, load: $load)''';
   }
 }

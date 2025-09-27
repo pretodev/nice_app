@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nice/core/data/firestore/firestore_custom_reference.dart';
-import 'package:nice/trainning/data/training.dart';
+import 'package:nice/features/trainning/data/training.dart';
 
 class FirestoreTrainningDocument
     extends FirestoreCustomDocumentReference<Training> {

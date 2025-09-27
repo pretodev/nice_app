@@ -1,6 +1,6 @@
 import 'package:nice/core/data/entity.dart';
-import 'package:nice/trainning/data/exercise.dart';
-import 'package:nice/trainning/data/exercise_set.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
 
 class Training extends Entity {
   Training({

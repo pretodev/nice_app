@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nice/trainning/ui/training_editor_view.dart';
+import 'package:nice/features/trainning/ui/training_editor_view.dart';
 
 void main() {
   runApp(const MainApp());

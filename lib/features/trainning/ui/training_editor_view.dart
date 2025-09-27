@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nice/trainning/data/training.dart';
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/ui/traning_exercice_editor_view.dart';
 
 class TrainingEditorView extends StatefulWidget {
   const TrainingEditorView({super.key});
@@ -15,7 +16,9 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, TraningExerciceEditorView.route);
+        },
         tooltip: 'Add training',
         child: Icon(Icons.add),
       ),
