@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nice/features/trainning/commands/delete_exercise.dart';
 import 'package:nice/features/trainning/commands/update_exercise.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
@@ -20,6 +21,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   Training _training = Training(id: 'teste');
 
   late final repo = ref.read(trainingRepositoryProvider);
+  late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
   UpdateExerciseParams? _selected;
 
@@ -31,6 +33,38 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   }
 
   StreamSubscription<Training>? _subscription;
+
+  void _removeExercise() async {
+    final delete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remover exercício'),
+        content: Text(
+          'Tem certeza que deseja remover o exercício ${_selected?.exercise.name}?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Não'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Sim'),
+          ),
+        ],
+      ),
+    );
+
+    if (!(delete ?? false)) return;
+
+    await _deleteExercise(
+      _training,
+      params: DeleteExerciseParams(
+        setIndex: _selected!.setIndex,
+        position: _selected!.position,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -50,6 +84,14 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(deleteExerciseProvider, (prev, next) {
+      if (next is AsyncData) {
+        setState(() => _selected = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${next.value?.name} removido com sucesso')),
+        );
+      }
+    });
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -118,7 +160,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
                   IconButton(
                     icon: Icon(Symbols.delete_rounded),
                     tooltip: 'Deletar exercício',
-                    onPressed: () {},
+                    onPressed: _removeExercise,
                   ),
                 ],
               ),
