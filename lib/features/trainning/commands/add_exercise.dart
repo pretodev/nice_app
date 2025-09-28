@@ -9,8 +9,8 @@ part 'add_exercise.g.dart';
 @riverpod
 class AddExercise extends _$AddExercise {
   @override
-  AsyncValue<Unit> build() {
-    return const AsyncData(unit);
+  AsyncValue<Exercise> build() {
+    return AsyncData(Exercise.empty());
   }
 
   Future<void> call(Training training, Exercise exercise) async {
@@ -18,11 +18,9 @@ class AddExercise extends _$AddExercise {
     final repository = ref.read(trainingRepositoryProvider);
     training.addExercise(exercise);
     final result = await repository.store(training);
-    switch (result) {
-      case Done<Unit>():
-        state = const AsyncData(unit);
-      case Error<Unit>():
-        state = AsyncError(result.error, StackTrace.current);
-    }
+    state = switch (result) {
+      Done() => AsyncData(exercise),
+      Error() => AsyncError(result.error, StackTrace.current),
+    };
   }
 }

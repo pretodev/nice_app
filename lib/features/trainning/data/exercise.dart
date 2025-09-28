@@ -1,7 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:nice/features/trainning/data/exercise_execution.dart';
 
+@immutable
 class Exercise {
-  Exercise({
+  factory Exercise.empty() {
+    return Exercise(
+      name: '',
+      execution: SerializedExerciseExecution.initial(),
+    );
+  }
+
+  const Exercise({
     required this.name,
     required this.execution,
     this.observation,

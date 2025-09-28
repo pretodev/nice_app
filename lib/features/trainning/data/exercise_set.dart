@@ -25,9 +25,11 @@ sealed class ExerciseSet {
   const ExerciseSet();
 
   List<Exercise> toList();
+
+  int get length => toList().length;
 }
 
-class StraightSet implements ExerciseSet {
+class StraightSet extends ExerciseSet {
   StraightSet(this.data);
 
   final Exercise data;
@@ -48,7 +50,7 @@ class StraightSet implements ExerciseSet {
   String toString() => '''StraightSet(data: $data)''';
 }
 
-class BiSet implements ExerciseSet {
+class BiSet extends ExerciseSet {
   BiSet(this.first, this.second);
 
   final Exercise first;
@@ -70,7 +72,7 @@ class BiSet implements ExerciseSet {
   String toString() => '''BiSet(first: $first, second: $second)''';
 }
 
-class TriSet implements ExerciseSet {
+class TriSet extends ExerciseSet {
   TriSet(this.first, this.second, this.third);
 
   final Exercise first;

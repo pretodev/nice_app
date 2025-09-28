@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/app/widgets/field.dart';
 import 'package:nice/features/trainning/commands/add_exercise.dart';
+import 'package:nice/features/trainning/commands/update_exercise.dart';
 import 'package:nice/features/trainning/data/exercise.dart';
 import 'package:nice/features/trainning/data/exercise_execution.dart';
 import 'package:nice/features/trainning/data/training.dart';
@@ -11,17 +12,26 @@ import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 import 'widgets/series_counter.dart';
 
 class TraningExerciseEditorView extends ConsumerStatefulWidget {
-  static PageRoute<void> route({required Training training}) {
+  static PageRoute<void> route({
+    required Training training,
+    UpdateExerciseParams? params,
+  }) {
     return MaterialPageRoute<void>(
       builder: (context) => TraningExerciseEditorView(
         training: training,
+        params: params,
       ),
     );
   }
 
-  const TraningExerciseEditorView({super.key, required this.training});
+  const TraningExerciseEditorView({
+    super.key,
+    required this.training,
+    this.params,
+  });
 
   final Training training;
+  final UpdateExerciseParams? params;
 
   @override
   ConsumerState<TraningExerciseEditorView> createState() =>
@@ -38,6 +48,7 @@ class _TraningExerciseEditorViewState
   final _nameController = TextEditingController();
 
   late final _addExercise = ref.read(addExerciseProvider.notifier);
+  late final _updateExercise = ref.read(updateExerciseProvider.notifier);
 
   void _addSeries() {
     setState(() {
@@ -89,9 +100,17 @@ class _TraningExerciseEditorViewState
       name: _nameController.text,
       execution: _execution,
     );
-    await _addExercise(widget.training, exercise);
-    if (mounted) {
-      Navigator.pop(context, exercise);
+    if (widget.params != null) {
+      await _updateExercise(
+        widget.training,
+        params: UpdateExerciseParams(
+          setIndex: widget.params!.setIndex,
+          position: widget.params!.position,
+          exercise: exercise,
+        ),
+      );
+    } else {
+      await _addExercise(widget.training, exercise);
     }
   }
 
@@ -99,11 +118,42 @@ class _TraningExerciseEditorViewState
   void initState() {
     super.initState();
     _expanded = !_execution.isAllEquals;
+    if (widget.params != null) {
+      final exercise = widget.params!.exercise;
+      _nameController.text = exercise.name;
+      _execution = exercise.execution as SerializedExerciseExecution;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final addExerciseState = ref.watch(addExerciseProvider);
+    final updateExerciseState = ref.watch(updateExerciseProvider);
+
+    ref.listen(addExerciseProvider, (previous, next) {
+      if (next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Exercício adicionado com sucesso!'),
+          ),
+        );
+        Navigator.pop(context, next.value);
+      }
+    });
+
+    ref.listen(updateExerciseProvider, (previous, next) {
+      if (next is AsyncData) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Exercício atualizado com sucesso!'),
+          ),
+        );
+        Navigator.pop(context, next.value);
+      }
+    });
+
+    final isSaving =
+        addExerciseState.isLoading || updateExerciseState.isLoading;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -187,19 +237,20 @@ class _TraningExerciseEditorViewState
           ),
         ],
       ),
-      floatingActionButton: switch (addExerciseState) {
-        AsyncLoading() => FloatingActionButton(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Visibility(
+        visible: !isSaving,
+        replacement: FloatingActionButton(
           onPressed: null,
           child: Center(
             child: CircularProgressIndicator(),
           ),
         ),
-        _ => FloatingActionButton(
+        child: FloatingActionButton(
           onPressed: _submit,
           child: Icon(Symbols.check),
         ),
-      },
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      ),
     );
   }
 }

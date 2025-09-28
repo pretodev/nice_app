@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/trainning/commands/update_exercise.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
 import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
@@ -63,11 +64,25 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               ),
             )
           : ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 16),
               itemCount: _training.sets.length,
               itemBuilder: (context, index) {
                 final set = _training.sets[index];
-                return ExerciseSetWidget(set: set);
+                return ExerciseSetWidget(
+                  set: set,
+                  onExerciseClicked: (exercise, position) {
+                    Navigator.push(
+                      context,
+                      TraningExerciseEditorView.route(
+                        training: _training,
+                        params: UpdateExerciseParams(
+                          exercise: exercise,
+                          setIndex: index,
+                          position: position,
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
             ),
       floatingActionButton: FloatingActionButton(

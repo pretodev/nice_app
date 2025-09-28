@@ -17,6 +17,100 @@ class Training extends Entity {
     sets.add(StraightSet(exercise));
   }
 
+  List<Exercise> get exercises {
+    return sets.expand((set) => set.toList()).toList();
+  }
+
+  void setExerciseInSet(Exercise exercise, int setIndex, int position) {
+    if (setIndex < 0 || setIndex >= sets.length) {
+      throw RangeError('Index $setIndex is out of range');
+    }
+    final set = sets[setIndex];
+    if (position < 0 || position >= set.length) {
+      throw RangeError('Index $position is out of range');
+    }
+    final st = sets[setIndex];
+    if (st is StraightSet) {
+      sets[setIndex] = StraightSet(exercise);
+      return;
+    }
+
+    if (st is BiSet) {
+      if (position == 0) {
+        sets[setIndex] = BiSet(exercise, st.second);
+        return;
+      }
+      if (position == 1) {
+        sets[setIndex] = BiSet(st.first, exercise);
+        return;
+      }
+    }
+
+    if (st is TriSet) {
+      if (position == 0) {
+        sets[setIndex] = TriSet(exercise, st.second, st.third);
+        return;
+      }
+      if (position == 1) {
+        sets[setIndex] = TriSet(st.first, exercise, st.third);
+        return;
+      }
+      if (position == 2) {
+        sets[setIndex] = TriSet(st.first, st.second, exercise);
+        return;
+      }
+    }
+  }
+
+  void setExercise(int index, Exercise exercise) {
+    if (index < 0 || index >= exercises.length) {
+      throw RangeError('Index $index is out of range');
+    }
+    final targetIndex = exercises.indexWhere((e) => e == exercises[index]);
+    var currentIndex = 0;
+    var setIndex = 0;
+    for (final st in sets) {
+      if (st is StraightSet) {
+        if (currentIndex == targetIndex) {
+          sets[setIndex] = StraightSet(exercise);
+          break;
+        }
+        currentIndex++;
+        setIndex++;
+        continue;
+      }
+      if (st is BiSet) {
+        if (currentIndex == targetIndex) {
+          sets[setIndex] = BiSet(exercise, st.second);
+          break;
+        }
+        if (currentIndex == targetIndex + 1) {
+          sets[setIndex] = BiSet(st.first, exercise);
+          break;
+        }
+        currentIndex += 2;
+        setIndex++;
+        continue;
+      }
+      if (st is TriSet) {
+        if (currentIndex == targetIndex) {
+          sets[setIndex] = TriSet(exercise, st.second, st.third);
+          break;
+        }
+        if (currentIndex == targetIndex + 1) {
+          sets[setIndex] = TriSet(st.first, exercise, st.third);
+          break;
+        }
+        if (currentIndex == targetIndex + 2) {
+          sets[setIndex] = TriSet(st.first, st.second, exercise);
+          break;
+        }
+        currentIndex += 3;
+        setIndex++;
+      }
+    }
+  }
+
   void linkExercises(List<int> indices) {
     if (indices.length < 2) {
       throw ArgumentError('At least 2 indices are required to link exercises');
