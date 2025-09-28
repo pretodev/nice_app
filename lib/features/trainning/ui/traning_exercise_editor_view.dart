@@ -6,6 +6,7 @@ import 'package:nice/features/trainning/commands/add_exercise.dart';
 import 'package:nice/features/trainning/commands/update_exercise.dart';
 import 'package:nice/features/trainning/data/exercise.dart';
 import 'package:nice/features/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 
@@ -14,12 +15,12 @@ import 'widgets/series_counter.dart';
 class TraningExerciseEditorView extends ConsumerStatefulWidget {
   static PageRoute<void> route({
     required Training training,
-    UpdateExerciseParams? params,
+    PositionedExercise? exercise,
   }) {
     return MaterialPageRoute<void>(
       builder: (context) => TraningExerciseEditorView(
         training: training,
-        params: params,
+        exercise: exercise,
       ),
     );
   }
@@ -27,11 +28,11 @@ class TraningExerciseEditorView extends ConsumerStatefulWidget {
   const TraningExerciseEditorView({
     super.key,
     required this.training,
-    this.params,
+    this.exercise,
   });
 
   final Training training;
-  final UpdateExerciseParams? params;
+  final PositionedExercise? exercise;
 
   @override
   ConsumerState<TraningExerciseEditorView> createState() =>
@@ -100,14 +101,10 @@ class _TraningExerciseEditorViewState
       name: _nameController.text,
       execution: _execution,
     );
-    if (widget.params != null) {
+    if (widget.exercise != null) {
       await _updateExercise(
         widget.training,
-        params: UpdateExerciseParams(
-          setIndex: widget.params!.setIndex,
-          position: widget.params!.position,
-          exercise: exercise,
-        ),
+        exercise: widget.exercise!.copyWith(value: exercise),
       );
     } else {
       await _addExercise(widget.training, exercise);
@@ -118,8 +115,8 @@ class _TraningExerciseEditorViewState
   void initState() {
     super.initState();
     _expanded = !_execution.isAllEquals;
-    if (widget.params != null) {
-      final exercise = widget.params!.exercise;
+    if (widget.exercise != null) {
+      final exercise = widget.exercise!.value;
       _nameController.text = exercise.name;
       _execution = exercise.execution as SerializedExerciseExecution;
     }

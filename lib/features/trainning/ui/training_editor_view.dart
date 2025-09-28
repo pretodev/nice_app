@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/features/trainning/commands/delete_exercise.dart';
-import 'package:nice/features/trainning/commands/update_exercise.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
 import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
@@ -23,7 +23,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   late final repo = ref.read(trainingRepositoryProvider);
   late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
-  UpdateExerciseParams? _selected;
+  PositionedExercise? _selected;
 
   void _addExercise() {
     Navigator.push(
@@ -40,7 +40,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       builder: (context) => AlertDialog(
         title: const Text('Remover exercício'),
         content: Text(
-          'Tem certeza que deseja remover o exercício ${_selected?.exercise.name}?',
+          'Tem certeza que deseja remover o exercício ${_selected?.value.name}?',
         ),
         actions: [
           TextButton(
@@ -71,7 +71,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       context,
       TraningExerciseEditorView.route(
         training: _training,
-        params: _selected,
+        exercise: _selected,
       ),
     );
   }
@@ -134,8 +134,8 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
                         _selected = null;
                         return;
                       }
-                      _selected = UpdateExerciseParams(
-                        exercise: exercise,
+                      _selected = PositionedExercise(
+                        exercise,
                         setIndex: index,
                         position: position,
                       );
@@ -163,6 +163,11 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
                     icon: Icon(Symbols.delete_rounded),
                     tooltip: 'Deletar exercício',
                     onPressed: _removeExercise,
+                  ),
+                  IconButton(
+                    icon: Icon(Symbols.graph_1),
+                    tooltip: 'Mesclar exercícios',
+                    onPressed: () {},
                   ),
                 ],
               ),

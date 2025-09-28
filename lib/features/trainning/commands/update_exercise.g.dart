@@ -41,7 +41,7 @@ final class UpdateExerciseProvider
   }
 }
 
-String _$updateExerciseHash() => r'7a27e45e1bedd2eb3ed985d2cd61e892fec37382';
+String _$updateExerciseHash() => r'c5e7833a4efc5b00534b75185dfc709cd8aafcdb';
 
 abstract class _$UpdateExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
