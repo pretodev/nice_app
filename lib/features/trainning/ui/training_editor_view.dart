@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/features/trainning/commands/update_exercise.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
@@ -19,6 +20,8 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   Training _training = Training(id: 'teste');
 
   late final repo = ref.read(trainingRepositoryProvider);
+
+  UpdateExerciseParams? _selected;
 
   void _addExercise() {
     Navigator.push(
@@ -69,27 +72,58 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
                 final set = _training.sets[index];
                 return ExerciseSetWidget(
                   set: set,
+                  selectedIndex: _selected?.setIndex == index
+                      ? _selected?.position
+                      : null,
                   onExerciseClicked: (exercise, position) {
-                    Navigator.push(
-                      context,
-                      TraningExerciseEditorView.route(
-                        training: _training,
-                        params: UpdateExerciseParams(
-                          exercise: exercise,
-                          setIndex: index,
-                          position: position,
-                        ),
-                      ),
-                    );
+                    setState(() {
+                      if (index == _selected?.setIndex &&
+                          position == _selected?.position) {
+                        _selected = null;
+                        return;
+                      }
+                      _selected = UpdateExerciseParams(
+                        exercise: exercise,
+                        setIndex: index,
+                        position: position,
+                      );
+                    });
                   },
                 );
               },
             ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       floatingActionButton: FloatingActionButton(
         onPressed: _addExercise,
-        tooltip: 'Add training',
+        tooltip: 'Adicionar exercício',
         child: const Icon(Icons.add),
       ),
+      bottomNavigationBar: _selected != null
+          ? BottomAppBar(
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Symbols.edit_rounded),
+                    tooltip: 'Editar exercício',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        TraningExerciseEditorView.route(
+                          training: _training,
+                          params: _selected,
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Symbols.delete_rounded),
+                    tooltip: 'Deletar exercício',
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 }
