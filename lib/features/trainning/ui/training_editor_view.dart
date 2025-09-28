@@ -66,6 +66,16 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
+  void _editExercise() {
+    Navigator.push(
+      context,
+      TraningExerciseEditorView.route(
+        training: _training,
+        params: _selected,
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -147,15 +157,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
                   IconButton(
                     icon: Icon(Symbols.edit_rounded),
                     tooltip: 'Editar exercício',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        TraningExerciseEditorView.route(
-                          training: _training,
-                          params: _selected,
-                        ),
-                      );
-                    },
+                    onPressed: _editExercise,
                   ),
                   IconButton(
                     icon: Icon(Symbols.delete_rounded),
