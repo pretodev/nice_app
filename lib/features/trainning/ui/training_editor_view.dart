@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/features/trainning/commands/delete_exercise.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
 import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
 import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
@@ -89,6 +91,21 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
+  void _selectExercise(Exercise exercise, int index, int position) {
+    final selected = PositionedExercise(
+      exercise,
+      setIndex: index,
+      position: position,
+    );
+    setState(() {
+      if (selected == _selected) {
+        _selected = null;
+        return;
+      }
+      _selected = selected;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,37 +160,30 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               itemCount: _training.sets.length,
               itemBuilder: (context, index) {
                 final set = _training.sets[index];
-
-                final selectedIndex = _selected?.setIndex == index
-                    ? _selected?.position
-                    : null;
-
-                final waitingMergeIndex = _mergeSelected.isEmpty
-                    ? null
-                    : _mergeSelected.first.setIndex == index
-                    ? _mergeSelected.first.position
-                    : null;
-
-                return ExerciseSetWidget(
-                  key: Key('set_$index'),
-                  set: set,
-                  selectedIndex: selectedIndex,
-                  waitingMergeIndex: waitingMergeIndex,
-                  onExerciseClicked: (exercise, position) {
-                    setState(() {
-                      if (index == _selected?.setIndex &&
-                          position == _selected?.position) {
-                        _selected = null;
-                        return;
-                      }
-                      _selected = PositionedExercise(
-                        exercise,
-                        setIndex: index,
-                        position: position,
-                      );
-                    });
-                  },
-                );
+                return switch (set) {
+                  StraightSet() => StraightSetWidget(
+                    exerciseSet: set,
+                    selected: _selected?.setIndex == index,
+                    onClicked: (exercise) =>
+                        _selectExercise(exercise, index, 0),
+                  ),
+                  BiSet() => BiSetWidget(
+                    exerciseSet: set,
+                    onFirstClicked: (exercise) =>
+                        _selectExercise(exercise, index, 0),
+                    onSecondClicked: (exercise) =>
+                        _selectExercise(exercise, index, 1),
+                  ),
+                  TriSet() => TriSetWidget(
+                    exerciseSet: set,
+                    onFirstClicked: (exercise) =>
+                        _selectExercise(exercise, index, 0),
+                    onSecondClicked: (exercise) =>
+                        _selectExercise(exercise, index, 1),
+                    onThirdClicked: (exercise) =>
+                        _selectExercise(exercise, index, 2),
+                  ),
+                };
               },
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
@@ -196,9 +206,9 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       },
       bottomNavigationBar: TrainingEditorBottomBar(
         state: bottomState,
-        startMerge: _startMerge,
         editExercise: _editExercise,
         removeExercise: _removeExercise,
+        startMerge: _startMerge,
         finishMerge: _closeMerge,
       ),
     );
