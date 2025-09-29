@@ -9,6 +9,7 @@ import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/training_provider.dart';
 import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
 import 'package:nice/features/trainning/ui/widgets/exercise_set_widget.dart';
+import 'package:nice/features/trainning/ui/widgets/training_editor_bottom_bar.dart';
 
 class TrainingEditorView extends ConsumerStatefulWidget {
   const TrainingEditorView({super.key});
@@ -19,11 +20,25 @@ class TrainingEditorView extends ConsumerStatefulWidget {
 
 class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   Training _training = Training(id: 'teste');
+  StreamSubscription<Training>? _subscription;
 
   late final repo = ref.read(trainingRepositoryProvider);
   late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
   PositionedExercise? _selected;
+
+  List<PositionedExercise> _mergeSelected = [];
+
+  void _startMerge() {
+    if (_selected == null) return;
+    setState(() {
+      _mergeSelected = [_selected!];
+    });
+  }
+
+  void _closeMerge() {
+    setState(() => _mergeSelected = []);
+  }
 
   void _addExercise() {
     Navigator.push(
@@ -31,8 +46,6 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       TraningExerciseEditorView.route(training: _training),
     );
   }
-
-  StreamSubscription<Training>? _subscription;
 
   void _removeExercise() async {
     final delete = await showDialog<bool>(
@@ -94,6 +107,14 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
   @override
   Widget build(BuildContext context) {
+    var bottomState = TrainingEditorState.none;
+    if (_selected != null) {
+      bottomState = TrainingEditorState.selecting;
+    }
+    if (_mergeSelected.isNotEmpty) {
+      bottomState = TrainingEditorState.merging;
+    }
+
     ref.listen(deleteExerciseProvider, (prev, next) {
       if (next is AsyncData) {
         setState(() => _selected = null);
@@ -122,11 +143,22 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               itemCount: _training.sets.length,
               itemBuilder: (context, index) {
                 final set = _training.sets[index];
+
+                final selectedIndex = _selected?.setIndex == index
+                    ? _selected?.position
+                    : null;
+
+                final waitingMergeIndex = _mergeSelected.isEmpty
+                    ? null
+                    : _mergeSelected.first.setIndex == index
+                    ? _mergeSelected.first.position
+                    : null;
+
                 return ExerciseSetWidget(
+                  key: Key('set_$index'),
                   set: set,
-                  selectedIndex: _selected?.setIndex == index
-                      ? _selected?.position
-                      : null,
+                  selectedIndex: selectedIndex,
+                  waitingMergeIndex: waitingMergeIndex,
                   onExerciseClicked: (exercise, position) {
                     setState(() {
                       if (index == _selected?.setIndex &&
@@ -145,34 +177,30 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               },
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addExercise,
-        tooltip: 'Adicionar exercício',
-        child: const Icon(Icons.add),
+      floatingActionButton: switch (bottomState) {
+        TrainingEditorState.none => FloatingActionButton(
+          onPressed: _addExercise,
+          tooltip: 'Adicionar exercício',
+          child: const Icon(Icons.add),
+        ),
+        TrainingEditorState.merging => FloatingActionButton(
+          onPressed: () {},
+          tooltip: 'Mesclar exercícios',
+          child: const Icon(Symbols.graph_1_rounded),
+        ),
+        TrainingEditorState.selecting => FloatingActionButton(
+          onPressed: _addExercise,
+          tooltip: 'Adicionar exercício',
+          child: const Icon(Icons.add),
+        ),
+      },
+      bottomNavigationBar: TrainingEditorBottomBar(
+        state: bottomState,
+        startMerge: _startMerge,
+        editExercise: _editExercise,
+        removeExercise: _removeExercise,
+        finishMerge: _closeMerge,
       ),
-      bottomNavigationBar: _selected != null
-          ? BottomAppBar(
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Symbols.edit_rounded),
-                    tooltip: 'Editar exercício',
-                    onPressed: _editExercise,
-                  ),
-                  IconButton(
-                    icon: Icon(Symbols.delete_rounded),
-                    tooltip: 'Deletar exercício',
-                    onPressed: _removeExercise,
-                  ),
-                  IconButton(
-                    icon: Icon(Symbols.graph_1),
-                    tooltip: 'Mesclar exercícios',
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            )
-          : null,
     );
   }
 }

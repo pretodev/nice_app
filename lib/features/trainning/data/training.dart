@@ -26,6 +26,55 @@ class Training extends Entity {
     if (positions.length < 2) {
       throw ArgumentError('positions must have at least 2 elements');
     }
+
+    if (positions.length > 3) {
+      throw ArgumentError('positions cannot have more than 3 elements');
+    }
+
+    for (final position in positions) {
+      if (position.setIndex < 0 || position.setIndex >= sets.length) {
+        throw ArgumentError('Invalid set index: ${position.setIndex}');
+      }
+    }
+
+    final setIndices = positions.map((p) => p.setIndex).toSet();
+    if (setIndices.length != positions.length) {
+      throw ArgumentError('Cannot merge exercises from the same set');
+    }
+
+    final sortedPositions = List<PositionedExercise>.from(positions)
+      ..sort((a, b) => a.setIndex.compareTo(b.setIndex));
+
+    final targetSetIndex = sortedPositions.first.setIndex;
+
+    final exercisesToMerge = sortedPositions
+        .map((pos) => (sets[pos.setIndex] as StraightSet).data)
+        .toList();
+
+    final ExerciseSet newSet;
+    if (exercisesToMerge.length == 2) {
+      newSet = BiSet(exercisesToMerge[0], exercisesToMerge[1]);
+    } else if (exercisesToMerge.length == 3) {
+      newSet = TriSet(
+        exercisesToMerge[0],
+        exercisesToMerge[1],
+        exercisesToMerge[2],
+      );
+    } else {
+      throw ArgumentError('Invalid number of exercises to merge');
+    }
+
+    final indicesToRemove = sortedPositions
+        .map((pos) => pos.setIndex)
+        .toList()
+        .reversed
+        .toList();
+
+    for (final index in indicesToRemove) {
+      sets.removeAt(index);
+    }
+
+    sets.insert(targetSetIndex, newSet);
   }
 
   void setExerciseInSet(PositionedExercise exercise) {

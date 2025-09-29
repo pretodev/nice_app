@@ -1,15 +1,10 @@
 import 'package:nice/core/data/result.dart';
 import 'package:nice/features/trainning/data/exercise_positioned.dart';
 import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/training_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'merge_exercises.g.dart';
-
-class MergeExercisesParams {
-  const MergeExercisesParams(this.exercises);
-
-  final List<PositionedExercise> exercises;
-}
 
 @riverpod
 class MergeExercises extends _$MergeExercises {
@@ -20,8 +15,14 @@ class MergeExercises extends _$MergeExercises {
 
   Future<void> call(
     Training training, {
-    required MergeExercisesParams params,
+    required List<PositionedExercise> exercises,
   }) async {
-    return;
+    state = const AsyncLoading();
+    training.mergeExercises(exercises);
+    final result = await ref.read(trainingRepositoryProvider).store(training);
+    state = switch (result) {
+      Done() => AsyncData(unit),
+      Error() => AsyncError(result.error, StackTrace.current),
+    };
   }
 }
