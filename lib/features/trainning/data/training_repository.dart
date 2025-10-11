@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nice/core/data/result.dart';
-import 'package:nice/features/trainning/data/firestore/firestore_trainning_document.dart';
-import 'package:nice/features/trainning/data/training.dart';
+
+import '../../../core/data/result.dart';
+import 'firestore/firestore_trainning_document.dart';
+import 'training.dart';
 
 class TrainingRepository {
   TrainingRepository({required FirestoreTrainningDocument trainingDocument})

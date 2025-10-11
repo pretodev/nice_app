@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:nice/app/widgets/field.dart';
-import 'package:nice/features/trainning/commands/add_exercise.dart';
-import 'package:nice/features/trainning/commands/update_exercise.dart';
-import 'package:nice/features/trainning/data/exercise.dart';
-import 'package:nice/features/trainning/data/exercise_execution.dart';
-import 'package:nice/features/trainning/data/exercise_positioned.dart';
-import 'package:nice/features/trainning/data/training.dart';
-import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
 
+import '../../../core/widgets/field.dart';
+import '../app/commands/add_exercise.dart';
+import '../app/commands/update_exercise.dart';
+import '../data/exercise.dart';
+import '../data/exercise_execution.dart';
+import '../data/exercise_positioned.dart';
+import '../data/training.dart';
+import 'widgets/repetition_counter.dart';
 import 'widgets/series_counter.dart';
 
 class TraningExerciseEditorView extends ConsumerStatefulWidget {

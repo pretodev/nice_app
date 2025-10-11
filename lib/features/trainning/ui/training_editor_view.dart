@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:nice/features/trainning/commands/delete_exercise.dart';
-import 'package:nice/features/trainning/data/exercise.dart';
-import 'package:nice/features/trainning/data/exercise_positioned.dart';
-import 'package:nice/features/trainning/data/exercise_set.dart';
-import 'package:nice/features/trainning/data/training.dart';
-import 'package:nice/features/trainning/training_provider.dart';
-import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
-import 'package:nice/features/trainning/ui/widgets/exercise_set_widget.dart';
-import 'package:nice/features/trainning/ui/widgets/training_editor_bottom_bar.dart';
+
+import '../app/commands/delete_exercise.dart';
+import '../app/queries/get_training_from_id.dart';
+import '../data/exercise_positioned.dart';
+import '../data/training.dart';
+import '../training_provider.dart';
+import 'traning_exercise_editor_view.dart';
+import 'widgets/training_editor_body.dart';
+import 'widgets/training_editor_bottom_bar.dart';
 
 class TrainingEditorView extends ConsumerStatefulWidget {
   const TrainingEditorView({super.key});
@@ -91,12 +91,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
-  void _selectExercise(Exercise exercise, int index, int position) {
-    final selected = PositionedExercise(
-      exercise,
-      setIndex: index,
-      position: position,
-    );
+  void _selectExercise(PositionedExercise selected) {
     setState(() {
       if (selected == _selected) {
         _selected = null;
@@ -140,52 +135,20 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
         );
       }
     });
+
+    final training = ref.watch(getTrainingFromIdProvider('teste'));
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('Editor de treino'),
       ),
-      body: _training.sets.isEmpty
-          ? const Center(
-              child: Text(
-                'Sem exercícios',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-            )
-          : ListView.builder(
-              itemCount: _training.sets.length,
-              itemBuilder: (context, index) {
-                final set = _training.sets[index];
-                return switch (set) {
-                  StraightSet() => StraightSetWidget(
-                    exerciseSet: set,
-                    selected: _selected?.setIndex == index,
-                    onClicked: (exercise) =>
-                        _selectExercise(exercise, index, 0),
-                  ),
-                  BiSet() => BiSetWidget(
-                    exerciseSet: set,
-                    onFirstClicked: (exercise) =>
-                        _selectExercise(exercise, index, 0),
-                    onSecondClicked: (exercise) =>
-                        _selectExercise(exercise, index, 1),
-                  ),
-                  TriSet() => TriSetWidget(
-                    exerciseSet: set,
-                    onFirstClicked: (exercise) =>
-                        _selectExercise(exercise, index, 0),
-                    onSecondClicked: (exercise) =>
-                        _selectExercise(exercise, index, 1),
-                    onThirdClicked: (exercise) =>
-                        _selectExercise(exercise, index, 2),
-                  ),
-                };
-              },
-            ),
+      body: TrainingEditorBody(
+        value: training,
+        selected: _selected,
+        onClicked: _selectExercise,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       floatingActionButton: switch (bottomState) {
         TrainingEditorState.none => FloatingActionButton(

@@ -1,6 +1,7 @@
-import 'package:nice/features/trainning/data/firestore/firestore_trainning_document.dart';
-import 'package:nice/features/trainning/data/training_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'data/firestore/firestore_trainning_document.dart';
+import 'data/training_repository.dart';
 
 part 'training_provider.g.dart';
 

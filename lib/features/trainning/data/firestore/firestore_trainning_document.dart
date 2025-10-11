@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nice/core/data/firestore/firestore_custom_reference.dart';
-import 'package:nice/core/data/firestore/firestore_extensions.dart';
-import 'package:nice/features/trainning/data/exercise.dart';
-import 'package:nice/features/trainning/data/exercise_execution.dart';
-import 'package:nice/features/trainning/data/exercise_set.dart';
-import 'package:nice/features/trainning/data/training.dart';
+
+import '../../../../core/data/firestore/firestore_custom_reference.dart';
+import '../../../../core/data/firestore/firestore_extensions.dart';
+import '../exercise.dart';
+import '../exercise_execution.dart';
+import '../exercise_set.dart';
+import '../training.dart';
 
 class FirestoreTrainningDocument
     extends FirestoreCustomDocumentReference<Training> {

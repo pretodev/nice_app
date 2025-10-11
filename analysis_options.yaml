@@ -6,6 +6,7 @@ formatter:
 linter:
   rules:
     - prefer_single_quotes
+    - prefer_relative_imports
 
 analyzer:
   plugins:

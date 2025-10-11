@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nice/features/trainning/data/exercise.dart';
-import 'package:nice/features/trainning/data/exercise_set.dart';
+
+import '../../data/exercise.dart';
+import '../../data/exercise_set.dart';
 
 typedef ExerciseSetItemClicked = void Function(Exercise exercise, int position);
 

@@ -1,9 +1,10 @@
-import 'package:nice/core/data/result.dart';
-import 'package:nice/features/trainning/data/exercise.dart';
-import 'package:nice/features/trainning/data/exercise_positioned.dart';
-import 'package:nice/features/trainning/data/training.dart';
-import 'package:nice/features/trainning/training_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../core/data/result.dart';
+import '../../data/exercise.dart';
+import '../../data/exercise_positioned.dart';
+import '../../data/training.dart';
+import '../../training_provider.dart';
 
 part 'update_exercise.g.dart';
 
