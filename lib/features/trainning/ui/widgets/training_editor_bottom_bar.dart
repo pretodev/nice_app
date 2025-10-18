@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-enum TrainingEditorState {
-  none,
-  merging,
-  selecting,
-}
+import '../models/training_editor_state.dart';
 
 class TrainingEditorBottomBar extends StatelessWidget {
   const TrainingEditorBottomBar({
@@ -15,9 +11,11 @@ class TrainingEditorBottomBar extends StatelessWidget {
     this.editExercise,
     this.removeExercise,
     this.finishMerge,
+    this.addExercise,
   });
 
   final TrainingEditorState state;
+  final VoidCallback? addExercise;
   final VoidCallback? startMerge;
   final VoidCallback? editExercise;
   final VoidCallback? removeExercise;
@@ -26,7 +24,17 @@ class TrainingEditorBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (state) {
-      TrainingEditorState.none => SizedBox.shrink(),
+      TrainingEditorState.none => BottomAppBar(
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(Symbols.add_rounded),
+              tooltip: 'Adicionar exercício',
+              onPressed: addExercise,
+            ),
+          ],
+        ),
+      ),
       TrainingEditorState.merging => BottomAppBar(
         child: Row(
           children: [

@@ -17,18 +17,19 @@ class StraightSetWidget extends StatelessWidget {
     required this.exerciseSet,
     this.selected = false,
     this.onClicked,
+    this.onLongPressed,
   });
 
   final bool selected;
   final StraightSet exerciseSet;
   final ValueChanged<Exercise>? onClicked;
+  final ValueChanged<Exercise>? onLongPressed;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-
       children: [
         ExerciseSetItem(
           exercise: exerciseSet.data,
@@ -36,8 +37,10 @@ class StraightSetWidget extends StatelessWidget {
           onClicked: onClicked != null
               ? () => onClicked?.call(exerciseSet.data)
               : null,
+          onLongPress: onLongPressed != null
+              ? () => onLongPressed?.call(exerciseSet.data)
+              : null,
         ),
-        Divider(indent: 8.0, endIndent: 8.0, height: 0.0),
       ],
     );
   }
@@ -57,6 +60,8 @@ class BiSetWidget extends StatelessWidget {
     this.state = BiSetSelectStates.none,
     this.onFirstClicked,
     this.onSecondClicked,
+    this.onFirstLongPressed,
+    this.onSecondLongPressed,
   });
 
   final BiSet exerciseSet;
@@ -64,6 +69,8 @@ class BiSetWidget extends StatelessWidget {
 
   final ValueChanged<Exercise>? onFirstClicked;
   final ValueChanged<Exercise>? onSecondClicked;
+  final ValueChanged<Exercise>? onFirstLongPressed;
+  final ValueChanged<Exercise>? onSecondLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +87,9 @@ class BiSetWidget extends StatelessWidget {
           onClicked: onFirstClicked != null
               ? () => onFirstClicked?.call(exerciseSet.first)
               : null,
+          onLongPress: onFirstLongPressed != null
+              ? () => onFirstLongPressed?.call(exerciseSet.first)
+              : null,
         ),
         ExerciseSetItem(
           exercise: exerciseSet.second,
@@ -89,8 +99,10 @@ class BiSetWidget extends StatelessWidget {
           onClicked: onSecondClicked != null
               ? () => onSecondClicked?.call(exerciseSet.second)
               : null,
+          onLongPress: onSecondLongPressed != null
+              ? () => onSecondLongPressed?.call(exerciseSet.second)
+              : null,
         ),
-        Divider(indent: 8.0, endIndent: 8.0, height: 0.0),
       ],
     );
   }
@@ -112,6 +124,9 @@ class TriSetWidget extends StatelessWidget {
     this.onFirstClicked,
     this.onSecondClicked,
     this.onThirdClicked,
+    this.onFirstLongPressed,
+    this.onSecondLongPressed,
+    this.onThirdLongPressed,
   });
 
   final TriSet exerciseSet;
@@ -120,6 +135,9 @@ class TriSetWidget extends StatelessWidget {
   final ValueChanged<Exercise>? onFirstClicked;
   final ValueChanged<Exercise>? onSecondClicked;
   final ValueChanged<Exercise>? onThirdClicked;
+  final ValueChanged<Exercise>? onFirstLongPressed;
+  final ValueChanged<Exercise>? onSecondLongPressed;
+  final ValueChanged<Exercise>? onThirdLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +154,9 @@ class TriSetWidget extends StatelessWidget {
           onClicked: onFirstClicked != null
               ? () => onFirstClicked?.call(exerciseSet.first)
               : null,
+          onLongPress: onFirstLongPressed != null
+              ? () => onFirstLongPressed?.call(exerciseSet.first)
+              : null,
         ),
         ExerciseSetItem(
           exercise: exerciseSet.second,
@@ -144,6 +165,9 @@ class TriSetWidget extends StatelessWidget {
               seleted == TriSetSelectStates.all,
           onClicked: onSecondClicked != null
               ? () => onSecondClicked?.call(exerciseSet.second)
+              : null,
+          onLongPress: onSecondLongPressed != null
+              ? () => onSecondLongPressed?.call(exerciseSet.second)
               : null,
         ),
         ExerciseSetItem(
@@ -154,8 +178,10 @@ class TriSetWidget extends StatelessWidget {
           onClicked: onThirdClicked != null
               ? () => onThirdClicked?.call(exerciseSet.third)
               : null,
+          onLongPress: onThirdLongPressed != null
+              ? () => onThirdLongPressed?.call(exerciseSet.third)
+              : null,
         ),
-        Divider(indent: 8.0, endIndent: 8.0, height: 0.0),
       ],
     );
   }
@@ -167,28 +193,41 @@ class ExerciseSetItem extends StatelessWidget {
     required this.exercise,
     this.onClicked,
     this.selected = false,
+    this.onLongPress,
   });
 
   final Exercise exercise;
   final bool selected;
   final VoidCallback? onClicked;
+  final VoidCallback? onLongPress;
+
+  Color get backgroundColor {
+    if (selected) {
+      return Colors.blue[100]!;
+    }
+
+    if (onClicked == null) {
+      return Colors.black12;
+    }
+
+    return Colors.transparent;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var color = Colors.transparent;
-    if (selected) {
-      color = Colors.blue[100]!;
-    }
-    if (onClicked == null) {
-      color = Colors.black12;
-    }
-
     return GestureDetector(
       onTap: onClicked,
+      onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
         decoration: BoxDecoration(
-          color: color,
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(4.0),
+          border: Border.all(
+            color: Colors.grey,
+            width: 1.0,
+          ),
         ),
         child: Column(
           spacing: 2.0,

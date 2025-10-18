@@ -6,19 +6,19 @@ import '../../data/exercise_set.dart';
 import '../../data/training.dart';
 import 'exercise_set_widget.dart';
 
-typedef OnExerciseSelected = void Function(PositionedExercise exercise);
-
 class TrainingEditorBody extends StatelessWidget {
   const TrainingEditorBody({
     super.key,
     required this.value,
     this.selected,
-    this.onClicked,
+    this.onExerciseClicked,
+    this.onExerciseLongPressed,
   });
 
   final AsyncValue<Training> value;
   final PositionedExercise? selected;
-  final OnExerciseSelected? onClicked;
+  final ValueChanged<PositionedExercise>? onExerciseClicked;
+  final ValueChanged<PositionedExercise>? onExerciseLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,14 @@ class TrainingEditorBody extends StatelessWidget {
           StraightSet() => StraightSetWidget(
             exerciseSet: set,
             selected: selected?.setIndex == index,
-            onClicked: (exercise) => onClicked?.call(
+            onClicked: (exercise) => onExerciseClicked?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 0,
+              ),
+            ),
+            onLongPressed: (exercise) => onExerciseLongPressed?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,
@@ -66,14 +73,28 @@ class TrainingEditorBody extends StatelessWidget {
           ),
           BiSet() => BiSetWidget(
             exerciseSet: set,
-            onFirstClicked: (exercise) => onClicked?.call(
+            onFirstClicked: (exercise) => onExerciseClicked?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,
                 position: 0,
               ),
             ),
-            onSecondClicked: (exercise) => onClicked?.call(
+            onFirstLongPressed: (exercise) => onExerciseLongPressed?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 0,
+              ),
+            ),
+            onSecondClicked: (exercise) => onExerciseClicked?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 1,
+              ),
+            ),
+            onSecondLongPressed: (exercise) => onExerciseLongPressed?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,
@@ -83,21 +104,42 @@ class TrainingEditorBody extends StatelessWidget {
           ),
           TriSet() => TriSetWidget(
             exerciseSet: set,
-            onFirstClicked: (exercise) => onClicked?.call(
+            onFirstClicked: (exercise) => onExerciseClicked?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,
                 position: 0,
               ),
             ),
-            onSecondClicked: (exercise) => onClicked?.call(
+            onFirstLongPressed: (exercise) => onExerciseLongPressed?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 0,
+              ),
+            ),
+            onSecondClicked: (exercise) => onExerciseClicked?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,
                 position: 1,
               ),
             ),
-            onThirdClicked: (exercise) => onClicked?.call(
+            onSecondLongPressed: (exercise) => onExerciseLongPressed?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 1,
+              ),
+            ),
+            onThirdClicked: (exercise) => onExerciseClicked?.call(
+              PositionedExercise(
+                exercise,
+                setIndex: index,
+                position: 2,
+              ),
+            ),
+            onThirdLongPressed: (exercise) => onExerciseLongPressed?.call(
               PositionedExercise(
                 exercise,
                 setIndex: index,

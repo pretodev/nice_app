@@ -56,7 +56,7 @@ class SerializedExerciseExecution extends ExerciseExecution {
   int get countSeries => repeats.length;
 
   @override
-  String get formatted => '$countSeries x ${repeats.first}';
+  String get formatted => '$countSeries Séries x ${repeats.first} reps';
 
   @override
   bool operator ==(Object other) {

@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 import '../app/commands/delete_exercise.dart';
 import '../app/provider.dart';
 import '../app/queries/get_training_from_id.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
+import 'models/training_editor_state.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
 import 'widgets/training_editor_bottom_bar.dart';
@@ -81,12 +81,12 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
-  void _editExercise() {
+  void _editExercise(PositionedExercise exercise) {
     Navigator.push(
       context,
       TraningExerciseEditorView.route(
         training: _training,
-        exercise: _selected,
+        exercise: exercise,
       ),
     );
   }
@@ -147,29 +147,13 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       body: TrainingEditorBody(
         value: training,
         selected: _selected,
-        onClicked: _selectExercise,
+        onExerciseClicked: _editExercise,
+        onExerciseLongPressed: _selectExercise,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
-      floatingActionButton: switch (bottomState) {
-        TrainingEditorState.none => FloatingActionButton(
-          onPressed: _addExercise,
-          tooltip: 'Adicionar exercício',
-          child: const Icon(Icons.add),
-        ),
-        TrainingEditorState.merging => FloatingActionButton(
-          onPressed: () {},
-          tooltip: 'Mesclar exercícios',
-          child: const Icon(Symbols.graph_1_rounded),
-        ),
-        TrainingEditorState.selecting => FloatingActionButton(
-          onPressed: _addExercise,
-          tooltip: 'Adicionar exercício',
-          child: const Icon(Icons.add),
-        ),
-      },
+
       bottomNavigationBar: TrainingEditorBottomBar(
         state: bottomState,
-        editExercise: _editExercise,
+        addExercise: () {},
         removeExercise: _removeExercise,
         startMerge: _startMerge,
         finishMerge: _closeMerge,
