@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../app/commands/delete_exercise.dart';
+import '../app/provider.dart';
 import '../app/queries/get_training_from_id.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../training_provider.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
 import 'widgets/training_editor_bottom_bar.dart';

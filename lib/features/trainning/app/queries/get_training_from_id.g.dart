@@ -59,7 +59,7 @@ final class GetTrainingFromIdProvider
   }
 }
 
-String _$getTrainingFromIdHash() => r'a21989ae613da1748b030fd5ec0ab59c407c86f3';
+String _$getTrainingFromIdHash() => r'5383c23c92f9095eb8d555eee774c3ea08b637dc';
 
 final class GetTrainingFromIdFamily extends $Family
     with $FunctionalFamilyOverride<Stream<Training>, String> {

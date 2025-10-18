@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/data/result.dart';
 import '../../data/exercise.dart';
 import '../../data/training.dart';
-import '../../training_provider.dart';
+import '../provider.dart';
 
 part 'add_exercise.g.dart';
 

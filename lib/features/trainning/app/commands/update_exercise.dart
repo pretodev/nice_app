@@ -4,7 +4,7 @@ import '../../../../core/data/result.dart';
 import '../../data/exercise.dart';
 import '../../data/exercise_positioned.dart';
 import '../../data/training.dart';
-import '../../training_provider.dart';
+import '../provider.dart';
 
 part 'update_exercise.g.dart';
 
