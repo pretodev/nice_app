@@ -41,7 +41,7 @@ final class DeleteExerciseProvider
   }
 }
 
-String _$deleteExerciseHash() => r'e2eb70d76e75f76ae01a506848c508119da82449';
+String _$deleteExerciseHash() => r'5f5912b83783b4eb804ca68204501f3b59f705f9';
 
 abstract class _$DeleteExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
