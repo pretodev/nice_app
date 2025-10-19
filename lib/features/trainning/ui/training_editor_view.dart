@@ -6,7 +6,6 @@ import '../app/provider.dart';
 import '../app/queries/get_training_from_id.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../data/training_selector.dart';
 import 'models/training_editor_state.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
@@ -87,15 +86,14 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
-  TrainingSelector? _selector;
-
-  bool get _hasSelector => _selector != null;
-
   void _selectExercise(Training training, PositionedExercise selected) {
-    // setState(() {
-    //   _selector ??= TrainingSelector(training);
-    //   _selector?.add(selected);
-    // });
+    setState(() {
+      if (training.selector.has(selected)) {
+        training.selector.remove(selected);
+        return;
+      }
+      training.selector.add(selected);
+    });
   }
 
   @override
@@ -133,13 +131,12 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       ),
       body: TrainingEditorBody(
         value: training,
-        // selected: _selector?.has(exercise) ?? false,
-        onExerciseClicked: (exercise) => _hasSelector
-            ? _selectExercise(
+        onExerciseClicked: (exercise) => training.requireValue.selector.isEmpty
+            ? _editExercise(
                 training.requireValue,
                 exercise,
               )
-            : _editExercise(
+            : _selectExercise(
                 training.requireValue,
                 exercise,
               ),

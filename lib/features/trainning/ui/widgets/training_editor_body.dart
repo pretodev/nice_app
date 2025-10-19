@@ -4,20 +4,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/exercise_positioned.dart';
 import '../../data/exercise_set.dart';
 import '../../data/training.dart';
-import '../../data/training_selector.dart';
 import 'exercise_set_widget.dart';
 
 class TrainingEditorBody extends StatelessWidget {
   const TrainingEditorBody({
     super.key,
     required this.value,
-    this.selector,
     this.onExerciseClicked,
     this.onExerciseLongPressed,
   });
 
   final AsyncValue<Training> value;
-  final TrainingSelector? selector;
   final ValueChanged<PositionedExercise>? onExerciseClicked;
   final ValueChanged<PositionedExercise>? onExerciseLongPressed;
 
@@ -35,7 +32,7 @@ class TrainingEditorBody extends StatelessWidget {
       );
     }
 
-    final training = value.value!;
+    final training = value.requireValue;
 
     if (training.sets.isEmpty) {
       return const Center(
@@ -56,7 +53,7 @@ class TrainingEditorBody extends StatelessWidget {
         return switch (set) {
           StraightSet() => StraightSetWidget(
             exerciseSet: set,
-            selected: selector?.has(set.data) ?? false,
+            selected: training.selector.has(set.data),
             onClicked: onExerciseClicked,
             onLongPressed: onExerciseLongPressed,
           ),

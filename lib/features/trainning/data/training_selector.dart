@@ -11,6 +11,8 @@ class TrainingSelector {
 
   int get count => _selecteds.length;
 
+  bool get isEmpty => _selecteds.isEmpty;
+
   void add(PositionedExercise exercise) {
     _selecteds.add(exercise);
   }
