@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +6,7 @@ import '../app/provider.dart';
 import '../app/queries/get_training_from_id.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
+import '../data/training_selector.dart';
 import 'models/training_editor_state.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
@@ -21,9 +20,6 @@ class TrainingEditorView extends ConsumerStatefulWidget {
 }
 
 class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
-  Training _training = Training(id: 'teste');
-  StreamSubscription<Training>? _subscription;
-
   late final repo = ref.read(trainingRepositoryProvider);
   late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
@@ -43,10 +39,10 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   }
 
   void _addExercise() {
-    Navigator.push(
-      context,
-      TraningExerciseEditorView.route(training: _training),
-    );
+    // Navigator.push(
+    //   context,
+    //   TraningExerciseEditorView.route(training: _training),
+    // );
   }
 
   void _removeExercise() async {
@@ -72,49 +68,34 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
     if (!(delete ?? false)) return;
 
-    await _deleteExercise(
-      _training,
-      params: DeleteExerciseParams(
-        setIndex: _selected!.setIndex,
-        position: _selected!.position,
-      ),
-    );
+    // await _deleteExercise(
+    //   _training,
+    //   params: DeleteExerciseParams(
+    //     setIndex: _selected!.setIndex,
+    //     position: _selected!.position,
+    //   ),
+    // );
   }
 
-  void _editExercise(PositionedExercise exercise) {
+  void _editExercise(Training training, PositionedExercise exercise) {
     Navigator.push(
       context,
       TraningExerciseEditorView.route(
-        training: _training,
+        training: training,
         exercise: exercise,
       ),
     );
   }
 
-  void _selectExercise(PositionedExercise selected) {
-    setState(() {
-      if (selected == _selected) {
-        _selected = null;
-        return;
-      }
-      _selected = selected;
-    });
-  }
+  TrainingSelector? _selector;
 
-  @override
-  void initState() {
-    super.initState();
-    _subscription = repo.fromId('teste').listen((training) {
-      setState(() {
-        _training = training;
-      });
-    });
-  }
+  bool get _hasSelector => _selector != null;
 
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
+  void _selectExercise(Training training, PositionedExercise selected) {
+    // setState(() {
+    //   _selector ??= TrainingSelector(training);
+    //   _selector?.add(selected);
+    // });
   }
 
   @override
@@ -138,6 +119,12 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
     final training = ref.watch(getTrainingFromIdProvider('teste'));
 
+    if (training is AsyncLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -146,9 +133,20 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       ),
       body: TrainingEditorBody(
         value: training,
-        selected: _selected,
-        onExerciseClicked: _editExercise,
-        onExerciseLongPressed: _selectExercise,
+        // selected: _selector?.has(exercise) ?? false,
+        onExerciseClicked: (exercise) => _hasSelector
+            ? _selectExercise(
+                training.requireValue,
+                exercise,
+              )
+            : _editExercise(
+                training.requireValue,
+                exercise,
+              ),
+        onExerciseLongPressed: (exercise) => _selectExercise(
+          training.requireValue,
+          exercise,
+        ),
       ),
 
       bottomNavigationBar: TrainingEditorBottomBar(

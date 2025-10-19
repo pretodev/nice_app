@@ -94,7 +94,7 @@ class FirestoreTrainningDocument
     final setList = data['sets'] as List<dynamic>? ?? [];
 
     final sets = <ExerciseSet>[];
-    for (var i = 0; i < sets.length; i++) {
+    for (var i = 0; i < setList.length; i++) {
       sets.add(_setFromFirestore(i, setList[i]));
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/exercise.dart';
+import '../../data/exercise_positioned.dart';
 import '../../data/exercise_set.dart';
 
 typedef ExerciseSetItemClicked = void Function(Exercise exercise, int position);
@@ -22,8 +23,8 @@ class StraightSetWidget extends StatelessWidget {
 
   final bool selected;
   final StraightSet exerciseSet;
-  final ValueChanged<Exercise>? onClicked;
-  final ValueChanged<Exercise>? onLongPressed;
+  final ValueChanged<PositionedExercise>? onClicked;
+  final ValueChanged<PositionedExercise>? onLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class StraightSetWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ExerciseSetItem(
-          exercise: exerciseSet.data,
+          exercise: exerciseSet.data.value,
           selected: selected,
           onClicked: onClicked != null
               ? () => onClicked?.call(exerciseSet.data)
@@ -67,10 +68,10 @@ class BiSetWidget extends StatelessWidget {
   final BiSet exerciseSet;
   final BiSetSelectStates state;
 
-  final ValueChanged<Exercise>? onFirstClicked;
-  final ValueChanged<Exercise>? onSecondClicked;
-  final ValueChanged<Exercise>? onFirstLongPressed;
-  final ValueChanged<Exercise>? onSecondLongPressed;
+  final ValueChanged<PositionedExercise>? onFirstClicked;
+  final ValueChanged<PositionedExercise>? onSecondClicked;
+  final ValueChanged<PositionedExercise>? onFirstLongPressed;
+  final ValueChanged<PositionedExercise>? onSecondLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class BiSetWidget extends StatelessWidget {
       children: [
         Text('Bi-set'),
         ExerciseSetItem(
-          exercise: exerciseSet.first,
+          exercise: exerciseSet.first.value,
           selected:
               state == BiSetSelectStates.first ||
               state == BiSetSelectStates.all,
@@ -92,7 +93,7 @@ class BiSetWidget extends StatelessWidget {
               : null,
         ),
         ExerciseSetItem(
-          exercise: exerciseSet.second,
+          exercise: exerciseSet.second.value,
           selected:
               state == BiSetSelectStates.second ||
               state == BiSetSelectStates.all,
@@ -132,12 +133,12 @@ class TriSetWidget extends StatelessWidget {
   final TriSet exerciseSet;
   final TriSetSelectStates seleted;
 
-  final ValueChanged<Exercise>? onFirstClicked;
-  final ValueChanged<Exercise>? onSecondClicked;
-  final ValueChanged<Exercise>? onThirdClicked;
-  final ValueChanged<Exercise>? onFirstLongPressed;
-  final ValueChanged<Exercise>? onSecondLongPressed;
-  final ValueChanged<Exercise>? onThirdLongPressed;
+  final ValueChanged<PositionedExercise>? onFirstClicked;
+  final ValueChanged<PositionedExercise>? onSecondClicked;
+  final ValueChanged<PositionedExercise>? onThirdClicked;
+  final ValueChanged<PositionedExercise>? onFirstLongPressed;
+  final ValueChanged<PositionedExercise>? onSecondLongPressed;
+  final ValueChanged<PositionedExercise>? onThirdLongPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +148,7 @@ class TriSetWidget extends StatelessWidget {
       children: [
         Text('Tri-set'),
         ExerciseSetItem(
-          exercise: exerciseSet.first,
+          exercise: exerciseSet.first.value,
           selected:
               seleted == TriSetSelectStates.first ||
               seleted == TriSetSelectStates.all,
@@ -159,7 +160,7 @@ class TriSetWidget extends StatelessWidget {
               : null,
         ),
         ExerciseSetItem(
-          exercise: exerciseSet.second,
+          exercise: exerciseSet.second.value,
           selected:
               seleted == TriSetSelectStates.second ||
               seleted == TriSetSelectStates.all,
@@ -171,7 +172,7 @@ class TriSetWidget extends StatelessWidget {
               : null,
         ),
         ExerciseSetItem(
-          exercise: exerciseSet.third,
+          exercise: exerciseSet.third.value,
           selected:
               seleted == TriSetSelectStates.third ||
               seleted == TriSetSelectStates.all,
