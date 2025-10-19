@@ -263,4 +263,22 @@ extension ExerciseSetListExtension on List<ExerciseSet> {
     }
     _updateIndexes();
   }
+
+  void setExercise(PositionedExercise exercise) {
+    final target = this[exercise.externalIndex];
+    final editing = switch (target) {
+      StraightSet() => target.copyWith(data: exercise.value),
+      BiSet() =>
+        exercise.internalIndex == 0
+            ? target.copyWith(first: exercise.value)
+            : target.copyWith(second: exercise.value),
+      TriSet() =>
+        exercise.internalIndex == 0
+            ? target.copyWith(first: exercise.value)
+            : exercise.internalIndex == 1
+            ? target.copyWith(second: exercise.value)
+            : target.copyWith(third: exercise.value),
+    };
+    this[exercise.externalIndex] = editing;
+  }
 }
