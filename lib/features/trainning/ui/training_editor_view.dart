@@ -37,11 +37,11 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     setState(() => _mergeSelected = []);
   }
 
-  void _addExercise() {
-    // Navigator.push(
-    //   context,
-    //   TraningExerciseEditorView.route(training: _training),
-    // );
+  void _addExercise(Training training) {
+    Navigator.push(
+      context,
+      TraningExerciseEditorView.route(training: training),
+    );
   }
 
   void _removeExercise() async {
@@ -96,6 +96,27 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     });
   }
 
+  PreferredSizeWidget _buildAppBar(AsyncValue<Training> training) {
+    if (training is AsyncData && training.requireValue.selector.isNotEmpty) {
+      return AppBar(
+        backgroundColor: Colors.white,
+        title: Text('${training.requireValue.selector.count}'),
+        centerTitle: false,
+        leading: IconButton(
+          onPressed: () {
+            setState(() => training.requireValue.selector.clear());
+          },
+          icon: const Icon(Icons.close),
+        ),
+      );
+    }
+
+    return AppBar(
+      backgroundColor: Colors.white,
+      title: const Text('Editor de treino'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var bottomState = TrainingEditorState.none;
@@ -125,10 +146,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text('Editor de treino'),
-      ),
+      appBar: _buildAppBar(training),
       body: TrainingEditorBody(
         value: training,
         onExerciseClicked: (exercise) => training.requireValue.selector.isEmpty
@@ -145,7 +163,11 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
           exercise,
         ),
       ),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addExercise(training.requireValue),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       bottomNavigationBar: TrainingEditorBottomBar(
         state: bottomState,
         addExercise: () {},

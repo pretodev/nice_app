@@ -13,6 +13,8 @@ class TrainingSelector {
 
   bool get isEmpty => _selecteds.isEmpty;
 
+  bool get isNotEmpty => _selecteds.isNotEmpty;
+
   void add(PositionedExercise exercise) {
     _selecteds.add(exercise);
   }
