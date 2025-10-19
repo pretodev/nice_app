@@ -21,7 +21,7 @@ class UpdateExercise extends _$UpdateExercise {
   }) async {
     final repo = ref.read(trainingRepositoryProvider);
     state = const AsyncLoading();
-    training.setExerciseInSet(exercise);
+    training.setExercise(exercise);
     final result = await repo.store(training);
     state = switch (result) {
       Done() => AsyncData(exercise.value),

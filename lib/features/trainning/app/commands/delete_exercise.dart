@@ -2,20 +2,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/data/result.dart';
 import '../../data/exercise.dart';
+import '../../data/exercise_positioned.dart';
 import '../../data/training.dart';
 import '../provider.dart';
 
 part 'delete_exercise.g.dart';
-
-class DeleteExerciseParams {
-  const DeleteExerciseParams({
-    required this.setIndex,
-    required this.position,
-  });
-
-  final int setIndex;
-  final int position;
-}
 
 @riverpod
 class DeleteExercise extends _$DeleteExercise {
@@ -26,13 +17,13 @@ class DeleteExercise extends _$DeleteExercise {
 
   Future<void> call(
     Training training, {
-    required DeleteExerciseParams params,
+    required PositionedExercise exercise,
   }) async {
     final repo = ref.read(trainingRepositoryProvider);
     state = const AsyncLoading();
 
     try {
-      training.removeExercise(params.setIndex, params.position);
+      training.removeExercise(exercise);
       final result = await repo.store(training);
       state = switch (result) {
         Done() => AsyncData(Exercise.empty()),

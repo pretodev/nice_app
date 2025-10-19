@@ -3,13 +3,13 @@ import 'exercise.dart';
 class PositionedExercise {
   const PositionedExercise(
     this.value, {
-    required this.setIndex,
-    required this.position,
-  }) : assert(setIndex >= 0),
-       assert(position >= 0);
+    required this.externalIndex,
+    required this.internalIndex,
+  }) : assert(externalIndex >= 0),
+       assert(internalIndex >= 0);
 
-  final int setIndex;
-  final int position;
+  final int externalIndex;
+  final int internalIndex;
   final Exercise value;
 
   @override
@@ -17,17 +17,18 @@ class PositionedExercise {
     if (identical(this, other)) return true;
 
     return other is PositionedExercise &&
-        other.setIndex == setIndex &&
-        other.position == position &&
+        other.externalIndex == externalIndex &&
+        other.internalIndex == internalIndex &&
         other.value == value;
   }
 
   @override
-  int get hashCode => setIndex.hashCode ^ position.hashCode ^ value.hashCode;
+  int get hashCode =>
+      externalIndex.hashCode ^ internalIndex.hashCode ^ value.hashCode;
 
   @override
   String toString() =>
-      '''PositionedExercise(setIndex: $setIndex, position: $position, value: $value)''';
+      '''PositionedExercise(setIndex: $externalIndex, position: $internalIndex, value: $value)''';
 
   PositionedExercise copyWith({
     int? setIndex,
@@ -36,8 +37,8 @@ class PositionedExercise {
   }) {
     return PositionedExercise(
       value ?? this.value,
-      setIndex: setIndex ?? this.setIndex,
-      position: position ?? this.position,
+      externalIndex: setIndex ?? externalIndex,
+      internalIndex: position ?? internalIndex,
     );
   }
 }
