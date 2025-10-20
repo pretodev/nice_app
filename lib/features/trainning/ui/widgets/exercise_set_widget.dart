@@ -50,18 +50,12 @@ class StraightSetWidget extends StatelessWidget {
   }
 }
 
-enum BiSetSelectStates {
-  none,
-  first,
-  second,
-  all,
-}
-
 class BiSetWidget extends StatelessWidget {
   const BiSetWidget({
     super.key,
     required this.exerciseSet,
-    this.state = BiSetSelectStates.none,
+    this.firstSelected = false,
+    this.secondSelected = false,
     this.onFirstClicked,
     this.onSecondClicked,
     this.onFirstLongPressed,
@@ -69,7 +63,8 @@ class BiSetWidget extends StatelessWidget {
   });
 
   final BiSet exerciseSet;
-  final BiSetSelectStates state;
+  final bool firstSelected;
+  final bool secondSelected;
 
   final ValueChanged<PositionedExercise>? onFirstClicked;
   final ValueChanged<PositionedExercise>? onSecondClicked;
@@ -93,9 +88,7 @@ class BiSetWidget extends StatelessWidget {
           ),
           ExerciseSetItem(
             exercise: exerciseSet.first.value,
-            selected:
-                state == BiSetSelectStates.first ||
-                state == BiSetSelectStates.all,
+            selected: firstSelected,
             onClicked: onFirstClicked != null
                 ? () => onFirstClicked?.call(exerciseSet.first)
                 : null,
@@ -105,9 +98,7 @@ class BiSetWidget extends StatelessWidget {
           ),
           ExerciseSetItem(
             exercise: exerciseSet.second.value,
-            selected:
-                state == BiSetSelectStates.second ||
-                state == BiSetSelectStates.all,
+            selected: secondSelected,
             onClicked: onSecondClicked != null
                 ? () => onSecondClicked?.call(exerciseSet.second)
                 : null,
@@ -121,19 +112,13 @@ class BiSetWidget extends StatelessWidget {
   }
 }
 
-enum TriSetSelectStates {
-  none,
-  first,
-  second,
-  third,
-  all,
-}
-
 class TriSetWidget extends StatelessWidget {
   const TriSetWidget({
     super.key,
     required this.exerciseSet,
-    this.seleted = TriSetSelectStates.none,
+    this.firstSelected = false,
+    this.secondSelected = false,
+    this.thirdSelected = false,
     this.onFirstClicked,
     this.onSecondClicked,
     this.onThirdClicked,
@@ -143,7 +128,9 @@ class TriSetWidget extends StatelessWidget {
   });
 
   final TriSet exerciseSet;
-  final TriSetSelectStates seleted;
+  final bool firstSelected;
+  final bool secondSelected;
+  final bool thirdSelected;
 
   final ValueChanged<PositionedExercise>? onFirstClicked;
   final ValueChanged<PositionedExercise>? onSecondClicked;
@@ -169,9 +156,7 @@ class TriSetWidget extends StatelessWidget {
           ),
           ExerciseSetItem(
             exercise: exerciseSet.first.value,
-            selected:
-                seleted == TriSetSelectStates.first ||
-                seleted == TriSetSelectStates.all,
+            selected: firstSelected,
             onClicked: onFirstClicked != null
                 ? () => onFirstClicked?.call(exerciseSet.first)
                 : null,
@@ -181,9 +166,7 @@ class TriSetWidget extends StatelessWidget {
           ),
           ExerciseSetItem(
             exercise: exerciseSet.second.value,
-            selected:
-                seleted == TriSetSelectStates.second ||
-                seleted == TriSetSelectStates.all,
+            selected: secondSelected,
             onClicked: onSecondClicked != null
                 ? () => onSecondClicked?.call(exerciseSet.second)
                 : null,
@@ -193,9 +176,7 @@ class TriSetWidget extends StatelessWidget {
           ),
           ExerciseSetItem(
             exercise: exerciseSet.third.value,
-            selected:
-                seleted == TriSetSelectStates.third ||
-                seleted == TriSetSelectStates.all,
+            selected: thirdSelected,
             onClicked: onThirdClicked != null
                 ? () => onThirdClicked?.call(exerciseSet.third)
                 : null,

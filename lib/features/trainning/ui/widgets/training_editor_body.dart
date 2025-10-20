@@ -59,6 +59,8 @@ class TrainingEditorBody extends StatelessWidget {
           ),
           BiSet() => BiSetWidget(
             exerciseSet: set,
+            firstSelected: training.selector.has(set.first),
+            secondSelected: training.selector.has(set.second),
             onFirstClicked: onExerciseClicked,
             onFirstLongPressed: onExerciseLongPressed,
             onSecondClicked: onExerciseClicked,
@@ -66,6 +68,9 @@ class TrainingEditorBody extends StatelessWidget {
           ),
           TriSet() => TriSetWidget(
             exerciseSet: set,
+            firstSelected: training.selector.has(set.first),
+            secondSelected: training.selector.has(set.second),
+            thirdSelected: training.selector.has(set.third),
             onFirstClicked: onExerciseClicked,
             onFirstLongPressed: onExerciseLongPressed,
             onSecondClicked: onExerciseClicked,
