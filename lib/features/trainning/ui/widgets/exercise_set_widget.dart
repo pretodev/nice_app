@@ -28,21 +28,24 @@ class StraightSetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ExerciseSetItem(
-          exercise: exerciseSet.data.value,
-          selected: selected,
-          onClicked: onClicked != null
-              ? () => onClicked?.call(exerciseSet.data)
-              : null,
-          onLongPress: onLongPressed != null
-              ? () => onLongPressed?.call(exerciseSet.data)
-              : null,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ExerciseSetItem(
+            exercise: exerciseSet.data.value,
+            selected: selected,
+            onClicked: onClicked != null
+                ? () => onClicked?.call(exerciseSet.data)
+                : null,
+            onLongPress: onLongPressed != null
+                ? () => onLongPressed?.call(exerciseSet.data)
+                : null,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -75,36 +78,45 @@ class BiSetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text('Bi-set'),
-        ExerciseSetItem(
-          exercise: exerciseSet.first.value,
-          selected:
-              state == BiSetSelectStates.first ||
-              state == BiSetSelectStates.all,
-          onClicked: onFirstClicked != null
-              ? () => onFirstClicked?.call(exerciseSet.first)
-              : null,
-          onLongPress: onFirstLongPressed != null
-              ? () => onFirstLongPressed?.call(exerciseSet.first)
-              : null,
-        ),
-        ExerciseSetItem(
-          exercise: exerciseSet.second.value,
-          selected:
-              state == BiSetSelectStates.second ||
-              state == BiSetSelectStates.all,
-          onClicked: onSecondClicked != null
-              ? () => onSecondClicked?.call(exerciseSet.second)
-              : null,
-          onLongPress: onSecondLongPressed != null
-              ? () => onSecondLongPressed?.call(exerciseSet.second)
-              : null,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 12.0,
+            ),
+            child: Text('Bi-set'),
+          ),
+          ExerciseSetItem(
+            exercise: exerciseSet.first.value,
+            selected:
+                state == BiSetSelectStates.first ||
+                state == BiSetSelectStates.all,
+            onClicked: onFirstClicked != null
+                ? () => onFirstClicked?.call(exerciseSet.first)
+                : null,
+            onLongPress: onFirstLongPressed != null
+                ? () => onFirstLongPressed?.call(exerciseSet.first)
+                : null,
+          ),
+          ExerciseSetItem(
+            exercise: exerciseSet.second.value,
+            selected:
+                state == BiSetSelectStates.second ||
+                state == BiSetSelectStates.all,
+            onClicked: onSecondClicked != null
+                ? () => onSecondClicked?.call(exerciseSet.second)
+                : null,
+            onLongPress: onSecondLongPressed != null
+                ? () => onSecondLongPressed?.call(exerciseSet.second)
+                : null,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -142,48 +154,57 @@ class TriSetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text('Tri-set'),
-        ExerciseSetItem(
-          exercise: exerciseSet.first.value,
-          selected:
-              seleted == TriSetSelectStates.first ||
-              seleted == TriSetSelectStates.all,
-          onClicked: onFirstClicked != null
-              ? () => onFirstClicked?.call(exerciseSet.first)
-              : null,
-          onLongPress: onFirstLongPressed != null
-              ? () => onFirstLongPressed?.call(exerciseSet.first)
-              : null,
-        ),
-        ExerciseSetItem(
-          exercise: exerciseSet.second.value,
-          selected:
-              seleted == TriSetSelectStates.second ||
-              seleted == TriSetSelectStates.all,
-          onClicked: onSecondClicked != null
-              ? () => onSecondClicked?.call(exerciseSet.second)
-              : null,
-          onLongPress: onSecondLongPressed != null
-              ? () => onSecondLongPressed?.call(exerciseSet.second)
-              : null,
-        ),
-        ExerciseSetItem(
-          exercise: exerciseSet.third.value,
-          selected:
-              seleted == TriSetSelectStates.third ||
-              seleted == TriSetSelectStates.all,
-          onClicked: onThirdClicked != null
-              ? () => onThirdClicked?.call(exerciseSet.third)
-              : null,
-          onLongPress: onThirdLongPressed != null
-              ? () => onThirdLongPressed?.call(exerciseSet.third)
-              : null,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 12.0,
+            ),
+            child: Text('Tri-set'),
+          ),
+          ExerciseSetItem(
+            exercise: exerciseSet.first.value,
+            selected:
+                seleted == TriSetSelectStates.first ||
+                seleted == TriSetSelectStates.all,
+            onClicked: onFirstClicked != null
+                ? () => onFirstClicked?.call(exerciseSet.first)
+                : null,
+            onLongPress: onFirstLongPressed != null
+                ? () => onFirstLongPressed?.call(exerciseSet.first)
+                : null,
+          ),
+          ExerciseSetItem(
+            exercise: exerciseSet.second.value,
+            selected:
+                seleted == TriSetSelectStates.second ||
+                seleted == TriSetSelectStates.all,
+            onClicked: onSecondClicked != null
+                ? () => onSecondClicked?.call(exerciseSet.second)
+                : null,
+            onLongPress: onSecondLongPressed != null
+                ? () => onSecondLongPressed?.call(exerciseSet.second)
+                : null,
+          ),
+          ExerciseSetItem(
+            exercise: exerciseSet.third.value,
+            selected:
+                seleted == TriSetSelectStates.third ||
+                seleted == TriSetSelectStates.all,
+            onClicked: onThirdClicked != null
+                ? () => onThirdClicked?.call(exerciseSet.third)
+                : null,
+            onLongPress: onThirdLongPressed != null
+                ? () => onThirdLongPressed?.call(exerciseSet.third)
+                : null,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -221,7 +242,7 @@ class ExerciseSetItem extends StatelessWidget {
       onLongPress: onLongPress,
       child: Container(
         padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(4.0),

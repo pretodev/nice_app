@@ -1,71 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/training_editor_state.dart';
+import '../../data/training.dart';
 
-class TrainingEditorBottomBar extends StatelessWidget {
+class TrainingEditorBottomBar extends StatefulWidget {
   const TrainingEditorBottomBar({
     super.key,
-    required this.state,
-    this.startMerge,
-    this.editExercise,
-    this.removeExercise,
-    this.finishMerge,
-    this.addExercise,
+    required this.training,
+    required this.mergeClicked,
   });
 
-  final TrainingEditorState state;
-  final VoidCallback? addExercise;
-  final VoidCallback? startMerge;
-  final VoidCallback? editExercise;
-  final VoidCallback? removeExercise;
-  final VoidCallback? finishMerge;
+  final AsyncValue<Training> training;
+  final VoidCallback? mergeClicked;
 
   @override
+  State<TrainingEditorBottomBar> createState() =>
+      _TrainingEditorBottomBarState();
+}
+
+class _TrainingEditorBottomBarState extends State<TrainingEditorBottomBar> {
+  @override
   Widget build(BuildContext context) {
-    return switch (state) {
-      TrainingEditorState.none => BottomAppBar(
+    if (!widget.training.hasValue) {
+      return const SizedBox.shrink();
+    }
+
+    if (widget.training.requireValue.selector.isNotEmpty) {
+      return BottomAppBar(
         child: Row(
           children: [
-            IconButton(
-              icon: Icon(Symbols.add_rounded),
-              tooltip: 'Adicionar exercício',
-              onPressed: addExercise,
-            ),
-          ],
-        ),
-      ),
-      TrainingEditorState.merging => BottomAppBar(
-        child: Row(
-          children: [
-            TextButton(
-              onPressed: finishMerge,
-              child: const Text('Cancelar'),
-            ),
-          ],
-        ),
-      ),
-      TrainingEditorState.selecting => BottomAppBar(
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(Symbols.edit_rounded),
-              tooltip: 'Editar exercício',
-              onPressed: editExercise,
-            ),
-            IconButton(
-              icon: Icon(Symbols.delete_rounded),
-              tooltip: 'Deletar exercício',
-              onPressed: removeExercise,
-            ),
             IconButton(
               icon: Icon(Symbols.graph_1_rounded),
               tooltip: 'Mesclar exercícios',
-              onPressed: startMerge,
+              onPressed: widget.mergeClicked,
             ),
           ],
         ),
+      );
+    }
+
+    return BottomAppBar(
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Symbols.more_vert_rounded),
+            tooltip: 'Opções',
+            onPressed: widget.mergeClicked,
+          ),
+        ],
       ),
-    };
+    );
   }
 }

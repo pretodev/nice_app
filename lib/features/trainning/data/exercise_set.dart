@@ -254,13 +254,28 @@ extension ExerciseSetListExtension on List<ExerciseSet> {
       throw Exception('Cannot merge more than three exercises');
     }
     exercises.sort((a, b) => a.externalIndex.compareTo(b.externalIndex));
-    for (var i = 0; i < exercises.length - 1; i++) {
-      final a = exercises[i];
-      final b = exercises[i + 1];
-      final merged = _mergeSets(this[a.externalIndex], this[b.externalIndex]);
-      this[a.externalIndex] = merged;
+
+    if (exercises.length == 2) {
+      final [a, b] = exercises;
+      this[a.externalIndex] = _mergeSets(
+        this[a.externalIndex],
+        this[b.externalIndex],
+      );
       removeAt(b.externalIndex);
+      return;
     }
+
+    if (exercises.length == 3) {
+      final [a, b, c] = exercises;
+      this[a.externalIndex] = _mergeSets(
+        _mergeSets(this[a.externalIndex], this[b.externalIndex]),
+        this[c.externalIndex],
+      );
+      removeAt(c.externalIndex);
+      removeAt(b.externalIndex);
+      return;
+    }
+
     _updateIndexes();
   }
 

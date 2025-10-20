@@ -15,6 +15,8 @@ class TrainingSelector {
 
   bool get isNotEmpty => _selecteds.isNotEmpty;
 
+  List<PositionedExercise> get selecteds => _selecteds;
+
   void add(PositionedExercise exercise) {
     _selecteds.add(exercise);
   }

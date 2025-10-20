@@ -28,17 +28,17 @@ class PositionedExercise {
 
   @override
   String toString() =>
-      '''PositionedExercise(setIndex: $externalIndex, position: $internalIndex, value: $value)''';
+      '''PositionedExercise(externalIndex: $externalIndex, internalIndex: $internalIndex, value: $value)''';
 
   PositionedExercise copyWith({
-    int? setIndex,
-    int? position,
+    int? externalIndex,
+    int? internalIndex,
     Exercise? value,
   }) {
     return PositionedExercise(
       value ?? this.value,
-      externalIndex: setIndex ?? externalIndex,
-      internalIndex: position ?? internalIndex,
+      externalIndex: externalIndex ?? this.externalIndex,
+      internalIndex: internalIndex ?? this.internalIndex,
     );
   }
 }
