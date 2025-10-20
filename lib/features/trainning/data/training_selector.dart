@@ -2,12 +2,10 @@ import 'exercise_positioned.dart';
 import 'exercise_set.dart';
 
 class TrainingSelector {
-  final List<PositionedExercise> _current;
   final List<PositionedExercise> _selecteds;
+  final List<ExerciseSet> _sets;
 
-  TrainingSelector(List<ExerciseSet> sets)
-    : _current = sets.exercises,
-      _selecteds = [];
+  TrainingSelector(List<ExerciseSet> sets) : _selecteds = [], _sets = sets;
 
   int get count => _selecteds.length;
 
@@ -37,18 +35,44 @@ class TrainingSelector {
     if (_selecteds.length < 2) return false;
     if (_selecteds.length > 3) return false;
 
-    for (var i = 0; i < _selecteds.length - 1; i++) {
-      final current = _selecteds[i];
-      final next = _selecteds[i + 1];
-
-      if (current is TriSet) {
-        return false;
-      }
-
-      if (current is BiSet && next is BiSet) {
-        return false;
+    final selectedSets = <ExerciseSet>[];
+    for (final selected in _selecteds) {
+      final set = _sets[selected.externalIndex];
+      if (!selectedSets.contains(set)) {
+        selectedSets.add(set);
       }
     }
-    return true;
+
+    return _canMergeSets(selectedSets);
+  }
+
+  bool _canMergeSets(List<ExerciseSet> sets) {
+    if (sets.length < 2 || sets.length > 3) return false;
+
+    int totalExercises = 0;
+    for (final set in sets) {
+      totalExercises += switch (set) {
+        StraightSet() => 1,
+        BiSet() => 2,
+        TriSet() => 3,
+      };
+    }
+
+    if (totalExercises > 3) return false;
+
+    if (sets.length == 2) {
+      final [a, b] = sets;
+
+      if (a is StraightSet && b is StraightSet) return true;
+
+      return ((a is BiSet && b is StraightSet) ||
+          (a is StraightSet && b is BiSet));
+    }
+
+    if (sets.length == 3) {
+      return sets.every((set) => set is StraightSet);
+    }
+
+    return false;
   }
 }

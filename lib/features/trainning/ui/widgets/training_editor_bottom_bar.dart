@@ -33,7 +33,9 @@ class _TrainingEditorBottomBarState extends State<TrainingEditorBottomBar> {
             IconButton(
               icon: Icon(Symbols.graph_1_rounded),
               tooltip: 'Mesclar exercícios',
-              onPressed: widget.mergeClicked,
+              onPressed: widget.training.requireValue.selector.canMerge 
+                  ? widget.mergeClicked 
+                  : null,
             ),
           ],
         ),
