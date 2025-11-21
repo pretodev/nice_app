@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../core/widgets/field.dart';
-import '../app/commands/add_exercise.dart';
-import '../app/commands/update_exercise.dart';
 import '../data/exercise.dart';
 import '../data/exercise_execution.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
+import '../state/commands/add_exercise.dart';
+import '../state/commands/update_exercise.dart';
 import 'widgets/repetition_counter.dart';
 import 'widgets/series_counter.dart';
 
@@ -130,7 +130,7 @@ class _TraningExerciseEditorViewState
     ref.listen(addExerciseProvider, (previous, next) {
       if (next is AsyncData) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Exercício adicionado com sucesso!'),
           ),
         );
@@ -141,7 +141,7 @@ class _TraningExerciseEditorViewState
     ref.listen(updateExerciseProvider, (previous, next) {
       if (next is AsyncData) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Exercício atualizado com sucesso!'),
           ),
         );
@@ -160,14 +160,14 @@ class _TraningExerciseEditorViewState
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Symbols.close),
+          icon: const Icon(Symbols.close),
         ),
       ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Field(
-              icon: Icon(
+              icon: const Icon(
                 Symbols.edit,
                 color: Colors.black26,
               ),
@@ -175,7 +175,7 @@ class _TraningExerciseEditorViewState
               child: TextField(
                 controller: _nameController,
                 autofocus: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Ex: Abdominal',
                   border: InputBorder.none,
                 ),
@@ -184,7 +184,7 @@ class _TraningExerciseEditorViewState
           ),
           SliverToBoxAdapter(
             child: Field(
-              icon: Icon(
+              icon: const Icon(
                 Symbols.format_list_numbered,
                 color: Colors.black26,
               ),
@@ -198,13 +198,13 @@ class _TraningExerciseEditorViewState
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(
+              padding: const .symmetric(
                 vertical: 8.0,
                 horizontal: 16.0,
               ),
               child: Row(
                 children: [
-                  Expanded(child: Text('Repetições')),
+                  const Expanded(child: Text('Repetições')),
                   IconButton(
                     icon: Icon(
                       _expanded
@@ -221,7 +221,7 @@ class _TraningExerciseEditorViewState
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: 8.0),
+                  padding: const .only(bottom: 8.0),
                   child: RepetitionCounter(
                     key: Key('repetition_counter_$index'),
                     value: _execution.repeats[index],
@@ -237,7 +237,7 @@ class _TraningExerciseEditorViewState
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
         visible: !isSaving,
-        replacement: FloatingActionButton(
+        replacement: const FloatingActionButton(
           onPressed: null,
           child: Center(
             child: CircularProgressIndicator(),
@@ -245,7 +245,7 @@ class _TraningExerciseEditorViewState
         ),
         child: FloatingActionButton(
           onPressed: _submit,
-          child: Icon(Symbols.check),
+          child: const Icon(Symbols.check),
         ),
       ),
     );

@@ -16,8 +16,8 @@ void main() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
   runApp(
-    ProviderScope(
-      child: const MainApp(),
+    const ProviderScope(
+      child: MainApp(),
     ),
   );
 }
@@ -27,7 +27,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Nice',
       home: TrainingEditorView(),
     );

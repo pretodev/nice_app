@@ -29,10 +29,10 @@ class StraightSetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const .only(bottom: 16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .stretch,
         children: [
           ExerciseSetItem(
             exercise: exerciseSet.data.value,
@@ -74,13 +74,13 @@ class BiSetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const .only(bottom: 16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
+          const Padding(
+            padding: .symmetric(
               vertical: 4.0,
               horizontal: 12.0,
             ),
@@ -142,13 +142,13 @@ class TriSetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const .only(bottom: 16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: .center,
+        crossAxisAlignment: .stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
+          const Padding(
+            padding: .symmetric(
               vertical: 4.0,
               horizontal: 12.0,
             ),
@@ -222,8 +222,8 @@ class ExerciseSetItem extends StatelessWidget {
       onTap: onClicked,
       onLongPress: onLongPress,
       child: Container(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+        padding: const .all(12),
+        margin: const .symmetric(vertical: 2.0, horizontal: 8.0),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(4.0),
@@ -234,7 +234,7 @@ class ExerciseSetItem extends StatelessWidget {
         ),
         child: Column(
           spacing: 2.0,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Text(
               exercise.name,

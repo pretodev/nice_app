@@ -34,7 +34,7 @@ class SerializedExerciseExecution extends ExerciseExecution {
   final List<int> repeats;
 
   factory SerializedExerciseExecution.initial() {
-    return SerializedExerciseExecution([12, 12, 12]);
+    return const SerializedExerciseExecution([12, 12, 12]);
   }
 
   const SerializedExerciseExecution(this.repeats);

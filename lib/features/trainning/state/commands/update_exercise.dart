@@ -6,13 +6,13 @@ import '../../data/exercise_positioned.dart';
 import '../../data/training.dart';
 import '../provider.dart';
 
-part 'delete_exercise.g.dart';
+part 'update_exercise.g.dart';
 
 @riverpod
-class DeleteExercise extends _$DeleteExercise {
+class UpdateExercise extends _$UpdateExercise {
   @override
   AsyncValue<Exercise> build() {
-    return AsyncData(Exercise.empty());
+    return AsyncData(.empty());
   }
 
   Future<void> call(
@@ -21,16 +21,11 @@ class DeleteExercise extends _$DeleteExercise {
   }) async {
     final repo = ref.read(trainingRepositoryProvider);
     state = const AsyncLoading();
-
-    try {
-      training.removeExercise(exercise);
-      final result = await repo.store(training);
-      state = switch (result) {
-        Done() => AsyncData(Exercise.empty()),
-        Error() => AsyncError(result.error, StackTrace.current),
-      };
-    } catch (error) {
-      state = AsyncError(error, StackTrace.current);
-    }
+    training.setExercise(exercise);
+    final result = await repo.store(training);
+    state = switch (result) {
+      Done() => AsyncData(exercise.value),
+      Error() => AsyncError(result.error, .current),
+    };
   }
 }

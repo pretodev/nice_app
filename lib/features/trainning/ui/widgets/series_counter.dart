@@ -20,13 +20,13 @@ class SeriesCounter extends StatelessWidget {
           child: Text('$value', style: Theme.of(context).textTheme.bodyLarge),
         ),
         IconButton(
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
           onPressed: () {
             onIncrementClicked?.call();
           },
         ),
         IconButton(
-          icon: Icon(Icons.remove),
+          icon: const Icon(Icons.remove),
           onPressed: () {
             onDecrementClicked?.call();
           },

@@ -22,8 +22,8 @@ class MergeExercises extends _$MergeExercises {
     training.mergeExercises(exercises);
     final result = await ref.read(trainingRepositoryProvider).store(training);
     state = switch (result) {
-      Done() => AsyncData(unit),
-      Error() => AsyncError(result.error, StackTrace.current),
+      Done() => const AsyncData(unit),
+      Error() => AsyncError(result.error, .current),
     };
   }
 }

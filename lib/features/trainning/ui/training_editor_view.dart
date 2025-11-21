@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../app/commands/delete_exercise.dart';
-import '../app/commands/merge_exercises.dart';
-import '../app/queries/get_training_from_id.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
+import '../state/commands/delete_exercise.dart';
+import '../state/commands/merge_exercises.dart';
+import '../state/queries/get_training_from_id.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
 import 'widgets/training_editor_bottom_bar.dart';
@@ -109,7 +109,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       if (next is AsyncData) {
         setState(() => training.requireValue.selector.clear());
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Exercícios mesclados com sucesso')),
+          const SnackBar(content: Text('Exercícios mesclados com sucesso')),
         );
       }
     });
@@ -155,7 +155,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               child: const Icon(Icons.add),
             )
           : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
+      floatingActionButtonLocation: .endContained,
       bottomNavigationBar: TrainingEditorBottomBar(
         training: training,
         mergeClicked: () {

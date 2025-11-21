@@ -50,12 +50,12 @@ class _RepetitionCounterState extends State<RepetitionCounter> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const .symmetric(
         vertical: 8.0,
         horizontal: 16.0,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: .spaceBetween,
         children: [
           Expanded(
             child: Text(
@@ -64,11 +64,11 @@ class _RepetitionCounterState extends State<RepetitionCounter> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: _increment,
           ),
           IconButton(
-            icon: Icon(Icons.remove),
+            icon: const Icon(Icons.remove),
             onPressed: _decrement,
           ),
         ],

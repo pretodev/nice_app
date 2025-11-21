@@ -11,7 +11,7 @@ part 'add_exercise.g.dart';
 class AddExercise extends _$AddExercise {
   @override
   AsyncValue<Exercise> build() {
-    return AsyncData(Exercise.empty());
+    return AsyncData(.empty());
   }
 
   Future<void> call(Training training, Exercise exercise) async {
@@ -21,7 +21,7 @@ class AddExercise extends _$AddExercise {
     final result = await repository.store(training);
     state = switch (result) {
       Done() => AsyncData(exercise),
-      Error() => AsyncError(result.error, StackTrace.current),
+      Error() => AsyncError(result.error, .current),
     };
   }
 }

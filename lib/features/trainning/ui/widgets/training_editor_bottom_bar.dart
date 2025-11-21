@@ -31,10 +31,10 @@ class _TrainingEditorBottomBarState extends State<TrainingEditorBottomBar> {
         child: Row(
           children: [
             IconButton(
-              icon: Icon(Symbols.graph_1_rounded),
+              icon: const Icon(Symbols.graph_1_rounded),
               tooltip: 'Mesclar exercícios',
-              onPressed: widget.training.requireValue.selector.canMerge 
-                  ? widget.mergeClicked 
+              onPressed: widget.training.requireValue.selector.canMerge
+                  ? widget.mergeClicked
                   : null,
             ),
           ],
@@ -46,7 +46,7 @@ class _TrainingEditorBottomBarState extends State<TrainingEditorBottomBar> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Symbols.more_vert_rounded),
+            icon: const Icon(Symbols.more_vert_rounded),
             tooltip: 'Opções',
             onPressed: widget.mergeClicked,
           ),

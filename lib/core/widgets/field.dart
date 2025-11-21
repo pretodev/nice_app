@@ -24,16 +24,16 @@ class Field extends StatelessWidget {
           ),
         ),
       ),
-      padding: EdgeInsets.all(16.0),
+      padding: const .all(16.0),
       child: Column(
         spacing: 8.0,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Text(label),
           Row(
             spacing: icon != null ? 8.0 : 0.0,
             children: [
-              icon ?? SizedBox.shrink(),
+              icon ?? const SizedBox.shrink(),
               Expanded(child: child),
             ],
           ),
