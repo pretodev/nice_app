@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nice/shared/data/firestore/firestore_custom_reference.dart';
+import 'package:nice/shared/data/firestore/firestore_extensions.dart';
 
-import '../../../../core/data/firestore/firestore_custom_reference.dart';
-import '../../../../core/data/firestore/firestore_extensions.dart';
 import '../exercise.dart';
 import '../exercise_execution.dart';
 import '../exercise_set.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../core/widgets/field.dart';
+import '../../../shared/widgets/field.dart';
 import '../data/exercise.dart';
 import '../data/exercise_execution.dart';
 import '../data/exercise_positioned.dart';
