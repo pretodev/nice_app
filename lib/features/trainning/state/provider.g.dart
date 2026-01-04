@@ -10,7 +10,7 @@ part of 'provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(trainingRepository)
-const trainingRepositoryProvider = TrainingRepositoryProvider._();
+final trainingRepositoryProvider = TrainingRepositoryProvider._();
 
 final class TrainingRepositoryProvider
     extends
@@ -20,7 +20,7 @@ final class TrainingRepositoryProvider
           TrainingRepository
         >
     with $Provider<TrainingRepository> {
-  const TrainingRepositoryProvider._()
+  TrainingRepositoryProvider._()
     : super(
         from: null,
         argument: null,

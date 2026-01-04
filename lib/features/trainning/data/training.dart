@@ -1,4 +1,5 @@
-import '../../../core/data/entity.dart';
+import 'package:odu_core/odu_core.dart';
+
 import 'exercise.dart';
 import 'exercise_positioned.dart';
 import 'exercise_set.dart';

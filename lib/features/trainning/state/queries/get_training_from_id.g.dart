@@ -10,13 +10,13 @@ part of 'get_training_from_id.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(getTrainingFromId)
-const getTrainingFromIdProvider = GetTrainingFromIdFamily._();
+final getTrainingFromIdProvider = GetTrainingFromIdFamily._();
 
 final class GetTrainingFromIdProvider
     extends
         $FunctionalProvider<AsyncValue<Training>, Training, Stream<Training>>
     with $FutureModifier<Training>, $StreamProvider<Training> {
-  const GetTrainingFromIdProvider._({
+  GetTrainingFromIdProvider._({
     required GetTrainingFromIdFamily super.from,
     required String super.argument,
   }) : super(
@@ -63,7 +63,7 @@ String _$getTrainingFromIdHash() => r'5383c23c92f9095eb8d555eee774c3ea08b637dc';
 
 final class GetTrainingFromIdFamily extends $Family
     with $FunctionalFamilyOverride<Stream<Training>, String> {
-  const GetTrainingFromIdFamily._()
+  GetTrainingFromIdFamily._()
     : super(
         retry: null,
         name: r'getTrainingFromIdProvider',

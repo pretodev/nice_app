@@ -10,11 +10,11 @@ part of 'merge_exercises.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MergeExercises)
-const mergeExercisesProvider = MergeExercisesProvider._();
+final mergeExercisesProvider = MergeExercisesProvider._();
 
 final class MergeExercisesProvider
     extends $NotifierProvider<MergeExercises, AsyncValue<Unit>> {
-  const MergeExercisesProvider._()
+  MergeExercisesProvider._()
     : super(
         from: null,
         argument: null,
@@ -41,14 +41,13 @@ final class MergeExercisesProvider
   }
 }
 
-String _$mergeExercisesHash() => r'751ec6dd1964e5ce61cdae8fe69978216aec9dd5';
+String _$mergeExercisesHash() => r'd9ac6411fe9aa0a3e08612993f13cccbb9b0f911';
 
 abstract class _$MergeExercises extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<Unit>, AsyncValue<Unit>>;
     final element =
         ref.element
@@ -58,6 +57,6 @@ abstract class _$MergeExercises extends $Notifier<AsyncValue<Unit>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

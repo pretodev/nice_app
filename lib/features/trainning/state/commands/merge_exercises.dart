@@ -1,6 +1,6 @@
+import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../core/data/result.dart';
 import '../../data/exercise_positioned.dart';
 import '../../data/training.dart';
 import '../provider.dart';

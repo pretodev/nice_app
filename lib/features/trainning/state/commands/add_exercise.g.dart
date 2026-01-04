@@ -10,11 +10,11 @@ part of 'add_exercise.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AddExercise)
-const addExerciseProvider = AddExerciseProvider._();
+final addExerciseProvider = AddExerciseProvider._();
 
 final class AddExerciseProvider
     extends $NotifierProvider<AddExercise, AsyncValue<Exercise>> {
-  const AddExerciseProvider._()
+  AddExerciseProvider._()
     : super(
         from: null,
         argument: null,
@@ -41,14 +41,13 @@ final class AddExerciseProvider
   }
 }
 
-String _$addExerciseHash() => r'b4143c246c49f959eb19db53ddcc7bf018eb5ce6';
+String _$addExerciseHash() => r'bcd0ab415e639d2ff651b3cbee7678e569311ea4';
 
 abstract class _$AddExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<Exercise>, AsyncValue<Exercise>>;
     final element =
         ref.element
@@ -58,6 +57,6 @@ abstract class _$AddExercise extends $Notifier<AsyncValue<Exercise>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

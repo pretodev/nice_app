@@ -49,7 +49,7 @@ class TrainingSelector {
   bool _canMergeSets(List<ExerciseSet> sets) {
     if (sets.length < 2 || sets.length > 3) return false;
 
-    int totalExercises = 0;
+    var totalExercises = 0;
     for (final set in sets) {
       totalExercises += switch (set) {
         StraightSet() => 1,

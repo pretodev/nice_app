@@ -10,11 +10,11 @@ part of 'delete_exercise.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(DeleteExercise)
-const deleteExerciseProvider = DeleteExerciseProvider._();
+final deleteExerciseProvider = DeleteExerciseProvider._();
 
 final class DeleteExerciseProvider
     extends $NotifierProvider<DeleteExercise, AsyncValue<Exercise>> {
-  const DeleteExerciseProvider._()
+  DeleteExerciseProvider._()
     : super(
         from: null,
         argument: null,
@@ -41,14 +41,13 @@ final class DeleteExerciseProvider
   }
 }
 
-String _$deleteExerciseHash() => r'5f5912b83783b4eb804ca68204501f3b59f705f9';
+String _$deleteExerciseHash() => r'4fe5d0a0bfa80a190a46808b3d6f7bf5f737f359';
 
 abstract class _$DeleteExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<Exercise>, AsyncValue<Exercise>>;
     final element =
         ref.element
@@ -58,6 +57,6 @@ abstract class _$DeleteExercise extends $Notifier<AsyncValue<Exercise>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

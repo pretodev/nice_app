@@ -43,8 +43,8 @@ class SerializedExerciseExecution extends ExerciseExecution {
     if (repeats.isEmpty) {
       return false;
     }
-    bool allEquals = true;
-    for (int i = 0; i < repeats.length; i++) {
+    var allEquals = true;
+    for (var i = 0; i < repeats.length; i++) {
       if (repeats[i] != repeats[0]) {
         allEquals = false;
         break;
