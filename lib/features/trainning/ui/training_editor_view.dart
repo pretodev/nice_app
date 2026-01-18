@@ -21,7 +21,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   late final _mergeExercises = ref.read(mergeExercisesProvider.notifier);
   late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
-  void _addExercise(Training training) {
+  void _addExercise(DailyTraining training) {
     Navigator.push(
       context,
       TraningExerciseEditorView.route(training: training),
@@ -60,7 +60,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     // );
   }
 
-  void _editExercise(Training training, PositionedExercise exercise) {
+  void _editExercise(DailyTraining training, PositionedExercise exercise) {
     Navigator.push(
       context,
       TraningExerciseEditorView.route(
@@ -70,7 +70,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
-  void _selectExercise(Training training, PositionedExercise selected) {
+  void _selectExercise(DailyTraining training, PositionedExercise selected) {
     setState(() {
       if (training.selector.has(selected)) {
         training.selector.remove(selected);
@@ -80,7 +80,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     });
   }
 
-  PreferredSizeWidget _buildAppBar(AsyncValue<Training> training) {
+  PreferredSizeWidget _buildAppBar(AsyncValue<DailyTraining> training) {
     if (training is AsyncData && training.requireValue.selector.isNotEmpty) {
       return AppBar(
         backgroundColor: Colors.white,

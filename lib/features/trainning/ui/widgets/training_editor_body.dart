@@ -14,7 +14,7 @@ class TrainingEditorBody extends StatelessWidget {
     this.onExerciseLongPressed,
   });
 
-  final AsyncValue<Training> value;
+  final AsyncValue<DailyTraining> value;
   final ValueChanged<PositionedExercise>? onExerciseClicked;
   final ValueChanged<PositionedExercise>? onExerciseLongPressed;
 

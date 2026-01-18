@@ -16,7 +16,7 @@ class DeleteExercise extends _$DeleteExercise {
   }
 
   Future<void> call(
-    Training training, {
+    DailyTraining training, {
     required PositionedExercise exercise,
   }) async {
     final repo = ref.read(trainingRepositoryProvider);
@@ -26,8 +26,8 @@ class DeleteExercise extends _$DeleteExercise {
       training.removeExercise(exercise);
       final result = await repo.store(training);
       state = switch (result) {
-        Done() => AsyncData(.empty()),
-        Error() => AsyncError(result.error, .current),
+        Ok() => AsyncData(.empty()),
+        Err(value: final err) => AsyncError(err, .current),
       };
     } catch (error) {
       state = AsyncError(error, .current);

@@ -16,7 +16,7 @@ class UpdateExercise extends _$UpdateExercise {
   }
 
   Future<void> call(
-    Training training, {
+    DailyTraining training, {
     required PositionedExercise exercise,
   }) async {
     final repo = ref.read(trainingRepositoryProvider);
@@ -24,8 +24,8 @@ class UpdateExercise extends _$UpdateExercise {
     training.setExercise(exercise);
     final result = await repo.store(training);
     state = switch (result) {
-      Done() => AsyncData(exercise.value),
-      Error() => AsyncError(result.error, .current),
+      Ok() => AsyncData(exercise.value),
+      Err(value: final err) => AsyncError(err, .current),
     };
   }
 }

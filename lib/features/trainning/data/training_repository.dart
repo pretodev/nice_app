@@ -10,22 +10,24 @@ class TrainingRepository {
 
   final FirestoreTrainningDocument _trainingDocument;
 
-  Task<Unit> store(Training trainning) async {
+  FutureResult<Unit> store(DailyTraining trainning) async {
     await _trainingDocument
         .ref(trainning.id)
         .set(trainning, SetOptions(merge: true));
-    return Result.done;
+    return ok;
   }
 
-  Task<Unit> delete(Training trainning) async {
+  FutureResult<Unit> delete(DailyTraining trainning) async {
     await _trainingDocument.ref(trainning.id).delete();
-    return Result.done;
+    return ok;
   }
 
-  Stream<Training> fromId(String id) {
+  Stream<DailyTraining> fromId(String id) {
     return _trainingDocument
         .ref(id)
         .snapshots()
-        .map((snapshot) => snapshot.data() ?? Training(id: id));
+        .map(
+          (snapshot) => snapshot.data() ?? DailyTraining.create(DateTime.now()),
+        );
   }
 }

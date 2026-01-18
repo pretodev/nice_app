@@ -15,15 +15,15 @@ class MergeExercises extends _$MergeExercises {
   }
 
   Future<void> call(
-    Training training, {
+    DailyTraining training, {
     required List<PositionedExercise> exercises,
   }) async {
     state = const AsyncLoading();
     training.mergeExercises(exercises);
     final result = await ref.read(trainingRepositoryProvider).store(training);
     state = switch (result) {
-      Done() => const AsyncData(unit),
-      Error() => AsyncError(result.error, .current),
+      Ok() => const AsyncData(unit),
+      Err(value: final err) => AsyncError(err, .current),
     };
   }
 }

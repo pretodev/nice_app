@@ -8,7 +8,7 @@ import '../exercise_set.dart';
 import '../training.dart';
 
 class FirestoreTrainningDocument
-    extends FirestoreCustomDocumentReference<Training> {
+    extends FirestoreCustomDocumentReference<DailyTraining> {
   FirestoreTrainningDocument() : super('training');
 
   Exercise _exerciseFromFirestore(Map<String, dynamic> data) {
@@ -81,13 +81,13 @@ class FirestoreTrainningDocument
   }
 
   @override
-  Training fromFirestore(
+  DailyTraining fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
     if (data == null) {
-      return Training(id: snapshot.id);
+      return DailyTraining.create(DateTime.now());
     }
 
     final date = data['date'] as Timestamp?;
@@ -98,10 +98,13 @@ class FirestoreTrainningDocument
       sets.add(_setFromFirestore(i, setList[i]));
     }
 
-    return Training(
+    return DailyTraining(
       id: snapshot.id,
       date: date?.toDate(),
       sets: sets,
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      isActive: data['isActive'] as bool,
     );
   }
 
@@ -125,7 +128,7 @@ class FirestoreTrainningDocument
   }
 
   @override
-  Map<String, Object?> toFirestore(Training value, SetOptions? options) {
+  Map<String, Object?> toFirestore(DailyTraining value, SetOptions? options) {
     final data = {
       'date': value.date?.toTimestamp(),
       'sets': value.sets.map(_setToFirestore).toList(),

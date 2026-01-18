@@ -14,7 +14,7 @@ import 'widgets/series_counter.dart';
 
 class TraningExerciseEditorView extends ConsumerStatefulWidget {
   static PageRoute<void> route({
-    required Training training,
+    required DailyTraining training,
     PositionedExercise? exercise,
   }) {
     return MaterialPageRoute<void>(
@@ -31,7 +31,7 @@ class TraningExerciseEditorView extends ConsumerStatefulWidget {
     this.exercise,
   });
 
-  final Training training;
+  final DailyTraining training;
   final PositionedExercise? exercise;
 
   @override

@@ -5,9 +5,22 @@ import 'exercise_positioned.dart';
 import 'exercise_set.dart';
 import 'training_selector.dart';
 
-class Training extends Entity {
-  Training({
-    super.id,
+class DailyTraining extends GuidEntity {
+  factory DailyTraining.create(DateTime date) {
+    return DailyTraining(
+      id: GuidEntity.newId(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      isActive: true,
+      date: date,
+    );
+  }
+
+  DailyTraining({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
+    super.isActive,
     List<ExerciseSet>? sets,
     this.date,
   }) : _sets = sets ?? [] {

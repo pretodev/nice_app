@@ -14,14 +14,14 @@ class AddExercise extends _$AddExercise {
     return AsyncData(.empty());
   }
 
-  Future<void> call(Training training, Exercise exercise) async {
+  Future<void> call(DailyTraining training, Exercise exercise) async {
     state = const AsyncLoading();
     final repository = ref.read(trainingRepositoryProvider);
     training.addExercise(exercise);
     final result = await repository.store(training);
     state = switch (result) {
-      Done() => AsyncData(exercise),
-      Error() => AsyncError(result.error, .current),
+      Ok() => AsyncData(exercise),
+      Err(value: final err) => AsyncError(err, .current),
     };
   }
 }

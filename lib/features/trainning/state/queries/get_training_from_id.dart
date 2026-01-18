@@ -6,6 +6,6 @@ import '../provider.dart';
 part 'get_training_from_id.g.dart';
 
 @riverpod
-Stream<Training> getTrainingFromId(Ref ref, String id) {
+Stream<DailyTraining> getTrainingFromId(Ref ref, String id) {
   return ref.read(trainingRepositoryProvider).fromId(id);
 }

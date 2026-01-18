@@ -11,7 +11,7 @@ class TrainingEditorBottomBar extends StatefulWidget {
     required this.mergeClicked,
   });
 
-  final AsyncValue<Training> training;
+  final AsyncValue<DailyTraining> training;
   final VoidCallback? mergeClicked;
 
   @override

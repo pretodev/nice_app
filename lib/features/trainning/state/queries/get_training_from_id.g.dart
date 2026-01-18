@@ -14,8 +14,12 @@ final getTrainingFromIdProvider = GetTrainingFromIdFamily._();
 
 final class GetTrainingFromIdProvider
     extends
-        $FunctionalProvider<AsyncValue<Training>, Training, Stream<Training>>
-    with $FutureModifier<Training>, $StreamProvider<Training> {
+        $FunctionalProvider<
+          AsyncValue<DailyTraining>,
+          DailyTraining,
+          Stream<DailyTraining>
+        >
+    with $FutureModifier<DailyTraining>, $StreamProvider<DailyTraining> {
   GetTrainingFromIdProvider._({
     required GetTrainingFromIdFamily super.from,
     required String super.argument,
@@ -39,11 +43,12 @@ final class GetTrainingFromIdProvider
 
   @$internal
   @override
-  $StreamProviderElement<Training> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(pointer);
+  $StreamProviderElement<DailyTraining> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
   @override
-  Stream<Training> create(Ref ref) {
+  Stream<DailyTraining> create(Ref ref) {
     final argument = this.argument as String;
     return getTrainingFromId(ref, argument);
   }
@@ -62,7 +67,7 @@ final class GetTrainingFromIdProvider
 String _$getTrainingFromIdHash() => r'5383c23c92f9095eb8d555eee774c3ea08b637dc';
 
 final class GetTrainingFromIdFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<Training>, String> {
+    with $FunctionalFamilyOverride<Stream<DailyTraining>, String> {
   GetTrainingFromIdFamily._()
     : super(
         retry: null,
