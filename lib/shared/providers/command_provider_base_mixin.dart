@@ -7,23 +7,36 @@ AsyncValue<T> invalidState<T>() => AsyncError<T>(
 );
 
 mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
-  Result<T> setError<E extends Exception>(E error, [StackTrace? stackTrace]) {
+  Result<T> emitError<E extends Exception>(E error, [StackTrace? stackTrace]) {
     if (ref.mounted) {
       state = AsyncError(error, stackTrace ?? StackTrace.current);
     }
-    return Err(error, stackTrace);
+    return Err(error, stackTrace ?? StackTrace.current);
   }
 
-  Result<T> setData(T data) {
+  Result<T> emitData(T data) {
     if (ref.mounted) {
       state = AsyncData(data);
     }
     return Ok(data);
   }
 
-  void setLoading() {
+  void emitLoading() {
     if (ref.mounted) {
       state = const AsyncLoading();
     }
+  }
+
+  Result<T> emitResult(Result<T> result, [StackTrace? stackTrace]) {
+    if (ref.mounted) {
+      state = switch (result) {
+        Ok<T>(value: final data) => AsyncData(data),
+        Err<T>(value: final error) => AsyncError(
+          error,
+          stackTrace ?? StackTrace.current,
+        ),
+      };
+    }
+    return result;
   }
 }

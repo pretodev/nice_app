@@ -16,17 +16,16 @@ class UpdateExercise extends _$UpdateExercise with CommandMixin<Exercise> {
     return invalidState();
   }
 
-  Future<void> call(
+  FutureResult<Exercise> call(
     DailyTraining training, {
     required PositionedExercise exercise,
   }) async {
-    final repo = ref.read(trainingRepositoryProvider);
-    state = const AsyncLoading();
+    emitLoading();
     training.setExercise(exercise);
-    final result = await repo.store(training);
-    state = switch (result) {
-      Ok() => AsyncData(exercise.value),
-      Err(value: final err) => AsyncError(err, .current),
-    };
+    final result = await ref
+        .read(trainingRepositoryProvider)
+        .store(training)
+        .map((_) => exercise.value);
+    return emitResult(result);
   }
 }

@@ -9,7 +9,7 @@ Guidance for agentic coders and developers working in this repository.
 
 ## Sources of Truth (Read First)
 
-- `.opencode/rules/*.md`
+- `.agent/rules/*.md`
 - `analysis_options.yaml`
 
 These rules are mandatory unless explicitly overridden by maintainers.

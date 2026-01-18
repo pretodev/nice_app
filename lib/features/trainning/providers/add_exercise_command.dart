@@ -15,13 +15,10 @@ class AddExercise extends _$AddExercise with CommandMixin<Exercise> {
   }
 
   Future<void> call(DailyTraining training, Exercise exercise) async {
-    state = const AsyncLoading();
+    emitLoading();
     final repository = ref.read(trainingRepositoryProvider);
     training.addExercise(exercise);
-    final result = await repository.store(training);
-    state = switch (result) {
-      Ok() => AsyncData(exercise),
-      Err(value: final err) => AsyncError(err, .current),
-    };
+    final result = await repository.store(training).map((_) => exercise);
+    emitResult(result);
   }
 }
