@@ -1,12 +1,12 @@
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/exercise.dart';
-import '../../data/exercise_positioned.dart';
-import '../../data/training.dart';
-import '../provider.dart';
+import '../data/exercise.dart';
+import '../data/exercise_positioned.dart';
+import '../data/training.dart';
+import 'providers.dart';
 
-part 'delete_exercise.g.dart';
+part 'delete_exercise_command.g.dart';
 
 @riverpod
 class DeleteExercise extends _$DeleteExercise {

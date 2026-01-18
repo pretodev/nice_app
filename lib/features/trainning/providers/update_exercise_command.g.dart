@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'update_exercise.dart';
+part of 'update_exercise_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -41,7 +41,7 @@ final class UpdateExerciseProvider
   }
 }
 
-String _$updateExerciseHash() => r'a87ba349d2cf21cd8df06a0d2739e5f999099785';
+String _$updateExerciseHash() => r'7000485b3cb2f29c821670fa1264bc7f46795cfb';
 
 abstract class _$UpdateExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();

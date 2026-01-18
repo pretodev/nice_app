@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/trainning/providers/training_from_id_query.dart';
 
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../state/commands/delete_exercise.dart';
-import '../state/commands/merge_exercises.dart';
-import '../state/queries/get_training_from_id.dart';
+import '../providers/delete_exercise_command.dart';
+import '../providers/merge_exercises_command.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
 import 'widgets/training_editor_bottom_bar.dart';
@@ -103,7 +103,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    final training = ref.watch(getTrainingFromIdProvider('teste'));
+    final training = ref.watch(trainingFromIdProvider('teste'));
 
     ref.listen(mergeExercisesProvider, (prev, next) {
       if (next is AsyncData) {

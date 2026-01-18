@@ -1,11 +1,10 @@
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/providers/providers.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/exercise.dart';
-import '../../data/training.dart';
-import '../provider.dart';
-
-part 'add_exercise.g.dart';
+part 'add_exercise_command.g.dart';
 
 @riverpod
 class AddExercise extends _$AddExercise {

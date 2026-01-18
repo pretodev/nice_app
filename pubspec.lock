@@ -493,7 +493,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "5120852a875eb754ad2352fc21dddd12ce613dd5"
+      resolved-ref: "96193543144a92f4ac54a557a796ebe6d1b28adc"
       url: "https://github.com/pretodev/odu_core.git"
     source: git
     version: "1.0.0"

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'add_exercise.dart';
+part of 'delete_exercise_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'add_exercise.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AddExercise)
-final addExerciseProvider = AddExerciseProvider._();
+@ProviderFor(DeleteExercise)
+final deleteExerciseProvider = DeleteExerciseProvider._();
 
-final class AddExerciseProvider
-    extends $NotifierProvider<AddExercise, AsyncValue<Exercise>> {
-  AddExerciseProvider._()
+final class DeleteExerciseProvider
+    extends $NotifierProvider<DeleteExercise, AsyncValue<Exercise>> {
+  DeleteExerciseProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'addExerciseProvider',
+        name: r'deleteExerciseProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$addExerciseHash();
+  String debugGetCreateSourceHash() => _$deleteExerciseHash();
 
   @$internal
   @override
-  AddExercise create() => AddExercise();
+  DeleteExercise create() => DeleteExercise();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Exercise> value) {
@@ -41,9 +41,9 @@ final class AddExerciseProvider
   }
 }
 
-String _$addExerciseHash() => r'bcd0ab415e639d2ff651b3cbee7678e569311ea4';
+String _$deleteExerciseHash() => r'a67a96a8776009c35f1d1935514996b0b1cc7a8f';
 
-abstract class _$AddExercise extends $Notifier<AsyncValue<Exercise>> {
+abstract class _$DeleteExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
   @$mustCallSuper
   @override

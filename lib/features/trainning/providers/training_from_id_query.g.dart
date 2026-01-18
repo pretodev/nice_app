@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'get_training_from_id.dart';
+part of 'training_from_id_query.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,10 +9,10 @@ part of 'get_training_from_id.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(getTrainingFromId)
-final getTrainingFromIdProvider = GetTrainingFromIdFamily._();
+@ProviderFor(trainingFromId)
+final trainingFromIdProvider = TrainingFromIdFamily._();
 
-final class GetTrainingFromIdProvider
+final class TrainingFromIdProvider
     extends
         $FunctionalProvider<
           AsyncValue<DailyTraining>,
@@ -20,23 +20,23 @@ final class GetTrainingFromIdProvider
           Stream<DailyTraining>
         >
     with $FutureModifier<DailyTraining>, $StreamProvider<DailyTraining> {
-  GetTrainingFromIdProvider._({
-    required GetTrainingFromIdFamily super.from,
+  TrainingFromIdProvider._({
+    required TrainingFromIdFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
-         name: r'getTrainingFromIdProvider',
+         name: r'trainingFromIdProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$getTrainingFromIdHash();
+  String debugGetCreateSourceHash() => _$trainingFromIdHash();
 
   @override
   String toString() {
-    return r'getTrainingFromIdProvider'
+    return r'trainingFromIdProvider'
         ''
         '($argument)';
   }
@@ -50,12 +50,12 @@ final class GetTrainingFromIdProvider
   @override
   Stream<DailyTraining> create(Ref ref) {
     final argument = this.argument as String;
-    return getTrainingFromId(ref, argument);
+    return trainingFromId(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GetTrainingFromIdProvider && other.argument == argument;
+    return other is TrainingFromIdProvider && other.argument == argument;
   }
 
   @override
@@ -64,22 +64,22 @@ final class GetTrainingFromIdProvider
   }
 }
 
-String _$getTrainingFromIdHash() => r'5383c23c92f9095eb8d555eee774c3ea08b637dc';
+String _$trainingFromIdHash() => r'8c51d2b26517a89bc67586aa3afbeebf91d8242a';
 
-final class GetTrainingFromIdFamily extends $Family
+final class TrainingFromIdFamily extends $Family
     with $FunctionalFamilyOverride<Stream<DailyTraining>, String> {
-  GetTrainingFromIdFamily._()
+  TrainingFromIdFamily._()
     : super(
         retry: null,
-        name: r'getTrainingFromIdProvider',
+        name: r'trainingFromIdProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  GetTrainingFromIdProvider call(String id) =>
-      GetTrainingFromIdProvider._(argument: id, from: this);
+  TrainingFromIdProvider call(String id) =>
+      TrainingFromIdProvider._(argument: id, from: this);
 
   @override
-  String toString() => r'getTrainingFromIdProvider';
+  String toString() => r'trainingFromIdProvider';
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'merge_exercises.dart';
+part of 'merge_exercises_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -41,7 +41,7 @@ final class MergeExercisesProvider
   }
 }
 
-String _$mergeExercisesHash() => r'd9ac6411fe9aa0a3e08612993f13cccbb9b0f911';
+String _$mergeExercisesHash() => r'7c2d0b3c3bdfd82068bf898c200c378207cb371f';
 
 abstract class _$MergeExercises extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

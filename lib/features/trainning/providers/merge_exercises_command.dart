@@ -1,11 +1,11 @@
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/exercise_positioned.dart';
-import '../../data/training.dart';
-import '../provider.dart';
+import '../data/exercise_positioned.dart';
+import '../data/training.dart';
+import 'providers.dart';
 
-part 'merge_exercises.g.dart';
+part 'merge_exercises_command.g.dart';
 
 @riverpod
 class MergeExercises extends _$MergeExercises {
