@@ -3,10 +3,6 @@ trigger: model_decision
 description: When working with data layer, persistence and Repositories.
 ---
 
-# Repository Guidelines
-
-## Overview
-
 A repository is a component of the data layer that serves as a data persistence layer. It abstracts data persistence without containing any business rules.
 
 ## Core Principles
