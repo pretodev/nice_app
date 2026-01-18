@@ -1,12 +1,12 @@
-import 'package:nice/features/aigen/data/models/ai_usage.dart';
+import 'package:nice/features/aigen/data/ai_usage.dart';
 import 'package:odu_core/odu_core.dart';
 
-import '../llm_service.dart';
-import '../models/ai_list_response.dart';
-import '../models/ai_message_response.dart';
-import '../models/llm_options.dart';
+import 'ai_list_response.dart';
+import 'ai_message_response.dart';
+import 'llm_options.dart';
+import 'llm_service.dart';
 
-class GeminiLlmService implements LlmService {
+class GptLlmService implements LlmService {
   @override
   FutureResult<AiMessageResponse> generate(
     String prompt, {
@@ -16,7 +16,7 @@ class GeminiLlmService implements LlmService {
       // Simulate network latency
       await Future<void>.delayed(const Duration(seconds: 1));
 
-      final content = 'Gemini response to: $prompt. (Simulated)';
+      final content = 'GPT response to: $prompt. (Simulated)';
 
       return Ok(
         AiMessageResponse(
@@ -43,9 +43,9 @@ class GeminiLlmService implements LlmService {
       await Future<void>.delayed(const Duration(seconds: 1));
 
       final items = [
-        'Gemini Item 1 for: $prompt',
-        'Gemini Item 2',
-        'Gemini Item 3',
+        'GPT Item 1 for: $prompt',
+        'GPT Item 2',
+        'GPT Item 3',
       ];
 
       return Ok(

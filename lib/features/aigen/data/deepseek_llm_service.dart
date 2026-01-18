@@ -1,10 +1,10 @@
-import 'package:nice/features/aigen/data/models/ai_usage.dart';
+import 'package:nice/features/aigen/data/ai_usage.dart';
 import 'package:odu_core/odu_core.dart';
 
-import '../llm_service.dart';
-import '../models/ai_list_response.dart';
-import '../models/ai_message_response.dart';
-import '../models/llm_options.dart';
+import 'ai_list_response.dart';
+import 'ai_message_response.dart';
+import 'llm_options.dart';
+import 'llm_service.dart';
 
 class DeepseekLlmService implements LlmService {
   @override
