@@ -1,3 +1,4 @@
+import 'package:nice/shared/providers/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,10 +9,10 @@ import 'providers.dart';
 part 'merge_exercises_command.g.dart';
 
 @riverpod
-class MergeExercises extends _$MergeExercises {
+class MergeExercises extends _$MergeExercises with CommandMixin<Unit> {
   @override
   AsyncValue<Unit> build() {
-    return const AsyncData(unit);
+    return invalidState();
   }
 
   Future<void> call(

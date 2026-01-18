@@ -9,9 +9,7 @@ Guidance for agentic coders and developers working in this repository.
 
 ## Sources of Truth (Read First)
 
-- `.github/instructions/dart.instructions.md`
-- `.claude/rules/entities.md`
-- `.claude/rules/repositories.md`
+- `.opencode/rules/*.md`
 - `analysis_options.yaml`
 
 These rules are mandatory unless explicitly overridden by maintainers.
