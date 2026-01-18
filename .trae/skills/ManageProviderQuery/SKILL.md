@@ -1,6 +1,6 @@
 ---
-trigger: model_decision
-description: When the user asks to create, modify, or review a query provider, data fetching provider, stream provider, or any provider that exposes data for UI consumption in Flutter/Riverpod
+name: ManageProviderQuery
+description: Guidelines for creating and maintaining query providers, which abstract data fetching for UI consumption in Flutter/Riverpod.
 ---
 
 Query providers are pre-customized data sources that abstract access to certain data, making it ready to be consumed by the UI. They fetch data and provide reactive streams or async values.
@@ -14,14 +14,6 @@ Use a Query Provider when you need to:
 - Abstract data access with pre-configured parameters
 - Provide one-time async data fetches
 - Combine or transform data from repositories
-
-## Provider Types Overview
-
-| Type      | Purpose                                     | Naming Pattern           | Example                      |
-| --------- | ------------------------------------------- | ------------------------ | ---------------------------- |
-| Service   | Dependency injection for services           | `*Provider`              | `trainingRepositoryProvider` |
-| **Query** | Pre-customized data sources for UI          | `*Query` or `*Provider`  | `trainingFromIdProvider`     |
-| Command   | Use cases with loading/success/error states | `*Command` or class name | `addExerciseProvider`        |
 
 ## Location
 
@@ -175,6 +167,15 @@ Future<List<Metric>> metricsInRange(
 }
 ```
 
+## Maintenance and Modification
+
+When modifying existing queries:
+
+1.  **Parameter Updates**: If adding parameters, update all call sites. Consider using named parameters for optional filters.
+2.  **Performance Check**: Ensure new logic doesn't introduce blocking operations. Queries should be lightweight.
+3.  **No Side Effects**: Verify that no side effects (like API writes or state mutations) are added.
+4.  **Refactor**: If a query becomes complex, consider moving logic to the repository or creating a specific repository method.
+
 ## Consuming Queries in UI
 
 ### Watching Queries
@@ -304,15 +305,3 @@ dart run build_runner build -d
 ```
 
 **Note**: The `-d` flag is short for `--delete-conflicting-outputs`.
-
-## Summary
-
-1. **Queries abstract data access** — making it ready for UI consumption
-2. **Use `Stream<T>`** for real-time data subscriptions
-3. **Use `Future<T>`** for one-time data fetches
-4. **Keep queries simple** — just fetch and return data
-5. **No business logic** — delegate to entities or use cases
-6. **Name files with `*_query.dart`** — clear identification
-7. **Use `ref.read()`** — avoid `ref.watch()` in query functions
-8. **Watch queries in UI** — use `ref.watch()` for reactive updates
-9. **Run code generation** after creating or modifying providers

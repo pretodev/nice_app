@@ -1,6 +1,6 @@
 ---
-trigger: model_decision
-description: When working with data layer, persistence and Repositories.
+name: ManageRepository
+description: Guidelines for creating, maintaining, and modifying repositories in the odu_core data layer.
 ---
 
 A repository is a component of the data layer that serves as a data persistence layer. It abstracts data persistence without containing any business rules.
@@ -47,6 +47,19 @@ Use the `delete()` method, which will **deactivate** the entity (soft delete):
 repository.delete(entity)
 ```
 
+## Maintenance and Modification
+
+When modifying existing repositories, strict adherence to these guidelines is required to maintain the integrity of the data access layer:
+
+### Preserving Abstractions
+- **Interface Stability:** When adding new query capabilities, ensure they fit within the existing interface contract. Do not expose implementation details (like SQL fragments or specific database types) in the method signatures.
+- **Unified Interfaces:** If a repository combines multiple data sources (e.g., SQL + Redis cache), ensure modifications maintain this encapsulation. The caller should never know where the data is coming from.
+
+### Refactoring Guidelines
+- **No Partial Updates:** If you see methods like `updateStatus(id, status)` in legacy code, **refactor them**. Load the entity, modify it via its domain method, and call `store()`.
+- **Consistent Return Types:** Ensure all `find` methods return consistent types (e.g., `Option<Entity>` or `Promise<Option<Entity>>`). Do not mix returning `null`, `undefined`, and `Option` in the same repository.
+- **Soft Deletion Checks:** When modifying `find` queries, ensure they consistently respect the soft-deletion rules defined by the domain, unless explicitly creating an administrative query (e.g., `findAllIncludingDeleted`).
+
 ## Anti-Patterns
 
 ### ❌ Avoid Field-Specific Update Methods
@@ -56,6 +69,7 @@ Do **not** create methods like:
 - `updateName()`
 - `setField()`
 - `updateEmail()`
+- `updateStatus()`
 - Any other field-specific setters
 
 ### ✅ Correct Approach

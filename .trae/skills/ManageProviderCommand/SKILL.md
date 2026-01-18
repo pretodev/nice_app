@@ -1,6 +1,6 @@
 ---
-trigger: model_decision
-description: When the user asks to create, modify, or review a command provider, use case, action provider, or any provider that handles mutations, state changes, or async operations with side effects in Flutter/Riverpod.
+name: ManageProviderCommand
+description: Guidelines for creating and maintaining command providers, which handle mutations and side effects in Flutter/Riverpod.
 ---
 
 Commands are use cases that handle mutations and side effects. They connect business rules with infrastructure and have triple states: loading, success, and error.
@@ -154,6 +154,15 @@ class MergeExercises extends _$MergeExercises with CommandMixin<Unit> {
   }
 }
 ```
+
+## Maintenance and Modification
+
+When modifying existing commands:
+
+1.  **Preserve State Logic**: Ensure `emitLoading()` is called at the start and `emitResult()` (or equivalent) at the end.
+2.  **Update Parameters**: If changing the `call` method signature, ensure all call sites are updated.
+3.  **Refactor Responsibilities**: If a command is growing too large or handling multiple distinct actions, split it into separate command providers.
+4.  **Check Dependencies**: When adding new dependencies (e.g., a new repository), use `ref.read()` within the `call` method, not `ref.watch()`.
 
 ## Anti-Patterns
 

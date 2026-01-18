@@ -1,6 +1,6 @@
 ---
-trigger: model_decision
-description: When the user asks to create, modify, or review a service provider, repository provider, dependency injection setup, or shared providers in Flutter/Riverpod.
+name: ManageProviderService
+description: Guidelines for creating and maintaining service providers, which handle dependency injection in Flutter/Riverpod.
 ---
 
 Service providers handle dependency injection for repositories, clients, and other services. They are the simplest type of provider, focused solely on wiring dependencies together.
@@ -163,6 +163,14 @@ CrashReporter crashReporter(Ref ref) {
 }
 ```
 
+## Maintenance and Modification
+
+When modifying existing service providers:
+
+1.  **Dependency Updates**: If a service's constructor changes (e.g., new dependency), update the provider to supply it using `ref.read()` if it comes from another provider.
+2.  **Scope Management**: If a service needs to be promoted from feature-specific to shared, move it to `lib/shared/provider.dart` and update imports.
+3.  **Cleanup**: If a service is no longer used, remove the provider to keep the dependency graph clean.
+
 ## Anti-Patterns to Avoid
 
 ### ❌ DON'T: Business Logic in Service Provider
@@ -249,12 +257,3 @@ dart run build_runner build -d
 ```
 
 **Note**: The `-d` flag is short for `--delete-conflicting-outputs`.
-
-## Summary
-
-1. **Services wire dependencies** — they don't implement business logic
-2. **Feature services** go in `lib/features/<feature>/providers/providers.dart`
-3. **Shared services** go in `lib/shared/provider.dart` (services only!)
-4. **Use `ref.read()`** to access other providers
-5. **Keep it simple** — one responsibility per provider
-6. **Run code generation** after creating or modifying providers

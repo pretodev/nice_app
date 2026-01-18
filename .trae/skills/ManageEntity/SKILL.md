@@ -1,9 +1,9 @@
 ---
-trigger: model_decision
-description: When create and modify entities in project
+name: ManageEntity
+description: Guidelines for creating, maintaining, and modifying domain entities in the odu_core project.
 ---
 
-Guidelines for creating domain entities in odu_core. These rules apply to both AI assistants and developers.
+Guidelines for managing domain entities in odu_core. These rules apply to both AI assistants and developers for creating new entities and maintaining existing ones.
 
 ## Identity Type Selection
 
@@ -269,6 +269,16 @@ Document only what is necessary:
 - **DO** document side effects or constraints on domain methods
 - **DON'T** document obvious getters, constructors, or standard patterns
 - **DON'T** add redundant `@override` documentation
+
+## Maintenance and Modification
+
+When modifying existing entities:
+
+1.  **Preserve Invariants**: Ensure new changes do not violate existing validation rules in `validate()`.
+2.  **Add Validation**: If adding new fields that have constraints, update `validate()` to include checks for them.
+3.  **Update Factories**: If adding required fields, update all creation factories (`.create()`, etc.) to initialize them.
+4.  **Audit State Changes**: When adding new domain methods, ensure they update `updatedAt`.
+5.  **Backward Compatibility**: Be mindful of how changes affect existing persisted data (e.g., adding a non-nullable field without a default value).
 
 ## Best Practices
 
