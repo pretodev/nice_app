@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/aigen/aigen_widget.dart';
 
-import 'features/trainning/ui/training_editor_view.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -29,7 +29,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Nice',
-      home: TrainingEditorView(),
+      home: AigenWidget(),
     );
   }
 }
