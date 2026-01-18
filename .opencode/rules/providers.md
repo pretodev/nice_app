@@ -119,25 +119,68 @@ When a command is needed, create a separate file for it:
 - `lib/features/<feature>/providers/<action>_command.dart`
 - Example: the command `registerUser` will be in `providers/register_user_command.dart`
 
+### CommandMixin
+
+All commands must use the `CommandMixin<T>` mixin from `lib/shared/providers/command_provider_base_mixin.dart`. This mixin provides:
+
+- **`invalidState()`**: Returns an error state for initial build (command not yet called)
+- **`setLoading()`**: Sets loading state with `ref.mounted` check
+- **`setData(T data)`**: Sets success state and returns `Ok(data)`
+- **`setError<E>(E error, [StackTrace?])`**: Sets error state and returns `Err(error)`
+
+```dart
+// lib/shared/providers/command_provider_base_mixin.dart
+import 'package:odu_core/odu_core.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+AsyncValue<T> invalidState<T>() => AsyncError<T>(
+  StateError('Not called yet'),
+  StackTrace.current,
+);
+
+mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
+  Result<T> setError<E extends Exception>(E error, [StackTrace? stackTrace]) {
+    if (ref.mounted) {
+      state = AsyncError(error, stackTrace ?? StackTrace.current);
+    }
+    return Err(error, stackTrace);
+  }
+
+  Result<T> setData(T data) {
+    if (ref.mounted) {
+      state = AsyncData(data);
+    }
+    return Ok(data);
+  }
+
+  void setLoading() {
+    if (ref.mounted) {
+      state = const AsyncLoading();
+    }
+  }
+}
+```
+
 ### Structure
 
-Commands are implemented as notifier classes with a `call()` method:
+Commands are implemented as notifier classes with `CommandMixin` and a `call()` method:
 
 ```dart
 // lib/features/trainning/providers/add_exercise_command.dart
 import 'package:nice/features/trainning/data/exercise.dart';
 import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/providers/providers.dart';
+import 'package:nice/shared/providers/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'add_exercise_command.g.dart';
 
 @riverpod
-class AddExercise extends _$AddExercise {
+class AddExercise extends _$AddExercise with CommandMixin<Exercise> {
   @override
   AsyncValue<Exercise> build() {
-    return AsyncData(Exercise.empty());
+    return invalidState();
   }
 
   Future<void> call(DailyTraining training, Exercise exercise) async {
@@ -161,9 +204,9 @@ class AddExercise extends _$AddExercise {
 
 ### State Management Pattern
 
-Commands follow a consistent state pattern:
+Commands follow a consistent state pattern using `CommandMixin`:
 
-1. **Initial state**: Return default value in `build()`
+1. **Initial state**: Return `invalidState()` in `build()` (indicates command not yet called)
 2. **Loading**: Set `state = const AsyncLoading()` at the start of `call()`
 3. **Success/Error**: Handle `Result` type with pattern matching
 
@@ -174,8 +217,15 @@ state = switch (result) {
 };
 ```
 
+**Why `invalidState()` instead of `AsyncData(Entity.empty())`?**
+- Commands represent actions, not data - they start in an "uncalled" state
+- Prevents UI from mistakenly treating initial state as valid data
+- Makes it explicit that the command has not been executed yet
+
 ### Best Practices
 
+- Always use `CommandMixin<T>` for command providers
+- Use `invalidState()` as the initial state in `build()`
 - Delegate business logic to entities (domain methods)
 - Use repositories for persistence only
 - Return meaningful values on success
@@ -183,6 +233,7 @@ state = switch (result) {
 - Use `Unit` type when no return value is needed
 - Commands can call other commands when needed
 - Commands are global elements of the application (accessible from any feature)
+- Use `ref.mounted` checks when setting state asynchronously (provided by mixin)
 
 ## File Organization
 
@@ -201,6 +252,8 @@ lib/features/<feature>/
 
 lib/shared/
 ├── provider.dart                # Shared service providers ONLY (no commands/queries)
+├── providers/
+│   └── command_provider_base_mixin.dart  # CommandMixin for all commands
 └── ...
 ```
 
@@ -227,6 +280,7 @@ Stream<DailyTraining> trainingFromId(Ref ref, String id) {
 
 ```dart
 // lib/features/trainning/providers/update_exercise_command.dart
+import 'package:nice/shared/providers/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -238,10 +292,10 @@ import 'providers.dart';
 part 'update_exercise_command.g.dart';
 
 @riverpod
-class UpdateExercise extends _$UpdateExercise {
+class UpdateExercise extends _$UpdateExercise with CommandMixin<Exercise> {
   @override
   AsyncValue<Exercise> build() {
-    return AsyncData(Exercise.empty());
+    return invalidState();
   }
 
   Future<void> call(
@@ -264,6 +318,7 @@ class UpdateExercise extends _$UpdateExercise {
 
 ```dart
 // lib/features/trainning/providers/merge_exercises_command.dart
+import 'package:nice/shared/providers/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -274,10 +329,10 @@ import 'providers.dart';
 part 'merge_exercises_command.g.dart';
 
 @riverpod
-class MergeExercises extends _$MergeExercises {
+class MergeExercises extends _$MergeExercises with CommandMixin<Unit> {
   @override
   AsyncValue<Unit> build() {
-    return const AsyncData(unit);
+    return invalidState();
   }
 
   Future<void> call(
@@ -300,9 +355,9 @@ class MergeExercises extends _$MergeExercises {
 ```dart
 // BAD: Business logic in provider
 @riverpod
-class AddExercise extends _$AddExercise {
+class AddExercise extends _$AddExercise with CommandMixin<Exercise> {
   @override
-  AsyncValue<Exercise> build() => AsyncData(Exercise.empty());
+  AsyncValue<Exercise> build() => invalidState();
 
   Future<void> call(DailyTraining training, Exercise exercise) async {
     // BAD: Validation logic belongs in the entity
@@ -327,15 +382,35 @@ class AddExercise extends _$AddExercise {
 ```dart
 // BAD: Provider doing too much
 @riverpod
-class ExerciseManager extends _$ExerciseManager {
+class ExerciseManager extends _$ExerciseManager with CommandMixin<void> {
   @override
-  AsyncValue<void> build() => const AsyncData(null);
+  AsyncValue<void> build() => invalidState();
 
   // BAD: Multiple actions in one provider
   Future<void> add(DailyTraining t, Exercise e) async { ... }
   Future<void> update(DailyTraining t, Exercise e) async { ... }
   Future<void> delete(DailyTraining t, Exercise e) async { ... }
   Future<void> merge(DailyTraining t, List<Exercise> e) async { ... }
+}
+```
+
+### DON'T: Command Without CommandMixin
+
+```dart
+// BAD: Missing CommandMixin and invalidState()
+@riverpod
+class AddExercise extends _$AddExercise {
+  @override
+  AsyncValue<Exercise> build() {
+    // BAD: Should use invalidState() with CommandMixin
+    return AsyncData(Exercise.empty());
+  }
+
+  Future<void> call(DailyTraining training, Exercise exercise) async {
+    // BAD: No ref.mounted checks for async state updates
+    state = const AsyncLoading();
+    // ...
+  }
 }
 ```
 
@@ -416,17 +491,22 @@ Widget build(BuildContext context) {
 | Swallowed errors                   | Silent failures, hard to debug           | Use `AsyncError` with meaningful messages    |
 | `ref.watch()` in command methods   | Unexpected rebuilds                      | Use `ref.read()` in methods                  |
 | Missing `part` directive           | Code generation won't work               | Include `part 'file.g.dart'`                 |
-| Forgetting code generation         | Provider not available                   | Run `dart run build_runner build -d`     |
+| Forgetting code generation         | Provider not available                   | Run `dart run build_runner build -d`         |
+| Missing `CommandMixin`             | No `invalidState()`, no mounted checks   | Add `with CommandMixin<T>` to commands       |
+| Using `AsyncData` in command build | Misleading initial state                 | Use `invalidState()` instead                 |
+| Setting state without mounted check| Errors after widget disposal             | Use mixin helpers or check `ref.mounted`     |
 
 ## Summary
 
 1. **Categorize providers**: Service, Query, or Command
 2. **One responsibility per provider**: Especially for commands
-3. **Delegate logic to entities**: Providers orchestrate, don't implement
-4. **Handle all states**: Loading, Success, Error
-5. **Use Result pattern**: Pattern match on `Ok`/`Err`
-6. **Follow naming conventions**: `*_query.dart`, `*_command.dart`
-7. **Run code generation**: After modifying annotated providers (`dart run build_runner build -d`)
-8. **Location matters**: Shared providers go in `lib/shared/provider.dart` (services only)
-9. **Commands are use cases**: They connect business rules with infrastructure
-10. **Queries abstract data access**: Pre-customized for UI consumption
+3. **Use `CommandMixin<T>`**: All commands must use the mixin with `invalidState()`
+4. **Delegate logic to entities**: Providers orchestrate, don't implement
+5. **Handle all states**: Loading, Success, Error
+6. **Use Result pattern**: Pattern match on `Ok`/`Err`
+7. **Follow naming conventions**: `*_query.dart`, `*_command.dart`
+8. **Run code generation**: After modifying annotated providers (`dart run build_runner build -d`)
+9. **Location matters**: Shared providers go in `lib/shared/provider.dart` (services only)
+10. **Commands are use cases**: They connect business rules with infrastructure
+11. **Queries abstract data access**: Pre-customized for UI consumption
+12. **Check `ref.mounted`**: Use mixin helpers for safe async state updates
