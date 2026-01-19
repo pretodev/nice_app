@@ -74,7 +74,7 @@ class _AigenWidgetState extends ConsumerState<AigenWidget> {
       final result = await ref
           .read(openRouterProvider)
           .request(
-            model: 'google/gemini-2.5-flash-preview',
+            model: 'openai/gpt-5-image-mini',
             messages: [userMessage],
           );
 
