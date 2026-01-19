@@ -22,6 +22,7 @@ class OpenRouter {
     required String model,
     List<OpenRouterMessage>? messages,
     double? temperature,
+    Map<String, dynamic>? responseFormat,
   }) async {
     try {
       final response = await _dio.post(
@@ -40,6 +41,7 @@ class OpenRouter {
           if (messages != null)
             'messages': messages.map((m) => m.toJson()).toList(),
           if (temperature != null) 'temperature': temperature,
+          if (responseFormat != null) 'response_format': responseFormat,
         },
       );
 
@@ -60,6 +62,7 @@ class OpenRouter {
     required String model,
     List<OpenRouterMessage>? messages,
     double? temperature,
+    Map<String, dynamic>? responseFormat,
   }) async* {
     try {
       final response = await _dio.post(
@@ -78,6 +81,7 @@ class OpenRouter {
           if (messages != null)
             'messages': messages.map((m) => m.toJson()).toList(),
           if (temperature != null) 'temperature': temperature,
+          if (responseFormat != null) 'response_format': responseFormat,
           'stream': true,
         },
       );
