@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
-import 'package:nice/features/aigen/providers/providers.dart';
+import 'package:nice/features/aigen/providers/provider_services.dart';
 import 'package:odu_core/odu_core.dart';
 
 class AigenWidget extends ConsumerStatefulWidget {

@@ -2,10 +2,10 @@ import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../data/exercise.dart';
-import '../data/exercise_positioned.dart';
-import '../data/training.dart';
-import 'providers.dart';
+import '../../data/exercise.dart';
+import '../../data/exercise_positioned.dart';
+import '../../data/training.dart';
+import '../provider_services.dart';
 
 part 'update_exercise_command.g.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nice/features/trainning/providers/training_from_id_query.dart';
+import 'package:nice/features/trainning/providers/provider_queries.dart';
 
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../providers/delete_exercise_command.dart';
-import '../providers/merge_exercises_command.dart';
+import '../providers/commands/delete_exercise_command.dart';
+import '../providers/commands/merge_exercises_command.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
 import 'widgets/training_editor_bottom_bar.dart';

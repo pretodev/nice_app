@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:nice/features/trainning/providers/add_exercise_command.dart';
+import 'package:nice/features/trainning/providers/commands/add_exercise_command.dart';
 
 import '../../../shared/widgets/field.dart';
 import '../data/exercise.dart';
 import '../data/exercise_execution.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../providers/update_exercise_command.dart';
+import '../providers/commands/update_exercise_command.dart';
 import 'widgets/repetition_counter.dart';
 import 'widgets/series_counter.dart';
 
