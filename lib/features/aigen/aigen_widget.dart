@@ -1,59 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:nice/features/aigen/data/open_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
+import 'package:nice/features/aigen/providers/providers.dart';
 import 'package:odu_core/odu_core.dart';
 
-class AigenWidget extends StatefulWidget {
+class AigenWidget extends ConsumerStatefulWidget {
   const AigenWidget({super.key});
 
   @override
-  State<AigenWidget> createState() => _AigenWidgetState();
+  ConsumerState<AigenWidget> createState() => _AigenWidgetState();
 }
 
-class _AigenWidgetState extends State<AigenWidget> {
+class _AigenWidgetState extends ConsumerState<AigenWidget> {
   final TextEditingController _controller = TextEditingController();
 
   String _content = '';
 
+  bool _loading = false;
+
   Future<void> _sendMessage() async {
     final message = _controller.text;
     if (message.isNotEmpty) {
-      // TODO: Replace with your actual OpenRouter API key
-      final openRouter = OpenRouter(
-        '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',
-      );
-
-      final result = await openRouter.request(
-        model: 'deepseek/deepseek-v3.2', // Example model from requirements
-        messages: [
-          OpenRouterMessage.user(message),
-        ],
-        responseFormat: {
-          'type': 'json_schema',
-          'json_schema': {
-            'name': 'minha_resposta_estruturada',
-            'strict': true,
-            'schema': {
-              'type': 'object',
-              'properties': {
-                'titulo': {'type': 'string'},
-                'itens': {
-                  'type': 'array',
-                  'items': {'type': 'string'},
+      setState(() => _loading = true);
+      final result = await ref
+          .read(openRouterProvider)
+          .request(
+            model: 'deepseek/deepseek-v3.2', // Example model from requirements
+            messages: [
+              OpenRouterMessage.user(message),
+            ],
+            responseFormat: {
+              'type': 'json_schema',
+              'json_schema': {
+                'name': 'minha_resposta_estruturada',
+                'strict': true,
+                'schema': {
+                  'type': 'object',
+                  'properties': {
+                    'titulo': {'type': 'string'},
+                    'itens': {
+                      'type': 'array',
+                      'items': {'type': 'string'},
+                    },
+                  },
+                  'required': ['titulo', 'itens'],
+                  'additionalProperties': false,
                 },
               },
-              'required': ['titulo', 'itens'],
-              'additionalProperties': false,
             },
-          },
-        },
-      );
+          );
 
       switch (result) {
         case Ok(value: final content):
           debugPrint('OpenRouter Response: $content');
           if (mounted) {
-            setState(() => _content = content);
+            setState(() {
+              _content = content;
+              _loading = false;
+            });
           }
         case Err(value: final error):
           debugPrint('OpenRouter Error: $error');
@@ -61,6 +65,7 @@ class _AigenWidgetState extends State<AigenWidget> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: $error')),
             );
+            setState(() => _loading = false);
           }
       }
 
@@ -86,7 +91,7 @@ class _AigenWidgetState extends State<AigenWidget> {
               controller: _controller,
             ),
             ElevatedButton(
-              onPressed: _sendMessage,
+              onPressed: _loading ? null : _sendMessage,
               child: const Text('Send'),
             ),
 

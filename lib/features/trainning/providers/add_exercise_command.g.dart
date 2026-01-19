@@ -41,7 +41,7 @@ final class AddExerciseProvider
   }
 }
 
-String _$addExerciseHash() => r'f4ff64f03581d0fdd2c8884b1c01f74599dac643';
+String _$addExerciseHash() => r'd9a4af45536968939234ceaf5f8a0d74bf840e14';
 
 abstract class _$AddExercise extends $Notifier<AsyncValue<Exercise>> {
   AsyncValue<Exercise> build();
