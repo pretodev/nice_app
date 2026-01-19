@@ -69,12 +69,8 @@ class SerializedExerciseExecution extends ExerciseExecution {
   @override
   int get hashCode => repeats.hashCode;
 
-  SerializedExerciseExecution copyWith({
-    List<int>? repeats,
-  }) {
-    return SerializedExerciseExecution(
-      repeats ?? this.repeats,
-    );
+  SerializedExerciseExecution copyWith({List<int>? repeats}) {
+    return SerializedExerciseExecution(repeats ?? this.repeats);
   }
 
   @override

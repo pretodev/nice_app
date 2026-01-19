@@ -2,10 +2,7 @@ class OpenRouterMessage {
   final String role;
   final String content;
 
-  const OpenRouterMessage._({
-    required this.role,
-    required this.content,
-  });
+  const OpenRouterMessage._({required this.role, required this.content});
 
   factory OpenRouterMessage.user(String content) =>
       OpenRouterMessage._(role: 'user', content: content);
@@ -16,8 +13,5 @@ class OpenRouterMessage {
   factory OpenRouterMessage.assistent(String content) =>
       OpenRouterMessage._(role: 'assistant', content: content);
 
-  Map<String, dynamic> toJson() => {
-    'role': role,
-    'content': content,
-  };
+  Map<String, dynamic> toJson() => {'role': role, 'content': content};
 }

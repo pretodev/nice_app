@@ -65,8 +65,8 @@ class DefaultFirebaseOptions {
     projectId: 'valney-fitness',
     databaseURL: 'https://valney-fitness.firebaseio.com',
     storageBucket: 'valney-fitness.firebasestorage.app',
-    androidClientId: '398445316766-nqdu3gv2rvl56j4g5v497oi4o5mus53n.apps.googleusercontent.com',
+    androidClientId:
+        '398445316766-nqdu3gv2rvl56j4g5v497oi4o5mus53n.apps.googleusercontent.com',
     iosBundleId: 'br.com.odulab.nice',
   );
-
 }

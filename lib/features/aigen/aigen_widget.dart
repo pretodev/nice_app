@@ -26,9 +26,7 @@ class _AigenWidgetState extends ConsumerState<AigenWidget> {
           .read(openRouterProvider)
           .request(
             model: 'deepseek/deepseek-v3.2', // Example model from requirements
-            messages: [
-              OpenRouterMessage.user(message),
-            ],
+            messages: [OpenRouterMessage.user(message)],
             responseFormat: {
               'type': 'json_schema',
               'json_schema': {
@@ -62,9 +60,9 @@ class _AigenWidgetState extends ConsumerState<AigenWidget> {
         case Err(value: final error):
           debugPrint('OpenRouter Error: $error');
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: $error')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Error: $error')));
             setState(() => _loading = false);
           }
       }
@@ -76,9 +74,7 @@ class _AigenWidgetState extends ConsumerState<AigenWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Aigen'),
-      ),
+      appBar: AppBar(title: const Text('Aigen')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
 
@@ -87,9 +83,7 @@ class _AigenWidgetState extends ConsumerState<AigenWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text('Aigen Widget'),
-            TextField(
-              controller: _controller,
-            ),
+            TextField(controller: _controller),
             ElevatedButton(
               onPressed: _loading ? null : _sendMessage,
               child: const Text('Send'),

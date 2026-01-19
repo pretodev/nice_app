@@ -10,10 +10,7 @@ abstract class _FirestoreCustomReference<T> {
     SnapshotOptions? options,
   );
 
-  Map<String, Object?> toFirestore(
-    T value,
-    SetOptions? options,
-  );
+  Map<String, Object?> toFirestore(T value, SetOptions? options);
 }
 
 abstract class FirestoreCustomDocumentReference<T>
@@ -23,10 +20,7 @@ abstract class FirestoreCustomDocumentReference<T>
   DocumentReference<T> ref(String id) => FirebaseFirestore.instance
       .collection(_collectionName)
       .doc(id)
-      .withConverter(
-        fromFirestore: fromFirestore,
-        toFirestore: toFirestore,
-      );
+      .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
 }
 
 abstract class FirestoreCustomCollectionReference<T>
@@ -35,17 +29,11 @@ abstract class FirestoreCustomCollectionReference<T>
 
   CollectionReference<T> get ref => FirebaseFirestore.instance
       .collection(_collectionName)
-      .withConverter(
-        fromFirestore: fromFirestore,
-        toFirestore: toFirestore,
-      );
+      .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
 
   Future<void> softDelete(String id) async {
-    return FirebaseFirestore.instance.collection(_collectionName).doc(id).set(
-      {
-        'deletedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    return FirebaseFirestore.instance.collection(_collectionName).doc(id).set({
+      'deletedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }

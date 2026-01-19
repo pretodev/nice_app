@@ -21,15 +21,11 @@ class TrainingEditorBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (value.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (value.hasError) {
-      return Center(
-        child: Text(value.error.toString()),
-      );
+      return Center(child: Text(value.error.toString()));
     }
 
     final training = value.requireValue;
@@ -38,10 +34,7 @@ class TrainingEditorBody extends StatelessWidget {
       return const Center(
         child: Text(
           'Sem exercícios',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-          ),
+          style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
       );
     }

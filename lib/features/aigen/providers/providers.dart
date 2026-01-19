@@ -6,7 +6,5 @@ part 'providers.g.dart';
 
 @riverpod
 OpenRouter openRouter(Ref ref) {
-  return OpenRouter(
-    Environment.openRouterApiKey,
-  );
+  return OpenRouter(Environment.openRouterApiKey);
 }

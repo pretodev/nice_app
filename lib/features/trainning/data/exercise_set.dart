@@ -2,10 +2,7 @@ import 'exercise.dart';
 import 'exercise_positioned.dart';
 
 sealed class ExerciseSet {
-  factory ExerciseSet.straight(
-    int index,
-    Exercise exercise,
-  ) {
+  factory ExerciseSet.straight(int index, Exercise exercise) {
     return StraightSet(index, exercise);
   }
 
@@ -35,11 +32,8 @@ class StraightSet extends ExerciseSet {
   final int index;
   final Exercise _data;
 
-  PositionedExercise get data => PositionedExercise(
-    _data,
-    externalIndex: index,
-    internalIndex: 0,
-  );
+  PositionedExercise get data =>
+      PositionedExercise(_data, externalIndex: index, internalIndex: 0);
 
   @override
   bool operator ==(Object other) {
@@ -54,14 +48,8 @@ class StraightSet extends ExerciseSet {
   @override
   String toString() => '''StraightSet(index: $index, data: $_data)''';
 
-  StraightSet copyWith({
-    int? index,
-    Exercise? data,
-  }) {
-    return StraightSet(
-      index ?? this.index,
-      data ?? _data,
-    );
+  StraightSet copyWith({int? index, Exercise? data}) {
+    return StraightSet(index ?? this.index, data ?? _data);
   }
 }
 
@@ -72,17 +60,11 @@ class BiSet extends ExerciseSet {
   final Exercise _first;
   final Exercise _second;
 
-  PositionedExercise get first => PositionedExercise(
-    _first,
-    externalIndex: index,
-    internalIndex: 0,
-  );
+  PositionedExercise get first =>
+      PositionedExercise(_first, externalIndex: index, internalIndex: 0);
 
-  PositionedExercise get second => PositionedExercise(
-    _second,
-    externalIndex: index,
-    internalIndex: 1,
-  );
+  PositionedExercise get second =>
+      PositionedExercise(_second, externalIndex: index, internalIndex: 1);
 
   @override
   bool operator ==(Object other) {
@@ -101,16 +83,8 @@ class BiSet extends ExerciseSet {
   String toString() =>
       '''BiSet(index: $index, first: $_first, second: $_second)''';
 
-  BiSet copyWith({
-    int? index,
-    Exercise? first,
-    Exercise? second,
-  }) {
-    return BiSet(
-      index ?? this.index,
-      first ?? _first,
-      second ?? _second,
-    );
+  BiSet copyWith({int? index, Exercise? first, Exercise? second}) {
+    return BiSet(index ?? this.index, first ?? _first, second ?? _second);
   }
 }
 
@@ -122,23 +96,14 @@ class TriSet extends ExerciseSet {
   final Exercise _second;
   final Exercise _third;
 
-  PositionedExercise get first => PositionedExercise(
-    _first,
-    externalIndex: index,
-    internalIndex: 0,
-  );
+  PositionedExercise get first =>
+      PositionedExercise(_first, externalIndex: index, internalIndex: 0);
 
-  PositionedExercise get second => PositionedExercise(
-    _second,
-    externalIndex: index,
-    internalIndex: 1,
-  );
+  PositionedExercise get second =>
+      PositionedExercise(_second, externalIndex: index, internalIndex: 1);
 
-  PositionedExercise get third => PositionedExercise(
-    _third,
-    externalIndex: index,
-    internalIndex: 2,
-  );
+  PositionedExercise get third =>
+      PositionedExercise(_third, externalIndex: index, internalIndex: 2);
 
   @override
   bool operator ==(Object other) {

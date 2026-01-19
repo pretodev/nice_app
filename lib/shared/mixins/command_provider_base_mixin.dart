@@ -1,10 +1,8 @@
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-AsyncValue<T> invalidState<T>() => AsyncError<T>(
-  StateError('Not called yet'),
-  StackTrace.current,
-);
+AsyncValue<T> invalidState<T>() =>
+    AsyncError<T>(StateError('Not called yet'), StackTrace.current);
 
 mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
   Result<T> emitError<E extends Exception>(E error, [StackTrace? stackTrace]) {

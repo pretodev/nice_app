@@ -11,11 +11,7 @@ class OpenRouter {
   final Dio _dio;
   static const _baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
-  OpenRouter(
-    String apiKey, {
-    Dio? dio,
-  }) : _apiKey = apiKey,
-       _dio = dio ?? Dio();
+  OpenRouter(String apiKey, {Dio? dio}) : _apiKey = apiKey, _dio = dio ?? Dio();
 
   /// Realiza uma requisição única para o OpenRouter.
   FutureResult<String> request({

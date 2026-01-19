@@ -1,5 +1,1 @@
-enum TrainingEditorState {
-  none,
-  merging,
-  selecting,
-}
+enum TrainingEditorState { none, merging, selecting }

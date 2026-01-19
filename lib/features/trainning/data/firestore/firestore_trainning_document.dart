@@ -59,15 +59,8 @@ class FirestoreTrainningDocument
         .toList();
 
     return switch (exercises.length) {
-      1 => ExerciseSet.straight(
-        index,
-        exercises[0],
-      ),
-      2 => ExerciseSet.bi(
-        index,
-        first: exercises[0],
-        second: exercises[1],
-      ),
+      1 => ExerciseSet.straight(index, exercises[0]),
+      2 => ExerciseSet.bi(index, first: exercises[0], second: exercises[1]),
       3 => ExerciseSet.tri(
         index,
         first: exercises[0],

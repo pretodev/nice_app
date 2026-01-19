@@ -5,10 +5,7 @@ import 'exercise_execution.dart';
 @immutable
 class Exercise {
   factory Exercise.empty() {
-    return Exercise(
-      name: '',
-      execution: SerializedExerciseExecution.initial(),
-    );
+    return Exercise(name: '', execution: SerializedExerciseExecution.initial());
   }
 
   const Exercise({

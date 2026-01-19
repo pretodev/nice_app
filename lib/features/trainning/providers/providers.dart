@@ -7,7 +7,5 @@ part 'providers.g.dart';
 
 @riverpod
 TrainingRepository trainingRepository(Ref ref) {
-  return TrainingRepository(
-    trainingDocument: FirestoreTrainningDocument(),
-  );
+  return TrainingRepository(trainingDocument: FirestoreTrainningDocument());
 }
