@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,11 +9,13 @@ class TrainingEditorBottomBar extends StatefulWidget {
   const TrainingEditorBottomBar({
     super.key,
     required this.training,
-    required this.mergeClicked,
+    this.mergeClicked,
+    this.openPromptEditorClicked,
   });
 
   final AsyncValue<DailyTraining> training;
   final VoidCallback? mergeClicked;
+  final VoidCallback? openPromptEditorClicked;
 
   @override
   State<TrainingEditorBottomBar> createState() =>
@@ -46,9 +49,9 @@ class _TrainingEditorBottomBarState extends State<TrainingEditorBottomBar> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Symbols.more_vert_rounded),
+            icon: SvgPicture.asset('assets/svg/sparkles.svg'),
             tooltip: 'Opções',
-            onPressed: widget.mergeClicked,
+            onPressed: widget.openPromptEditorClicked,
           ),
         ],
       ),

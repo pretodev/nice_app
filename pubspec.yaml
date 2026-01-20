@@ -25,6 +25,8 @@ dependencies:
   riverpod_annotation: ^4.0.0
   dio: ^5.9.0
   image_picker: ^1.1.2
+  font_awesome_flutter: ^10.12.0
+  flutter_svg: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -37,3 +39,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
+    - assets/svg/

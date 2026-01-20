@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/trainning/providers/provider_queries.dart';
+import 'package:nice/features/trainning/ui/training_prompt_modal.dart';
 
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
@@ -163,6 +164,9 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
             training.requireValue,
             exercises: training.requireValue.selector.selecteds,
           );
+        },
+        openPromptEditorClicked: () {
+          TrainingPromptModal.show(context);
         },
       ),
     );
