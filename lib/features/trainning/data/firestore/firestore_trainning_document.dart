@@ -95,9 +95,9 @@ class FirestoreTrainningDocument
       id: snapshot.id,
       date: date?.toDate(),
       sets: sets,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
-      isActive: data['isActive'] as bool,
+      createdAt: (data['created_at'] as Timestamp).toDate(),
+      updatedAt: (data['updated_at'] as Timestamp).toDate(),
+      isActive: data['active'] as bool,
     );
   }
 

@@ -22,12 +22,11 @@ class TrainingRepository {
     return ok;
   }
 
+  DailyTraining _mapTrainingDocument(DocumentSnapshot<DailyTraining> snapshot) {
+    return snapshot.data() ?? DailyTraining.create(DateTime.now());
+  }
+
   Stream<DailyTraining> fromId(String id) {
-    return _trainingDocument
-        .ref(id)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.data() ?? DailyTraining.create(DateTime.now()),
-        );
+    return _trainingDocument.ref(id).snapshots().map(_mapTrainingDocument);
   }
 }
