@@ -41,7 +41,7 @@ final class GenerateTrainingProvider
   }
 }
 
-String _$generateTrainingHash() => r'2e57929d17c7ef3e8ebcb9e9252e7efb711668c5';
+String _$generateTrainingHash() => r'20c2132eecee8aef683aa69c0b7b48e23b6b9d23';
 
 abstract class _$GenerateTraining extends $Notifier<AsyncValue<DailyTraining>> {
   AsyncValue<DailyTraining> build();

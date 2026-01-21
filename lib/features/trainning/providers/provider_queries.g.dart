@@ -83,3 +83,42 @@ final class TrainingFromIdFamily extends $Family
   @override
   String toString() => r'trainingFromIdProvider';
 }
+
+@ProviderFor(dailyTraining)
+final dailyTrainingProvider = DailyTrainingProvider._();
+
+final class DailyTrainingProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DailyTraining>,
+          DailyTraining,
+          Stream<DailyTraining>
+        >
+    with $FutureModifier<DailyTraining>, $StreamProvider<DailyTraining> {
+  DailyTrainingProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dailyTrainingProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dailyTrainingHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<DailyTraining> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<DailyTraining> create(Ref ref) {
+    return dailyTraining(ref);
+  }
+}
+
+String _$dailyTrainingHash() => r'4b4e9bbd5382122ae033dee3f70115d1018e4aac';

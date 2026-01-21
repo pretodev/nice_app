@@ -4,20 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/providers/commands/generate_training_command.dart';
 
 class TrainingPromptModal extends ConsumerStatefulWidget {
   static Future<void> show(
-    BuildContext context,
-  ) async {
+    BuildContext context, {
+    required DailyTraining training,
+  }) async {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) => const TrainingPromptModal(),
+      builder: (context) => TrainingPromptModal(training: training),
     );
   }
 
-  const TrainingPromptModal({super.key});
+  final DailyTraining training;
+
+  const TrainingPromptModal({super.key, required this.training});
 
   @override
   ConsumerState<TrainingPromptModal> createState() =>
@@ -35,10 +39,10 @@ class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(ImageSource source) async {
     try {
       final image = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
+        source: source,
       );
 
       if (image != null) {
@@ -53,6 +57,35 @@ class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
         );
       }
     }
+  }
+
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Symbols.photo_camera_rounded),
+              title: const Text('Tirar foto'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Symbols.photo_library_rounded),
+              title: const Text('Escolher da galeria'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _clearImage() {
@@ -72,7 +105,7 @@ class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
 
     ref
         .read(generateTrainingProvider.notifier)
-        .call(userMessage: message, fileImage: _selectedImage);
+        .call(widget.training, userMessage: message, fileImage: _selectedImage);
 
     Navigator.pop(context);
   }
@@ -137,7 +170,7 @@ class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
                             : Icons.close,
                       ),
                       onPressed: _selectedImage == null
-                          ? _pickImage
+                          ? _showImageSourceOptions
                           : _clearImage,
                       label: Text(
                         _selectedImage == null

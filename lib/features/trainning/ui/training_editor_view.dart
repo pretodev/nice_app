@@ -105,7 +105,7 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    final training = ref.watch(trainingFromIdProvider('teste'));
+    final training = ref.watch(dailyTrainingProvider);
 
     ref.listen(mergeExercisesProvider, (prev, next) {
       if (next is AsyncData) {
@@ -127,18 +127,10 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
 
     ref.listen(generateTrainingProvider, (prev, next) {
       if (next is AsyncData<DailyTraining>) {
-        final generatedTraining = next.value;
-        debugPrint('=== TRAINING GERADO ===');
-        debugPrint('Date: ${generatedTraining.date}');
-        debugPrint('Sets: ${generatedTraining.sets.length}');
-        for (final set in generatedTraining.sets) {
-          debugPrint('  - $set');
-        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Treino gerado com sucesso!')),
         );
       } else if (next is AsyncError) {
-        debugPrint('ERRO: ${next.error}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao gerar treino: ${next.error}')),
         );
@@ -187,7 +179,10 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
           );
         },
         openPromptEditorClicked: () async {
-          await TrainingPromptModal.show(context);
+          await TrainingPromptModal.show(
+            context,
+            training: training.requireValue,
+          );
         },
       ),
     );
