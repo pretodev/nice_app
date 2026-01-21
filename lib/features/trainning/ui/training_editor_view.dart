@@ -6,6 +6,7 @@ import 'package:nice/features/trainning/ui/training_prompt_modal.dart';
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
 import '../providers/commands/delete_exercise_command.dart';
+import '../providers/commands/generate_training_command.dart';
 import '../providers/commands/merge_exercises_command.dart';
 import 'traning_exercise_editor_view.dart';
 import 'widgets/training_editor_body.dart';
@@ -124,6 +125,26 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       }
     });
 
+    ref.listen(generateTrainingProvider, (prev, next) {
+      if (next is AsyncData<DailyTraining>) {
+        final generatedTraining = next.value;
+        debugPrint('=== TRAINING GERADO ===');
+        debugPrint('Date: ${generatedTraining.date}');
+        debugPrint('Sets: ${generatedTraining.sets.length}');
+        for (final set in generatedTraining.sets) {
+          debugPrint('  - $set');
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Treino gerado com sucesso!')),
+        );
+      } else if (next is AsyncError) {
+        debugPrint('ERRO: ${next.error}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao gerar treino: ${next.error}')),
+        );
+      }
+    });
+
     if (training is AsyncLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -165,8 +186,8 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
             exercises: training.requireValue.selector.selecteds,
           );
         },
-        openPromptEditorClicked: () {
-          TrainingPromptModal.show(context);
+        openPromptEditorClicked: () async {
+          await TrainingPromptModal.show(context);
         },
       ),
     );
