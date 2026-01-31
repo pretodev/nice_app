@@ -83,8 +83,9 @@ class AuthService {
 
       // Configure action code settings for email link
       // The email template should be customized in Firebase Console to show a 6-digit code
+      final encodedEmail = Uri.encodeComponent(email);
       final actionCodeSettings = ActionCodeSettings(
-        url: 'https://niceapp.page.link/verify?email=$email',
+        url: 'https://niceapp.page.link/verify?email=$encodedEmail',
         handleCodeInApp: true,
         androidPackageName: 'com.pretodev.nice',
         androidInstallApp: true,
@@ -126,7 +127,9 @@ class AuthService {
 
       // Build the email link with OTP
       // In production, the link structure should match what Firebase sends
-      final emailLink = 'https://niceapp.page.link/verify?email=$email&otp=$otp';
+      final encodedEmail = Uri.encodeComponent(email);
+      final encodedOtp = Uri.encodeComponent(otp);
+      final emailLink = 'https://niceapp.page.link/verify?email=$encodedEmail&otp=$encodedOtp';
       
       // Verify if it's a valid sign-in link
       if (_auth.isSignInWithEmailLink(emailLink)) {

@@ -19,6 +19,8 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
 }
 
 class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
+  static const int resendCountdownSeconds = 60;
+  
   final List<TextEditingController> _controllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -26,7 +28,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   
   Timer? _resendTimer;
-  int _resendCountdown = 60;
+  int _resendCountdown = resendCountdownSeconds;
   bool _canResend = false;
 
   @override
@@ -49,7 +51,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   void _startResendTimer() {
     setState(() {
-      _resendCountdown = 60;
+      _resendCountdown = resendCountdownSeconds;
       _canResend = false;
     });
     

@@ -145,12 +145,12 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   // Helper method to map Firebase User to UserModel
-  dynamic _mapFirebaseUser(User user) {
-    return {
-      'uid': user.uid,
-      'email': user.email ?? '',
-      'displayName': user.displayName,
-      'createdAt': user.metadata.creationTime,
-    };
+  UserModel _mapFirebaseUser(User user) {
+    return UserModel(
+      uid: user.uid,
+      email: user.email ?? '',
+      displayName: user.displayName,
+      createdAt: user.metadata.creationTime,
+    );
   }
 }
