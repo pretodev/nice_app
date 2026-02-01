@@ -6,6 +6,7 @@ import 'package:nice/features/auth/data/email_address.dart';
 
 import '../../providers/commands/send_otp_command.dart';
 import '../../providers/commands/verify_otp_command.dart';
+import '../views/cancel_otp_verification_dialog.dart';
 import '../widgets/otp_input_field.dart';
 import '../widgets/primary_button.dart';
 
@@ -42,6 +43,20 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
         }
       });
     });
+  }
+
+  void _handleCancelOtp(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => const CancelOtpVerificationDialog(),
+    );
+
+    if (!mounted) return;
+
+    if (confirmed == true) {
+      // Go back to login
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -88,70 +103,84 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
     final isLoading = sendOtpState.isLoading || verifyOtpState.isLoading;
     final canResend = _remainingSeconds <= 0 && !isLoading;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Verify Your Email')),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
-              const SizedBox(height: 32),
-              Text(
-                'Enter Verification Code',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'We sent a 6-digit code to:',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                widget.email.value,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              OtpInputField(
-                onCompleted: (code) {
-                  setState(() => _otpCode = code);
-                },
-                errorText: _errorText,
-                enabled: !isLoading,
-              ),
-              const SizedBox(height: 24),
-              PrimaryButton(
-                onPressed:
-                    _otpCode.length == 6 && !isLoading
-                        ? () {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        _handleCancelOtp(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Verify Your Email'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => _handleCancelOtp(context),
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
+                const SizedBox(height: 32),
+                Text(
+                  'Enter Verification Code',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'We sent an 8-digit code to:',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  widget.email.value,
+                  style:
+                      Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                OtpInputField(
+                  onCompleted: (code) {
+                    setState(() => _otpCode = code);
+                  },
+                  errorText: _errorText,
+                  enabled: !isLoading,
+                ),
+                const SizedBox(height: 24),
+                PrimaryButton(
+                  onPressed: _otpCode.length == 8 && !isLoading
+                      ? () {
                           ref.read(verifyOtpProvider.notifier).call(_otpCode);
                         }
-                        : null,
-                text: 'Verify',
-                isLoading: verifyOtpState.isLoading,
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed:
-                    canResend
-                        ? () {
+                      : null,
+                  text: 'Verify',
+                  isLoading: verifyOtpState.isLoading,
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: canResend
+                      ? () {
                           ref.read(sendOtpProvider.notifier).call(widget.email);
                         }
-                        : null,
-                child: Text(
-                  _remainingSeconds > 0
-                      ? 'Resend code in $_remainingSeconds seconds'
-                      : 'Resend code',
+                      : null,
+                  child: Text(
+                    _remainingSeconds > 0
+                        ? 'Resend code in $_remainingSeconds seconds'
+                        : 'Resend code',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

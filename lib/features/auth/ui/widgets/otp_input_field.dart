@@ -18,7 +18,7 @@ class OtpInputField extends StatefulWidget {
 }
 
 class _OtpInputFieldState extends State<OtpInputField> {
-  static const int _otpLength = 8;
+  static const int _otpLength = 6;
 
   final List<TextEditingController> _controllers = List.generate(
     _otpLength,
