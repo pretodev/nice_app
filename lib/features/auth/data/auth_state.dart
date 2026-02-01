@@ -12,8 +12,8 @@ class Authenticated extends AuthState {
   const Authenticated();
 }
 
-class WaitingForEmailConfirmation extends AuthState {
+class WaitingForOtpVerification extends AuthState {
   final EmailAddress email;
 
-  const WaitingForEmailConfirmation(this.email);
+  const WaitingForOtpVerification(this.email);
 }

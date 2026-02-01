@@ -1,65 +1,89 @@
-import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:nice/features/auth/data/auth_state.dart';
-import 'package:nice/features/auth/data/firebase/firebase_exception.dart';
+import 'dart:math';
+
+import 'package:nice/features/auth/data/pocketbase/pocketbase_exception.dart';
 import 'package:odu_core/odu_core.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 import 'auth_failures.dart';
+import 'auth_state.dart' as app;
 import 'email_address.dart';
 
+// Gerar senha aleatória de 12 caracteres com capitalização, números e símbolos
+String _generateRandomPassword() {
+  const chars =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_+-={}[]|\\:;"<>,.?/~`';
+  final random = Random();
+  return List.generate(
+    12,
+    (index) => chars[random.nextInt(chars.length)],
+  ).join();
+}
+
 class AuthService {
-  final _firebaseAuth = fb.FirebaseAuth.instance;
+  final PocketBase _pb;
 
-  static final _actionCodeSettings = fb.ActionCodeSettings(
-    url: 'https://valney-fitness.firebaseapp.com/__/auth/action',
-    handleCodeInApp: true,
-    androidPackageName: 'br.com.odulab.nice',
-    androidInstallApp: true,
-    androidMinimumVersion: '21',
-    iOSBundleId: 'br.com.odulab.nice',
-  );
+  AuthService(this._pb);
 
-  FutureResult<Unit> sendSignInLink(EmailAddress email) async {
+  /// Envia um código OTP para o email fornecido
+  /// Retorna o otpId que deve ser armazenado pelo repository
+  FutureResult<String> sendOtp(EmailAddress email) async {
     try {
-      await _firebaseAuth.sendSignInLinkToEmail(
-        email: email.value,
-        actionCodeSettings: _actionCodeSettings,
-      );
-      return ok;
-    } on fb.FirebaseAuthException catch (e, s) {
-      return Err(e.toFailure(), s);
+      final password = _generateRandomPassword();
+      await _pb
+          .collection('users')
+          .create(
+            body: {
+              'email': email.value,
+              'password': password,
+              'passwordConfirm': password,
+            },
+          );
+      final result = await _pb.collection('users').requestOTP(email.value);
+      return Ok(result.otpId);
+    } on ClientException catch (e, s) {
+      return Err(e.toAuthFailure(), s);
     }
   }
 
-  FutureResult<Unit> signInWithEmailLink({
-    required String email,
-    required String link,
+  /// Verifica o código OTP usando o otpId fornecido
+  FutureResult<Unit> verifyOtp({
+    required String otpId,
+    required String otp,
   }) async {
     try {
-      final credential = await _firebaseAuth.signInWithEmailLink(
-        email: email,
-        emailLink: link,
-      );
-      if (credential.user == null) {
-        return const Err(UnknownAuthFailure('User is null after sign-in'));
-      }
+      await _pb.collection('users').authWithOTP(otpId, otp);
       return ok;
-    } on fb.FirebaseAuthException catch (e, s) {
-      return Err(e.toFailure(), s);
+    } on ClientException catch (e, s) {
+      return Err(e.toAuthFailure(), s);
+    } catch (e, s) {
+      return Err(UnknownAuthFailure(e.toString()), s);
     }
   }
 
-  bool isSignInWithEmailLink(String link) {
-    return _firebaseAuth.isSignInWithEmailLink(link);
+  /// Stream que monitora mudanças no estado de autenticação
+  /// Emite o estado inicial imediatamente, depois monitora mudanças
+  Stream<app.AuthState> get state async* {
+    final initialRecord = _pb.authStore.record;
+    final initialState = initialRecord != null
+        ? const app.Authenticated()
+        : const app.Unauthenticated();
+    yield initialState;
+
+    await for (final authStore in _pb.authStore.onChange) {
+      final state = authStore.record != null
+          ? const app.Authenticated()
+          : const app.Unauthenticated();
+      yield state;
+    }
   }
 
-  Stream<AuthState> get state {
-    return _firebaseAuth.authStateChanges().map(
-      (user) => user == null ? const Unauthenticated() : const Authenticated(),
-    );
-  }
-
+  /// Realiza logout e limpa o armazenamento de autenticação
   FutureResult<Unit> signOut() async {
-    await _firebaseAuth.signOut();
-    return ok;
+    try {
+      _pb.authStore.clear();
+      return ok;
+    } catch (e, s) {
+      return Err(UnknownAuthFailure(e.toString()), s);
+    }
   }
 }

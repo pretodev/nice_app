@@ -1,40 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:odu_core/odu_core.dart';
 
-import 'firestore/firestore_trainning_document.dart';
+import 'pocketbase/pocketbase_training_document.dart';
 import 'training.dart';
 
 class TrainingRepository {
-  TrainingRepository({required FirestoreTrainningDocument trainingDocument})
+  TrainingRepository({required PocketBaseTrainingDocument trainingDocument})
     : _trainingDocument = trainingDocument;
 
-  final FirestoreTrainningDocument _trainingDocument;
+  final PocketBaseTrainingDocument _trainingDocument;
 
   FutureResult<Unit> store(DailyTraining trainning) async {
-    await _trainingDocument
-        .ref(trainning.id)
-        .set(trainning, SetOptions(merge: true));
+    await _trainingDocument.upsert(trainning);
     return ok;
   }
 
   FutureResult<Unit> delete(DailyTraining trainning) async {
-    await _trainingDocument.ref(trainning.id).delete();
+    await _trainingDocument.delete(trainning.id);
     return ok;
   }
 
-  DailyTraining _createDefaultTraining(String id) {
-    return DailyTraining(
-      id: id,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      isActive: true,
-      date: DateTime.now(),
-    );
-  }
-
   Stream<DailyTraining> fromId(String id) {
-    return _trainingDocument.ref(id).snapshots().map(
-          (snapshot) => snapshot.data() ?? _createDefaultTraining(id),
-        );
+    return _trainingDocument.streamTrainingById(id);
   }
 }

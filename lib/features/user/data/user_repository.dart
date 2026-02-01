@@ -1,30 +1,75 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:nice/features/user/data/firebase/firebase_user_extensions.dart';
 import 'package:nice/features/user/data/user_entity.dart';
 import 'package:nice/features/user/data/user_failures.dart';
 import 'package:odu_core/odu_core.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 class UserRepository {
-  final _firebaseAuth = FirebaseAuth.instance;
+  final PocketBase _pb;
+
+  UserRepository(this._pb);
+
+  DateTime _toDateTime(dynamic value) {
+    if (value is DateTime) return value;
+    if (value is String) return DateTime.parse(value);
+    return DateTime.now();
+  }
 
   FutureResult<UserEntity> get currentUser async {
-    final user = _firebaseAuth.currentUser?.toEntity();
-    if (user == null) {
+    final record = _pb.authStore.record;
+    if (record == null) {
       return const Err(UserNotAuthenticated());
     }
-    return Ok(user);
+
+    try {
+      final response = await _pb.collection('users').getOne(record.id);
+
+      return Ok(
+        UserEntity(
+          id: response.id,
+          email: response.data['email'] as String,
+          displayName: response.data['name'] as String?,
+          photoURL: response.data['avatar'] as String?,
+          createdAt: _toDateTime(response.get<String>('created')),
+          updatedAt: _toDateTime(response.get<String>('updated')),
+          isActive: response.data['verified'] as bool? ?? false,
+        ),
+      );
+    } on ClientException catch (e) {
+      // If user not found in collection, return minimal entity from authStore
+      if (e.statusCode == 404) {
+        return Ok(
+          UserEntity(
+            id: record.id,
+            email: record.data['email'] as String? ?? '',
+            createdAt: _toDateTime(record.get<String>('created')),
+            updatedAt: _toDateTime(record.get<String>('updated')),
+          ),
+        );
+      }
+      rethrow;
+    }
   }
 
   FutureResult<Unit> set(UserEntity user) async {
-    final currentUser = _firebaseAuth.currentUser;
-    if (currentUser == null) {
+    final record = _pb.authStore.record;
+    if (record == null) {
       return const Err(UserNotAuthenticated());
     }
-    await Future.wait([
-      currentUser.updateDisplayName(user.displayName),
-      currentUser.updatePhotoURL(user.photoURL),
-    ]);
-    currentUser.reload();
-    return ok;
+
+    try {
+      await _pb
+          .collection('users')
+          .update(
+            record.id,
+            body: {
+              'name': user.displayName,
+              'avatar': user.photoURL,
+            },
+          );
+
+      return ok;
+    } on ClientException {
+      rethrow;
+    }
   }
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_in_with_email_link_command.dart';
+part of 'verify_otp_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'sign_in_with_email_link_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SignInWithEmailLink)
-final signInWithEmailLinkProvider = SignInWithEmailLinkProvider._();
+@ProviderFor(VerifyOtp)
+final verifyOtpProvider = VerifyOtpProvider._();
 
-final class SignInWithEmailLinkProvider
-    extends $NotifierProvider<SignInWithEmailLink, AsyncValue<Unit>> {
-  SignInWithEmailLinkProvider._()
+final class VerifyOtpProvider
+    extends $NotifierProvider<VerifyOtp, AsyncValue<Unit>> {
+  VerifyOtpProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'signInWithEmailLinkProvider',
+        name: r'verifyOtpProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$signInWithEmailLinkHash();
+  String debugGetCreateSourceHash() => _$verifyOtpHash();
 
   @$internal
   @override
-  SignInWithEmailLink create() => SignInWithEmailLink();
+  VerifyOtp create() => VerifyOtp();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Unit> value) {
@@ -41,10 +41,9 @@ final class SignInWithEmailLinkProvider
   }
 }
 
-String _$signInWithEmailLinkHash() =>
-    r'040ca6334b0998166df2fc78d78bc7474432099e';
+String _$verifyOtpHash() => r'965706c843d97492d54dde89199dcb354a958876';
 
-abstract class _$SignInWithEmailLink extends $Notifier<AsyncValue<Unit>> {
+abstract class _$VerifyOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override

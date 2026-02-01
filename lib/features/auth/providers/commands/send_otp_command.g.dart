@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'send_sign_in_link_command.dart';
+part of 'send_otp_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'send_sign_in_link_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SendSignInLink)
-final sendSignInLinkProvider = SendSignInLinkProvider._();
+@ProviderFor(SendOtp)
+final sendOtpProvider = SendOtpProvider._();
 
-final class SendSignInLinkProvider
-    extends $NotifierProvider<SendSignInLink, AsyncValue<Unit>> {
-  SendSignInLinkProvider._()
+final class SendOtpProvider
+    extends $NotifierProvider<SendOtp, AsyncValue<Unit>> {
+  SendOtpProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'sendSignInLinkProvider',
+        name: r'sendOtpProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$sendSignInLinkHash();
+  String debugGetCreateSourceHash() => _$sendOtpHash();
 
   @$internal
   @override
-  SendSignInLink create() => SendSignInLink();
+  SendOtp create() => SendOtp();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Unit> value) {
@@ -41,9 +41,9 @@ final class SendSignInLinkProvider
   }
 }
 
-String _$sendSignInLinkHash() => r'fa9084989bdb774dd475fbf5f68e405bc2d49c60';
+String _$sendOtpHash() => r'0db6b36a043571a3f278ab16d36d49d3c790b009';
 
-abstract class _$SendSignInLink extends $Notifier<AsyncValue<Unit>> {
+abstract class _$SendOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override

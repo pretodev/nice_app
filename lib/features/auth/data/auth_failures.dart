@@ -27,6 +27,20 @@ class InvalidLinkFailure extends AuthFailure {
   String get message => 'Invalid or expired sign-in link';
 }
 
+class InvalidOtpFailure extends AuthFailure {
+  const InvalidOtpFailure();
+
+  @override
+  String get message => 'Invalid OTP code';
+}
+
+class ExpiredOtpFailure extends AuthFailure {
+  const ExpiredOtpFailure();
+
+  @override
+  String get message => 'OTP code has expired';
+}
+
 class TooManyRequestsFailure extends AuthFailure {
   const TooManyRequestsFailure();
 

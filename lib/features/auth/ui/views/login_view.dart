@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 
-import '../../providers/commands/send_sign_in_link_command.dart';
+import '../../providers/commands/send_otp_command.dart';
 import '../widgets/email_field.dart';
 import '../widgets/primary_button.dart';
 
@@ -26,11 +25,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(sendSignInLinkProvider, (prev, next) {
+    ref.listen(sendOtpProvider, (prev, next) {
       next.when(
-        data: (_) {
-          context.go('/awaiting-confirmation', extra: _emailController.text);
-        },
+        data: (_) {},
         error: (error, _) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -43,7 +40,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
       );
     });
 
-    final commandState = ref.watch(sendSignInLinkProvider);
+    final commandState = ref.watch(sendOtpProvider);
     final isLoading = commandState.isLoading;
 
     return Scaffold(
@@ -54,11 +51,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(
-                Icons.fitness_center,
-                size: 80,
-                color: Colors.blue,
-              ),
+              const Icon(Icons.fitness_center, size: 80, color: Colors.blue),
               const SizedBox(height: 32),
               Text(
                 'Bem-vindo ao Nice App',
@@ -91,7 +84,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     return;
                   }
                   ref
-                      .read(sendSignInLinkProvider.notifier)
+                      .read(sendOtpProvider.notifier)
                       .call(EmailAddress(emailValue));
                 },
                 text: 'Entrar',

@@ -10,16 +10,15 @@ part 'provider_queries.g.dart';
 Stream<AuthState> authState(Ref ref) {
   return ref.watch(authServiceProvider).state.asyncMap((state) async {
     if (state is Unauthenticated) {
-      return state;
+      final result = await ref.read(authRepositoryProvider).getOtpCredentials();
+      switch (result) {
+        case Some(:final value):
+          return WaitingForOtpVerification(value.email);
+        case None():
+          return const Unauthenticated();
+      }
     }
-    final result = await ref
-        .read(authRepositoryProvider)
-        .getEmailLinkCredentials();
-    switch (result) {
-      case Some(:final value):
-        return WaitingForEmailConfirmation(value.email);
-      case None():
-        return const Authenticated();
-    }
+    await ref.read(authRepositoryProvider).deleteCredentials();
+    return const Authenticated();
   });
 }
