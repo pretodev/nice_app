@@ -121,4 +121,4 @@ final class DailyTrainingProvider
   }
 }
 
-String _$dailyTrainingHash() => r'4b4e9bbd5382122ae033dee3f70115d1018e4aac';
+String _$dailyTrainingHash() => r'02693340843779ef5e00e72b649c0d2419d07727';

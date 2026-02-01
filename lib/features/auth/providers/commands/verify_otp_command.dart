@@ -18,11 +18,7 @@ class VerifyOtp extends _$VerifyOtp with CommandMixin<Unit> {
     emitLoading();
     final authService = ref.read(authServiceProvider);
     final authRepo = ref.read(authRepositoryProvider);
-
-    // 1. Recuperar otpId armazenado
-    final otpIdResult = await authRepo.getOtpId();
-
-    // 2. Se não houver otpId, erro
+    final otpIdResult = await authRepo.getOtpCredentials();
     if (otpIdResult case None()) {
       emitResult(
         const Err<Unit>(
@@ -31,11 +27,9 @@ class VerifyOtp extends _$VerifyOtp with CommandMixin<Unit> {
       );
       return;
     }
-
-    // 3. Verificar OTP com otpId
     if (otpIdResult case Some(:final value)) {
       final result = await authService
-          .verifyOtp(otpId: value, otp: otp)
+          .verifyOtp(otpId: value.otpId, otp: otp)
           .flatMapAsync((_) => authRepo.deleteCredentials());
       emitResult(result);
     }

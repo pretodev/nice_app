@@ -23,9 +23,24 @@ final class AuthStateProvider
         retry: null,
         name: r'authStateProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[
+          sendOtpProvider,
+          cancelOtpProvider,
+          verifyOtpProvider,
+          signOutProvider,
+        ],
+        $allTransitiveDependencies: <ProviderOrFamily>{
+          AuthStateProvider.$allTransitiveDependencies0,
+          AuthStateProvider.$allTransitiveDependencies1,
+          AuthStateProvider.$allTransitiveDependencies2,
+          AuthStateProvider.$allTransitiveDependencies3,
+        },
       );
+
+  static final $allTransitiveDependencies0 = sendOtpProvider;
+  static final $allTransitiveDependencies1 = cancelOtpProvider;
+  static final $allTransitiveDependencies2 = verifyOtpProvider;
+  static final $allTransitiveDependencies3 = signOutProvider;
 
   @override
   String debugGetCreateSourceHash() => _$authStateHash();
@@ -41,4 +56,4 @@ final class AuthStateProvider
   }
 }
 
-String _$authStateHash() => r'939c0279d60bdc26ca019076d6137be857d59abb';
+String _$authStateHash() => r'825090889f699cd335746449008c06cbd1bdf7c2';

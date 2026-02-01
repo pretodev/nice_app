@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/data/email_address.dart';
+import 'package:nice/features/auth/providers/commands/cancel_otp_command.dart';
 
 import '../../providers/commands/send_otp_command.dart';
 import '../../providers/commands/verify_otp_command.dart';
 import '../views/cancel_otp_verification_dialog.dart';
-import '../views/login_view.dart';
 import '../widgets/otp_input_field.dart';
 import '../widgets/primary_button.dart';
 
@@ -55,7 +55,6 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
   }
 
   void _handleCancelOtp(BuildContext context) async {
-    final navigator = Navigator.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => const CancelOtpVerificationDialog(),
@@ -64,18 +63,11 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
     if (!mounted) return;
 
     if (confirmed == true) {
-      // Clear provider state and local state before navigating back
-      ref.invalidate(sendOtpProvider);
-      ref.invalidate(verifyOtpProvider);
-
-      // Reset local state
       _otpCode = '';
       _errorText = null;
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
-
-      // Replace current screen with LoginView
-      navigator.pushReplacement(LoginView.route());
+      ref.read(cancelOtpProvider.notifier).call();
     }
   }
 

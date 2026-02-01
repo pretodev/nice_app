@@ -1,46 +1,37 @@
+import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _emailCredentialsKey = 'auth.credentials.email';
+const _emailCredentialsKey = 'auth.credentials.otp_email';
 const _otpIdKey = 'auth.credentials.otp_id';
 
 extension SharedPreferencesMapper on SharedPreferences {
-  FutureResult<Unit> setEmailAuthCredential(EmailAddress email) async {
-    await setString(_emailCredentialsKey, email.value);
+  FutureResult<Unit> setOtpCredentials(OtpCredentials credentials) async {
+    await setString(_otpIdKey, credentials.otpId);
+    await setString(_emailCredentialsKey, credentials.email.value);
     return ok;
   }
 
-  FutureOption<EmailAddress> getEmailAuthCredential() async {
-    final data = getString(_emailCredentialsKey);
-    if (data == null) {
+  FutureOption<OtpCredentials> getOtpCredentials() async {
+    final email = getString(_emailCredentialsKey);
+    if (email == null) {
       return const None();
     }
-    return Some(EmailAddress(data));
-  }
-
-  FutureResult<Unit> deleteEmailAuthCredential() async {
-    await remove(_emailCredentialsKey);
-    return ok;
-  }
-
-  /// Armazena o OTP ID
-  FutureResult<Unit> setOtpId(String otpId) async {
-    await setString(_otpIdKey, otpId);
-    return ok;
-  }
-
-  /// Recupera o OTP ID armazenado
-  FutureOption<String> getOtpId() async {
     final otpId = getString(_otpIdKey);
     if (otpId == null) {
       return const None();
     }
-    return Some(otpId);
+    return Some(
+      OtpCredentials(
+        email: EmailAddress(email),
+        otpId: otpId,
+      ),
+    );
   }
 
-  /// Remove o OTP ID
-  FutureResult<Unit> deleteOtpId() async {
+  FutureResult<Unit> deleteOptCredentials() async {
+    await remove(_emailCredentialsKey);
     await remove(_otpIdKey);
     return ok;
   }

@@ -24,31 +24,34 @@ class AuthService {
 
   AuthService(this._pb);
 
+  Future<void> _prepareUser(EmailAddress email) async {
+    try {
+      final password = _generateRandomPassword();
+      await _pb
+          .collection('users')
+          .create(
+            body: {
+              'email': email.value,
+              'password': password,
+              'passwordConfirm': password,
+            },
+          );
+    } on ClientException catch (e) {
+      final status = e.response['status'];
+      final data = e.response['data'];
+      if (status == 400 && data['email']['code'] == 'validation_not_unique') {
+        return;
+      }
+      rethrow;
+    }
+  }
+
   /// Envia um código OTP para o email fornecido
   /// Cria o usuário apenas se não existir
   /// Retorna o otpId que deve ser armazenado pelo repository
   FutureResult<String> sendOtp(EmailAddress email) async {
     try {
-      // Verifica se o usuário já existe
-      final existingUsers = await _pb
-          .collection('users')
-          .getList(filter: 'email = "${email.value}"');
-
-      // Se não existe, cria um novo usuário
-      if (existingUsers.items.isEmpty) {
-        final password = _generateRandomPassword();
-        await _pb
-            .collection('users')
-            .create(
-              body: {
-                'email': email.value,
-                'password': password,
-                'passwordConfirm': password,
-              },
-            );
-      }
-
-      // Solicita o OTP para o email
+      await _prepareUser(email);
       final result = await _pb.collection('users').requestOTP(email.value);
       return Ok(result.otpId);
     } on ClientException catch (e, s) {

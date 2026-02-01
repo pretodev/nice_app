@@ -41,7 +41,7 @@ final class VerifyOtpProvider
   }
 }
 
-String _$verifyOtpHash() => r'965706c843d97492d54dde89199dcb354a958876';
+String _$verifyOtpHash() => r'55d584c79361afee8bd49ff6cf2e18f5443569c6';
 
 abstract class _$VerifyOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

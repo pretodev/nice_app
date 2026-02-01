@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'send_otp_command.dart';
+part of 'cancel_otp_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'send_otp_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SendOtp)
-final sendOtpProvider = SendOtpProvider._();
+@ProviderFor(CancelOtp)
+final cancelOtpProvider = CancelOtpProvider._();
 
-final class SendOtpProvider
-    extends $NotifierProvider<SendOtp, AsyncValue<Unit>> {
-  SendOtpProvider._()
+final class CancelOtpProvider
+    extends $NotifierProvider<CancelOtp, AsyncValue<Unit>> {
+  CancelOtpProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'sendOtpProvider',
+        name: r'cancelOtpProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$sendOtpHash();
+  String debugGetCreateSourceHash() => _$cancelOtpHash();
 
   @$internal
   @override
-  SendOtp create() => SendOtp();
+  CancelOtp create() => CancelOtp();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Unit> value) {
@@ -41,9 +41,9 @@ final class SendOtpProvider
   }
 }
 
-String _$sendOtpHash() => r'34ac3ec2526515e56c5b14e6ef978e1c0add89b6';
+String _$cancelOtpHash() => r'99071d30b855ec1ac19ad695da2857875a21d2f7';
 
-abstract class _$SendOtp extends $Notifier<AsyncValue<Unit>> {
+abstract class _$CancelOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override

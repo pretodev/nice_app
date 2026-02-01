@@ -17,27 +17,19 @@ class SendOtp extends _$SendOtp with CommandMixin<Unit> {
     emitLoading();
     final authService = ref.read(authServiceProvider);
     final authRepo = ref.read(authRepositoryProvider);
-
-    // 1. Enviar OTP (obtém otpId)
     final sendResult = await authService.sendOtp(email);
 
-    // 2. Se sucesso, armazenar otpId e email
     late Result<Unit> result;
 
     switch (sendResult) {
       case Ok(:final value):
-        // value é o otpId
-        final storeOtpResult = await authRepo.storeOtpId(value);
-
-        if (storeOtpResult case Err()) {
-          result = storeOtpResult;
-        } else {
-          // Armazenar email também
-          result = await authRepo.store(OtpCredentials(email));
-        }
-
+        result = result = await authRepo.store(
+          OtpCredentials(
+            email: email,
+            otpId: value,
+          ),
+        );
       case Err():
-        // Casting para Result<Unit> (error é AuthFailure, não precisa mudar)
         result = sendResult as Result<Unit>;
     }
 

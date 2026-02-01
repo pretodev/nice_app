@@ -1,3 +1,7 @@
+import 'package:nice/features/auth/providers/commands/cancel_otp_command.dart';
+import 'package:nice/features/auth/providers/commands/send_otp_command.dart';
+import 'package:nice/features/auth/providers/commands/sign_out_command.dart';
+import 'package:nice/features/auth/providers/commands/verify_otp_command.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -6,8 +10,18 @@ import 'provider_services.dart';
 
 part 'provider_queries.g.dart';
 
-@riverpod
+@Riverpod(
+  dependencies: [
+    SendOtp,
+    CancelOtp,
+    VerifyOtp,
+    SignOut,
+  ],
+)
 Stream<AuthState> authState(Ref ref) {
+  ref.watch(sendOtpProvider);
+  ref.watch(cancelOtpProvider);
+
   return ref.watch(authServiceProvider).state.asyncMap((state) async {
     if (state is Unauthenticated) {
       final result = await ref.read(authRepositoryProvider).getOtpCredentials();
@@ -18,7 +32,7 @@ Stream<AuthState> authState(Ref ref) {
           return const Unauthenticated();
       }
     }
-    await ref.read(authRepositoryProvider).deleteCredentials();
+    ref.read(authRepositoryProvider).deleteCredentials();
     return const Authenticated();
   });
 }

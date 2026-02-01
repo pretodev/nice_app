@@ -5,7 +5,12 @@ sealed class AuthCredentials {
 }
 
 class OtpCredentials extends AuthCredentials {
-  const OtpCredentials(this.email);
+  const OtpCredentials({
+    required this.email,
+    required this.otpId,
+  });
 
   final EmailAddress email;
+
+  final String otpId;
 }
