@@ -18,11 +18,16 @@ class OtpInputField extends StatefulWidget {
 }
 
 class _OtpInputFieldState extends State<OtpInputField> {
+  static const int _otpLength = 8;
+
   final List<TextEditingController> _controllers = List.generate(
-    6,
+    _otpLength,
     (_) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(
+    _otpLength,
+    (_) => FocusNode(),
+  );
 
   @override
   void dispose() {
@@ -36,7 +41,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
   }
 
   void _onChanged(int index, String value) {
-    if (value.length == 1 && index < 5) {
+    if (value.length == 1 && index < _otpLength - 1) {
       _focusNodes[index + 1].requestFocus();
     }
     _checkComplete();
@@ -53,7 +58,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
 
   void _checkComplete() {
     final code = _controllers.map((c) => c.text).join();
-    if (code.length == 6) {
+    if (code.length == _otpLength) {
       widget.onCompleted(code);
     }
   }
@@ -65,7 +70,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(6, (index) {
+          children: List.generate(_otpLength, (index) {
             return SizedBox(
               width: 48,
               height: 56,
