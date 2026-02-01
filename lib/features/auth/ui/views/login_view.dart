@@ -7,6 +7,12 @@ import '../widgets/email_field.dart';
 import '../widgets/primary_button.dart';
 
 class LoginView extends ConsumerStatefulWidget {
+  static MaterialPageRoute<void> route() {
+    return MaterialPageRoute<void>(
+      builder: (context) => const LoginView(),
+    );
+  }
+
   const LoginView({super.key});
 
   @override

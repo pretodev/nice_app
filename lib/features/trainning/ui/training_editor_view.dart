@@ -5,7 +5,6 @@ import 'package:nice/features/trainning/ui/training_prompt_modal.dart';
 
 import '../data/exercise_positioned.dart';
 import '../data/training.dart';
-import '../providers/commands/delete_exercise_command.dart';
 import '../providers/commands/generate_training_command.dart';
 import '../providers/commands/merge_exercises_command.dart';
 import 'traning_exercise_editor_view.dart';
@@ -21,45 +20,12 @@ class TrainingEditorView extends ConsumerStatefulWidget {
 
 class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
   late final _mergeExercises = ref.read(mergeExercisesProvider.notifier);
-  late final _deleteExercise = ref.read(deleteExerciseProvider.notifier);
 
   void _addExercise(DailyTraining training) {
     Navigator.push(
       context,
       TraningExerciseEditorView.route(training: training),
     );
-  }
-
-  void _removeExercise() async {
-    // final delete = await showDialog<bool>(
-    //   context: context,
-    //   builder: (context) => AlertDialog(
-    //     title: const Text('Remover exercício'),
-    //     content: Text(
-    //       'Tem certeza que deseja remover o exercício ${_selected?.value.name}?',
-    //     ),
-    //     actions: [
-    //       TextButton(
-    //         onPressed: () => Navigator.pop(context, false),
-    //         child: const Text('Não'),
-    //       ),
-    //       TextButton(
-    //         onPressed: () => Navigator.pop(context, true),
-    //         child: const Text('Sim'),
-    //       ),
-    //     ],
-    //   ),
-    // );
-
-    // if (!(delete ?? false)) return;
-
-    // await _deleteExercise(
-    //   _training,
-    //   params: DeleteExerciseParams(
-    //     setIndex: _selected!.setIndex,
-    //     position: _selected!.position,
-    //   ),
-    // );
   }
 
   void _editExercise(DailyTraining training, PositionedExercise exercise) {
@@ -112,15 +78,6 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
         setState(() => training.requireValue.selector.clear());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Exercícios mesclados com sucesso')),
-        );
-      }
-    });
-
-    ref.listen(deleteExerciseProvider, (prev, next) {
-      if (next is AsyncData) {
-        setState(() => training.requireValue.selector.clear());
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${next.value?.name} removido com sucesso')),
         );
       }
     });

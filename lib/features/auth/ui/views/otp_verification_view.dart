@@ -7,6 +7,7 @@ import 'package:nice/features/auth/data/email_address.dart';
 import '../../providers/commands/send_otp_command.dart';
 import '../../providers/commands/verify_otp_command.dart';
 import '../views/cancel_otp_verification_dialog.dart';
+import '../views/login_view.dart';
 import '../widgets/otp_input_field.dart';
 import '../widgets/primary_button.dart';
 
@@ -46,6 +47,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
   }
 
   void _handleCancelOtp(BuildContext context) async {
+    final navigator = Navigator.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => const CancelOtpVerificationDialog(),
@@ -54,8 +56,8 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
     if (!mounted) return;
 
     if (confirmed == true) {
-      // Go back to login
-      Navigator.of(context).pop();
+      // Replace current screen with LoginView
+      navigator.pushReplacement(LoginView.route());
     }
   }
 
@@ -105,7 +107,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         _handleCancelOtp(context);
       },
