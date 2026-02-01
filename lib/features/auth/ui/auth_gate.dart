@@ -12,23 +12,30 @@ class AuthGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authStateAsync = ref.watch(authStateProvider);
+    ref.listen(authStateProvider, (prev, next) {
+      if (!next.hasValue) {
+        return;
+      }
+      switch (next.requireValue) {
+        case Unauthenticated():
+          Navigator.pushReplacement(context, LoginView.route());
+        case Authenticated():
+          Navigator.pushReplacement(context, PlaceholderView.route());
+        case WaitingForOtpVerification(:final email):
+          Navigator.pushReplacement(
+            context,
+            OtpVerificationView.route(email: email),
+          );
+      }
+    });
 
-    return authStateAsync.when(
-      data: (state) {
-        return switch (state) {
-          Unauthenticated() => const LoginView(),
-          Authenticated() => const PlaceholderView(),
-          WaitingForOtpVerification(:final email) => OtpVerificationView(
-            email: email,
+    return ref
+        .watch(authStateProvider)
+        .maybeWhen(
+          orElse: () => const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
           ),
-        };
-      },
-      loading:
-          () =>
-              const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error:
-          (error, _) => Scaffold(
+          error: (error, _) => Scaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -40,6 +47,6 @@ class AuthGate extends ConsumerWidget {
               ),
             ),
           ),
-    );
+        );
   }
 }

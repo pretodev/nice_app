@@ -5,6 +5,12 @@ import 'package:nice/features/user/providers/provider_queries.dart';
 import '../../auth/providers/commands/sign_out_command.dart';
 
 class PlaceholderView extends ConsumerWidget {
+  static MaterialPageRoute<void> route() {
+    return MaterialPageRoute<void>(
+      builder: (context) => const PlaceholderView(),
+    );
+  }
+
   const PlaceholderView({super.key});
 
   @override

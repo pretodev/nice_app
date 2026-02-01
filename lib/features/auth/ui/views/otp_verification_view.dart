@@ -12,6 +12,14 @@ import '../widgets/otp_input_field.dart';
 import '../widgets/primary_button.dart';
 
 class OtpVerificationView extends ConsumerStatefulWidget {
+  static MaterialPageRoute<void> route({required EmailAddress email}) {
+    return MaterialPageRoute<void>(
+      builder: (context) => OtpVerificationView(
+        email: email,
+      ),
+    );
+  }
+
   const OtpVerificationView({super.key, required this.email});
 
   final EmailAddress email;
@@ -56,6 +64,16 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
     if (!mounted) return;
 
     if (confirmed == true) {
+      // Clear provider state and local state before navigating back
+      ref.invalidate(sendOtpProvider);
+      ref.invalidate(verifyOtpProvider);
+
+      // Reset local state
+      _otpCode = '';
+      _errorText = null;
+      _cooldownTimer?.cancel();
+      _remainingSeconds = 0;
+
       // Replace current screen with LoginView
       navigator.pushReplacement(LoginView.route());
     }

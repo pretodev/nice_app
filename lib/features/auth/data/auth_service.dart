@@ -25,19 +25,30 @@ class AuthService {
   AuthService(this._pb);
 
   /// Envia um código OTP para o email fornecido
+  /// Cria o usuário apenas se não existir
   /// Retorna o otpId que deve ser armazenado pelo repository
   FutureResult<String> sendOtp(EmailAddress email) async {
     try {
-      final password = _generateRandomPassword();
-      await _pb
+      // Verifica se o usuário já existe
+      final existingUsers = await _pb
           .collection('users')
-          .create(
-            body: {
-              'email': email.value,
-              'password': password,
-              'passwordConfirm': password,
-            },
-          );
+          .getList(filter: 'email = "${email.value}"');
+
+      // Se não existe, cria um novo usuário
+      if (existingUsers.items.isEmpty) {
+        final password = _generateRandomPassword();
+        await _pb
+            .collection('users')
+            .create(
+              body: {
+                'email': email.value,
+                'password': password,
+                'passwordConfirm': password,
+              },
+            );
+      }
+
+      // Solicita o OTP para o email
       final result = await _pb.collection('users').requestOTP(email.value);
       return Ok(result.otpId);
     } on ClientException catch (e, s) {
