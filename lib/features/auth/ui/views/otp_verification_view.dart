@@ -110,9 +110,28 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
       );
     });
 
+    ref.listen(cancelOtpProvider, (prev, next) {
+      next.when(
+        data: (_) {},
+        error: (error, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString().replaceFirst('Exception: ', '')),
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        loading: () {},
+      );
+    });
+
     final sendOtpState = ref.watch(sendOtpProvider);
     final verifyOtpState = ref.watch(verifyOtpProvider);
-    final isLoading = sendOtpState.isLoading || verifyOtpState.isLoading;
+    final cancelOtpState = ref.watch(cancelOtpProvider);
+    final isLoading =
+        sendOtpState.isLoading ||
+        verifyOtpState.isLoading ||
+        cancelOtpState.isLoading;
     final canResend = _remainingSeconds <= 0 && !isLoading;
 
     return PopScope(
