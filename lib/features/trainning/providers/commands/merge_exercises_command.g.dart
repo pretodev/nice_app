@@ -41,7 +41,7 @@ final class MergeExercisesProvider
   }
 }
 
-String _$mergeExercisesHash() => r'22603c935bf6657485fe31206c7ea1f37d13b113';
+String _$mergeExercisesHash() => r'1d5fb0aa3ce711c0de07e28592c124e072194ba8';
 
 abstract class _$MergeExercises extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

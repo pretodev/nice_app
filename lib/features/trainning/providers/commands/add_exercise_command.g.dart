@@ -13,7 +13,7 @@ part of 'add_exercise_command.dart';
 final addExerciseProvider = AddExerciseProvider._();
 
 final class AddExerciseProvider
-    extends $NotifierProvider<AddExercise, AsyncValue<Exercise>> {
+    extends $NotifierProvider<AddExercise, AsyncValue<Unit>> {
   AddExerciseProvider._()
     : super(
         from: null,
@@ -33,27 +33,27 @@ final class AddExerciseProvider
   AddExercise create() => AddExercise();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Exercise> value) {
+  Override overrideWithValue(AsyncValue<Unit> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<Exercise>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<Unit>>(value),
     );
   }
 }
 
-String _$addExerciseHash() => r'd9a4af45536968939234ceaf5f8a0d74bf840e14';
+String _$addExerciseHash() => r'49ff43969c218e24ac53c97d640967639363b4b2';
 
-abstract class _$AddExercise extends $Notifier<AsyncValue<Exercise>> {
-  AsyncValue<Exercise> build();
+abstract class _$AddExercise extends $Notifier<AsyncValue<Unit>> {
+  AsyncValue<Unit> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<Exercise>, AsyncValue<Exercise>>;
+    final ref = this.ref as $Ref<AsyncValue<Unit>, AsyncValue<Unit>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Exercise>, AsyncValue<Exercise>>,
-              AsyncValue<Exercise>,
+              AnyNotifier<AsyncValue<Unit>, AsyncValue<Unit>>,
+              AsyncValue<Unit>,
               Object?,
               Object?
             >;

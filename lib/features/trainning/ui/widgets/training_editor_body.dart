@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/ui/widgets/exercise_set_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../data/exercise_positioned.dart';
-import '../../data/exercise_set.dart';
-import '../../data/training.dart';
-import 'exercise_set_widget.dart';
 
 class TrainingEditorBody extends StatelessWidget {
   const TrainingEditorBody({

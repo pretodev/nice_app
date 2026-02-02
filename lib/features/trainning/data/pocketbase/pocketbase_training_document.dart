@@ -1,10 +1,9 @@
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
+import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/shared/data/pocketbase/pocketbase_table_reference.dart';
 import 'package:pocketbase/pocketbase.dart';
-
-import '../exercise.dart';
-import '../exercise_execution.dart';
-import '../exercise_set.dart';
-import '../training.dart';
 
 class PocketBaseTrainingDocument
     extends PocketBaseTableReference<DailyTraining> {

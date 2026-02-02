@@ -1,5 +1,5 @@
-import 'exercise.dart';
-import 'exercise_positioned.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
 
 sealed class ExerciseSet {
   factory ExerciseSet.straight(int index, Exercise exercise) {

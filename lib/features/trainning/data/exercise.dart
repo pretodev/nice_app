@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_execution.dart';
 
 @immutable
 class Exercise {

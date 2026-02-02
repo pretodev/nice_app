@@ -1,7 +1,6 @@
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/providers/provider_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../data/training.dart';
-import 'provider_services.dart';
 
 part 'provider_queries.g.dart';
 

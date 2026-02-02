@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'verify_otp_command.dart';
+part of 'sign_out_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'verify_otp_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(VerifyOtp)
-final verifyOtpProvider = VerifyOtpProvider._();
+@ProviderFor(SignOut)
+final signOutProvider = SignOutProvider._();
 
-final class VerifyOtpProvider
-    extends $NotifierProvider<VerifyOtp, AsyncValue<Unit>> {
-  VerifyOtpProvider._()
+final class SignOutProvider
+    extends $NotifierProvider<SignOut, AsyncValue<Unit>> {
+  SignOutProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'verifyOtpProvider',
+        name: r'signOutProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$verifyOtpHash();
+  String debugGetCreateSourceHash() => _$signOutHash();
 
   @$internal
   @override
-  VerifyOtp create() => VerifyOtp();
+  SignOut create() => SignOut();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Unit> value) {
@@ -41,9 +41,9 @@ final class VerifyOtpProvider
   }
 }
 
-String _$verifyOtpHash() => r'55d584c79361afee8bd49ff6cf2e18f5443569c6';
+String _$signOutHash() => r'bddbec1f1d3ad05a3931a3dc122882b3e372d750';
 
-abstract class _$VerifyOtp extends $Notifier<AsyncValue<Unit>> {
+abstract class _$SignOut extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override

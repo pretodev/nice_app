@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'set_profile_data_command.dart';
+part of 'send_otp_command.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'set_profile_data_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SetProfileDataCommand)
-final setProfileDataCommandProvider = SetProfileDataCommandProvider._();
+@ProviderFor(SendOtp)
+final sendOtpProvider = SendOtpProvider._();
 
-final class SetProfileDataCommandProvider
-    extends $NotifierProvider<SetProfileDataCommand, AsyncValue<Unit>> {
-  SetProfileDataCommandProvider._()
+final class SendOtpProvider
+    extends $NotifierProvider<SendOtp, AsyncValue<Unit>> {
+  SendOtpProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'setProfileDataCommandProvider',
+        name: r'sendOtpProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$setProfileDataCommandHash();
+  String debugGetCreateSourceHash() => _$sendOtpHash();
 
   @$internal
   @override
-  SetProfileDataCommand create() => SetProfileDataCommand();
+  SendOtp create() => SendOtp();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Unit> value) {
@@ -41,10 +41,9 @@ final class SetProfileDataCommandProvider
   }
 }
 
-String _$setProfileDataCommandHash() =>
-    r'dcb32127e84086537b8e1e9bfd805be81f9144b0';
+String _$sendOtpHash() => r'9207df4df960ad6fcadf0a30dfcab68050db7830';
 
-abstract class _$SetProfileDataCommand extends $Notifier<AsyncValue<Unit>> {
+abstract class _$SendOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();
   @$mustCallSuper
   @override

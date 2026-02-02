@@ -1,4 +1,4 @@
-import 'exercise.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
 
 class PositionedExercise {
   const PositionedExercise(

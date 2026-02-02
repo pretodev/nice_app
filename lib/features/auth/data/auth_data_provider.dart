@@ -1,11 +1,10 @@
 import 'package:nice/features/auth/data/auth_repository.dart';
+import 'package:nice/features/auth/data/auth_service.dart';
 import 'package:nice/shared/environment.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../data/auth_service.dart';
-
-part 'provider_services.g.dart';
+part 'auth_data_provider.g.dart';
 
 /// Provider para a instância singleton do PocketBase
 @riverpod

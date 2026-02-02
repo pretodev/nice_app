@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/providers/commands/generate_training_command.dart';
+import 'package:nice/features/trainning/providers/commands/merge_exercises_command.dart';
 import 'package:nice/features/trainning/providers/provider_queries.dart';
 import 'package:nice/features/trainning/ui/training_prompt_modal.dart';
-
-import '../data/exercise_positioned.dart';
-import '../data/training.dart';
-import '../providers/commands/generate_training_command.dart';
-import '../providers/commands/merge_exercises_command.dart';
-import 'traning_exercise_editor_view.dart';
-import 'widgets/training_editor_body.dart';
-import 'widgets/training_editor_bottom_bar.dart';
+import 'package:nice/features/trainning/ui/traning_exercise_editor_view.dart';
+import 'package:nice/features/trainning/ui/widgets/training_editor_body.dart';
+import 'package:nice/features/trainning/ui/widgets/training_editor_bottom_bar.dart';
 
 class TrainingEditorView extends ConsumerStatefulWidget {
   const TrainingEditorView({super.key});

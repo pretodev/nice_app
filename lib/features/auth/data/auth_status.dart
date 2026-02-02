@@ -1,0 +1,4 @@
+enum AuthStatus {
+  waitingForCredentials,
+  waitingForOtpVerification,
+}

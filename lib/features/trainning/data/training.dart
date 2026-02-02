@@ -1,9 +1,8 @@
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
+import 'package:nice/features/trainning/data/training_selector.dart';
 import 'package:odu_core/odu_core.dart';
-
-import 'exercise.dart';
-import 'exercise_positioned.dart';
-import 'exercise_set.dart';
-import 'training_selector.dart';
 
 class DailyTraining extends GuidEntity {
   factory DailyTraining.create(DateTime date) {

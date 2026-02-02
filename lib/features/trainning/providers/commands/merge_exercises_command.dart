@@ -1,21 +1,18 @@
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/training.dart';
+import 'package:nice/features/trainning/providers/provider_services.dart';
 import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/exercise_positioned.dart';
-import '../../data/training.dart';
-import '../provider_services.dart';
-
 part 'merge_exercises_command.g.dart';
 
 @riverpod
-class MergeExercises extends _$MergeExercises with CommandMixin<Unit> {
+class MergeExercises extends _$MergeExercises with CommandMixin {
   @override
-  AsyncValue<Unit> build() {
-    return invalidState();
-  }
+  AsyncValue<Unit> build() => invalidState();
 
-  Future<void> call(
+  void call(
     DailyTraining training, {
     required List<PositionedExercise> exercises,
   }) async {

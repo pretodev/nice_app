@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CancelOtpVerificationDialog extends StatelessWidget {
-  const CancelOtpVerificationDialog({super.key});
+class CancelOtpVerificationView extends StatelessWidget {
+  const CancelOtpVerificationView({super.key});
 
   @override
   Widget build(BuildContext context) {

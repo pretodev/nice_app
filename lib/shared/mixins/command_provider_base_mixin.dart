@@ -4,25 +4,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 AsyncValue<T> invalidState<T>() =>
     AsyncError<T>(StateError('Not called yet'), StackTrace.current);
 
-mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
-  Result<T> emitError<E extends Exception>(E error, [StackTrace? stackTrace]) {
+mixin CommandMixin on $Notifier<AsyncValue<Unit>> {
+  void emitError<E extends Exception>(E error, [StackTrace? stackTrace]) {
     if (ref.mounted) {
       state = AsyncError(error, stackTrace ?? StackTrace.current);
     }
-    return Err(error, stackTrace ?? StackTrace.current);
   }
 
-  Result<T> emitData(
-    T data, {
+  void emitOk({
     List<ProviderOrFamily> invalidateProviders = const [],
   }) {
     if (ref.mounted) {
       for (final provider in invalidateProviders) {
         ref.invalidate(provider, asReload: true);
       }
-      state = AsyncData(data);
+      state = const AsyncData(unit);
     }
-    return Ok(data);
   }
 
   void emitLoading() {
@@ -31,25 +28,18 @@ mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
     }
   }
 
-  Result<T> emitResult(
+  void emitResult<T>(
     Result<T> result, {
-    StackTrace? stackTrace,
     List<ProviderOrFamily> invalidateProviders = const [],
+    StackTrace? stackTrace,
   }) {
-    if (ref.mounted) {
-      if (result is Ok) {
-        for (final provider in invalidateProviders) {
-          ref.invalidate(provider, asReload: true);
-        }
-      }
-      state = switch (result) {
-        Ok<T>(value: final data) => AsyncData(data),
-        Err<T>(value: final error) => AsyncError(
-          error,
-          stackTrace ?? StackTrace.current,
-        ),
-      };
+    switch (result) {
+      case Ok():
+        emitOk(invalidateProviders: invalidateProviders);
+        break;
+      case Err(value: final error):
+        emitError(error, stackTrace);
+        break;
     }
-    return result;
   }
 }

@@ -8,13 +8,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'add_exercise_command.g.dart';
 
 @riverpod
-class AddExercise extends _$AddExercise with CommandMixin<Exercise> {
+class AddExercise extends _$AddExercise with CommandMixin {
   @override
-  AsyncValue<Exercise> build() {
-    return invalidState();
-  }
+  AsyncValue<Unit> build() => invalidState();
 
-  Future<void> call(DailyTraining training, Exercise exercise) async {
+  void call(DailyTraining training, Exercise exercise) async {
     emitLoading();
     final repository = ref.read(trainingRepositoryProvider);
     training.addExercise(exercise);

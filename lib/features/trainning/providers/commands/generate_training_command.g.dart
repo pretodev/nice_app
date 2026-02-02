@@ -13,7 +13,7 @@ part of 'generate_training_command.dart';
 final generateTrainingProvider = GenerateTrainingProvider._();
 
 final class GenerateTrainingProvider
-    extends $NotifierProvider<GenerateTraining, AsyncValue<DailyTraining>> {
+    extends $NotifierProvider<GenerateTraining, AsyncValue<Unit>> {
   GenerateTrainingProvider._()
     : super(
         from: null,
@@ -33,28 +33,27 @@ final class GenerateTrainingProvider
   GenerateTraining create() => GenerateTraining();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<DailyTraining> value) {
+  Override overrideWithValue(AsyncValue<Unit> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<DailyTraining>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<Unit>>(value),
     );
   }
 }
 
-String _$generateTrainingHash() => r'20c2132eecee8aef683aa69c0b7b48e23b6b9d23';
+String _$generateTrainingHash() => r'4d984fe944683e8b76d1430d52a94462769f60a8';
 
-abstract class _$GenerateTraining extends $Notifier<AsyncValue<DailyTraining>> {
-  AsyncValue<DailyTraining> build();
+abstract class _$GenerateTraining extends $Notifier<AsyncValue<Unit>> {
+  AsyncValue<Unit> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref =
-        this.ref as $Ref<AsyncValue<DailyTraining>, AsyncValue<DailyTraining>>;
+    final ref = this.ref as $Ref<AsyncValue<Unit>, AsyncValue<Unit>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<DailyTraining>, AsyncValue<DailyTraining>>,
-              AsyncValue<DailyTraining>,
+              AnyNotifier<AsyncValue<Unit>, AsyncValue<Unit>>,
+              AsyncValue<Unit>,
               Object?,
               Object?
             >;

@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/auth/cancel_otp_verification_view.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-import 'package:nice/features/auth/providers/commands/cancel_otp_command.dart';
-
-import '../../providers/commands/send_otp_command.dart';
-import '../../providers/commands/verify_otp_command.dart';
-import '../views/cancel_otp_verification_dialog.dart';
-import '../widgets/otp_input_field.dart';
-import '../widgets/primary_button.dart';
+import 'package:nice/features/auth/state/commands/cancel_otp_command.dart';
+import 'package:nice/features/auth/state/commands/send_otp_command.dart';
+import 'package:nice/features/auth/state/commands/verify_otp_command.dart';
+import 'package:nice/features/auth/widgets/otp_input_field.dart';
+import 'package:nice/features/auth/widgets/primary_button.dart';
 
 class OtpVerificationView extends ConsumerStatefulWidget {
   static MaterialPageRoute<void> route({required EmailAddress email}) {
@@ -57,7 +56,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
   void _handleCancelOtp(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => const CancelOtpVerificationDialog(),
+      builder: (_) => const CancelOtpVerificationView(),
     );
 
     if (!mounted) return;
@@ -67,7 +66,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
       _errorText = null;
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
-      await ref.read(cancelOtpProvider.notifier).call();
+      ref.read(cancelOtpProvider.notifier).call();
     }
   }
 

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nice/features/trainning/data/exercise.dart';
+import 'package:nice/features/trainning/data/exercise_execution.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/training.dart';
 import 'package:nice/features/trainning/providers/commands/add_exercise_command.dart';
-
-import '../../../shared/widgets/field.dart';
-import '../data/exercise.dart';
-import '../data/exercise_execution.dart';
-import '../data/exercise_positioned.dart';
-import '../data/training.dart';
-import '../providers/commands/update_exercise_command.dart';
-import 'widgets/repetition_counter.dart';
-import 'widgets/series_counter.dart';
+import 'package:nice/features/trainning/providers/commands/update_exercise_command.dart';
+import 'package:nice/features/trainning/ui/widgets/repetition_counter.dart';
+import 'package:nice/features/trainning/ui/widgets/series_counter.dart';
+import 'package:nice/shared/widgets/field.dart';
 
 class TraningExerciseEditorView extends ConsumerStatefulWidget {
   static PageRoute<void> route({
@@ -102,12 +101,12 @@ class _TraningExerciseEditorViewState
       execution: _execution,
     );
     if (widget.exercise != null) {
-      await _updateExercise(
+      _updateExercise(
         widget.training,
         exercise: widget.exercise!.copyWith(value: exercise),
       );
     } else {
-      await _addExercise(widget.training, exercise);
+      _addExercise(widget.training, exercise);
     }
   }
 

@@ -41,12 +41,9 @@ Cada exercício deve ter:
 ''';
 
 @riverpod
-class GenerateTraining extends _$GenerateTraining
-    with CommandMixin<DailyTraining> {
+class GenerateTraining extends _$GenerateTraining with CommandMixin {
   @override
-  AsyncValue<DailyTraining> build() {
-    return invalidState();
-  }
+  AsyncValue<Unit> build() => invalidState();
 
   FutureResult<OpenRouterMessage> _getUserMessage({
     required String userMessage,
@@ -66,7 +63,7 @@ class GenerateTraining extends _$GenerateTraining
     }
   }
 
-  Future<void> call(
+  void call(
     DailyTraining training, {
     required String userMessage,
     File? fileImage,
@@ -98,7 +95,7 @@ class GenerateTraining extends _$GenerateTraining
     };
 
     if (exercises.isEmpty) {
-      emitData(training);
+      emitOk();
       return;
     }
 

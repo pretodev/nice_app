@@ -1,7 +1,6 @@
+import 'package:nice/features/trainning/data/pocketbase/pocketbase_training_document.dart';
+import 'package:nice/features/trainning/data/training.dart';
 import 'package:odu_core/odu_core.dart';
-
-import 'pocketbase/pocketbase_training_document.dart';
-import 'training.dart';
 
 class TrainingRepository {
   TrainingRepository({required PocketBaseTrainingDocument trainingDocument})

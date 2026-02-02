@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-
-import '../../providers/commands/send_otp_command.dart';
-import '../widgets/email_field.dart';
-import '../widgets/primary_button.dart';
+import 'package:nice/features/auth/state/commands/send_otp_command.dart';
+import 'package:nice/features/auth/widgets/email_field.dart';
+import 'package:nice/features/auth/widgets/primary_button.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   static MaterialPageRoute<void> route() {

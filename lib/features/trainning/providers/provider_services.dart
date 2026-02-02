@@ -1,8 +1,7 @@
-import 'package:nice/features/auth/providers/provider_services.dart';
+import 'package:nice/features/auth/data/auth_data_provider.dart';
+import 'package:nice/features/trainning/data/pocketbase/pocketbase_training_document.dart';
+import 'package:nice/features/trainning/data/training_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../data/pocketbase/pocketbase_training_document.dart';
-import '../data/training_repository.dart';
 
 part 'provider_services.g.dart';
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_out_command.dart';
+part of 'auth_store.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,50 @@ part of 'sign_out_command.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SignOut)
-final signOutProvider = SignOutProvider._();
+@ProviderFor(AuthStore)
+final authStoreProvider = AuthStoreProvider._();
 
-final class SignOutProvider
-    extends $NotifierProvider<SignOut, AsyncValue<Unit>> {
-  SignOutProvider._()
+final class AuthStoreProvider extends $NotifierProvider<AuthStore, AuthState> {
+  AuthStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'signOutProvider',
+        name: r'authStoreProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$signOutHash();
+  String debugGetCreateSourceHash() => _$authStoreHash();
 
   @$internal
   @override
-  SignOut create() => SignOut();
+  AuthStore create() => AuthStore();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Unit> value) {
+  Override overrideWithValue(AuthState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<Unit>>(value),
+      providerOverride: $SyncValueProvider<AuthState>(value),
     );
   }
 }
 
-String _$signOutHash() => r'db575717a2f6f1d3b81fd12d6a8808bf0905d3ad';
+String _$authStoreHash() => r'235ad754402388490249ad0a985512cec3fe33e2';
 
-abstract class _$SignOut extends $Notifier<AsyncValue<Unit>> {
-  AsyncValue<Unit> build();
+abstract class _$AuthStore extends $Notifier<AuthState> {
+  AuthState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<Unit>, AsyncValue<Unit>>;
+    final ref = this.ref as $Ref<AuthState, AuthState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Unit>, AsyncValue<Unit>>,
-              AsyncValue<Unit>,
+              AnyNotifier<AuthState, AuthState>,
+              AuthState,
               Object?,
               Object?
             >;

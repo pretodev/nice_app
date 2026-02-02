@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:nice/features/aigen/data/open_router_message.dart';
 import 'package:odu_core/odu_core.dart';
-
-import 'open_router_message.dart';
 
 class OpenRouter {
   final String _apiKey;

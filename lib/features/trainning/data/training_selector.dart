@@ -1,5 +1,5 @@
-import 'exercise_positioned.dart';
-import 'exercise_set.dart';
+import 'package:nice/features/trainning/data/exercise_positioned.dart';
+import 'package:nice/features/trainning/data/exercise_set.dart';
 
 class TrainingSelector {
   final List<PositionedExercise> _selecteds;

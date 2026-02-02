@@ -1,5 +1,6 @@
 import 'package:nice/features/user/data/user_entity.dart';
 import 'package:nice/features/user/data/user_failures.dart';
+import 'package:nice/features/user/data/user_status.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -12,6 +13,21 @@ class UserRepository {
     if (value is DateTime) return value;
     if (value is String) return DateTime.parse(value);
     return DateTime.now();
+  }
+
+  Stream<UserStatus> get currentStatus async* {
+    final initialRecord = _pb.authStore.record;
+    final initialState = initialRecord != null
+        ? UserStatus.authenticated
+        : UserStatus.unauthenticated;
+    yield initialState;
+
+    await for (final authStore in _pb.authStore.onChange) {
+      final state = authStore.record != null
+          ? UserStatus.authenticated
+          : UserStatus.unauthenticated;
+      yield state;
+    }
   }
 
   FutureResult<UserEntity> get currentUser async {
@@ -71,5 +87,10 @@ class UserRepository {
     } on ClientException {
       rethrow;
     }
+  }
+
+  FutureResult<Unit> signOut() async {
+    _pb.authStore.clear();
+    return ok;
   }
 }

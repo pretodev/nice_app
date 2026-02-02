@@ -1,12 +1,10 @@
 import 'dart:math';
 
+import 'package:nice/features/auth/data/auth_failures.dart';
+import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/data/pocketbase/pocketbase_exception.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:pocketbase/pocketbase.dart';
-
-import 'auth_failures.dart';
-import 'auth_state.dart' as app;
-import 'email_address.dart';
 
 // Gerar senha aleatória de 12 caracteres com capitalização, números e símbolos
 String _generateRandomPassword() {
@@ -69,33 +67,6 @@ class AuthService {
       return ok;
     } on ClientException catch (e, s) {
       return Err(e.toAuthFailure(), s);
-    } catch (e, s) {
-      return Err(UnknownAuthFailure(e.toString()), s);
-    }
-  }
-
-  /// Stream que monitora mudanças no estado de autenticação
-  /// Emite o estado inicial imediatamente, depois monitora mudanças
-  Stream<app.AuthState> get state async* {
-    final initialRecord = _pb.authStore.record;
-    final initialState = initialRecord != null
-        ? const app.Authenticated()
-        : const app.Unauthenticated();
-    yield initialState;
-
-    await for (final authStore in _pb.authStore.onChange) {
-      final state = authStore.record != null
-          ? const app.Authenticated()
-          : const app.Unauthenticated();
-      yield state;
-    }
-  }
-
-  /// Realiza logout e limpa o armazenamento de autenticação
-  FutureResult<Unit> signOut() async {
-    try {
-      _pb.authStore.clear();
-      return ok;
     } catch (e, s) {
       return Err(UnknownAuthFailure(e.toString()), s);
     }

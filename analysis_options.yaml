@@ -22,3 +22,4 @@ linter:
     - unnecessary_this
     - prefer_if_null_operators
     - prefer_const_constructors
+    - always_use_package_imports

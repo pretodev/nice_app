@@ -1,6 +1,5 @@
+import 'package:nice/features/auth/data/auth_failures.dart';
 import 'package:pocketbase/pocketbase.dart';
-
-import '../auth_failures.dart';
 
 extension ClientExceptionExtensions on ClientException {
   AuthFailure toAuthFailure() {
