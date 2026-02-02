@@ -3,6 +3,8 @@ import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../provider_queries.dart';
+
 part 'cancel_otp_command.g.dart';
 
 @riverpod
@@ -15,6 +17,6 @@ class CancelOtp extends _$CancelOtp with CommandMixin<Unit> {
     emitLoading();
     final authRepo = ref.read(authRepositoryProvider);
     final result = await authRepo.deleteCredentials();
-    emitResult(result);
+    emitResult(result, invalidateProviders: [authStateProvider]);
   }
 }

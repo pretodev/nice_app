@@ -41,7 +41,7 @@ final class CancelOtpProvider
   }
 }
 
-String _$cancelOtpHash() => r'99071d30b855ec1ac19ad695da2857875a21d2f7';
+String _$cancelOtpHash() => r'2919cac8e25ea6aed1535a5799cd1511629e1496';
 
 abstract class _$CancelOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

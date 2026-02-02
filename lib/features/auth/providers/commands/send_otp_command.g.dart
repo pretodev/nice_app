@@ -41,7 +41,7 @@ final class SendOtpProvider
   }
 }
 
-String _$sendOtpHash() => r'34ac3ec2526515e56c5b14e6ef978e1c0add89b6';
+String _$sendOtpHash() => r'f5c3a7e1ab199a0494826bdf42583d98754b886a';
 
 abstract class _$SendOtp extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

@@ -67,7 +67,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
       _errorText = null;
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
-      ref.read(cancelOtpProvider.notifier).call();
+      await ref.read(cancelOtpProvider.notifier).call();
     }
   }
 

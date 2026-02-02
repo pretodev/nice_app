@@ -12,41 +12,34 @@ class AuthGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(authStateProvider, (prev, next) {
-      if (!next.hasValue) {
-        return;
-      }
-      switch (next.requireValue) {
-        case Unauthenticated():
-          Navigator.pushReplacement(context, LoginView.route());
-        case Authenticated():
-          Navigator.pushReplacement(context, PlaceholderView.route());
-        case WaitingForOtpVerification(:final email):
-          Navigator.pushReplacement(
-            context,
-            OtpVerificationView.route(email: email),
-          );
-      }
-    });
+    final authState = ref.watch(authStateProvider);
 
-    return ref
-        .watch(authStateProvider)
-        .maybeWhen(
-          orElse: () => const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+    return authState.when(
+      data: (state) {
+        switch (state) {
+          case Unauthenticated():
+            return const LoginView();
+          case Authenticated():
+            return const PlaceholderView();
+          case WaitingForOtpVerification(:final email):
+            return OtpVerificationView(email: email);
+        }
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error: $error'),
+            ],
           ),
-          error: (error, _) => Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text('Error: $error'),
-                ],
-              ),
-            ),
-          ),
-        );
+        ),
+      ),
+    );
   }
 }

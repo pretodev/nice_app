@@ -8,14 +8,36 @@ part of 'provider_queries.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Provides the current authentication state.
+///
+/// This Stream provider listens to PocketBase auth changes and checks
+/// SharedPreferences for OTP credentials to determine the correct state.
+///
+/// Commands (SendOtp, CancelOtp, etc.) explicitly call `ref.invalidate(authStateProvider)`
+/// after modifying local state, which forces this provider to rebuild and re-emit.
 
 @ProviderFor(authState)
 final authStateProvider = AuthStateProvider._();
+
+/// Provides the current authentication state.
+///
+/// This Stream provider listens to PocketBase auth changes and checks
+/// SharedPreferences for OTP credentials to determine the correct state.
+///
+/// Commands (SendOtp, CancelOtp, etc.) explicitly call `ref.invalidate(authStateProvider)`
+/// after modifying local state, which forces this provider to rebuild and re-emit.
 
 final class AuthStateProvider
     extends
         $FunctionalProvider<AsyncValue<AuthState>, AuthState, Stream<AuthState>>
     with $FutureModifier<AuthState>, $StreamProvider<AuthState> {
+  /// Provides the current authentication state.
+  ///
+  /// This Stream provider listens to PocketBase auth changes and checks
+  /// SharedPreferences for OTP credentials to determine the correct state.
+  ///
+  /// Commands (SendOtp, CancelOtp, etc.) explicitly call `ref.invalidate(authStateProvider)`
+  /// after modifying local state, which forces this provider to rebuild and re-emit.
   AuthStateProvider._()
     : super(
         from: null,
@@ -23,24 +45,9 @@ final class AuthStateProvider
         retry: null,
         name: r'authStateProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[
-          sendOtpProvider,
-          cancelOtpProvider,
-          verifyOtpProvider,
-          signOutProvider,
-        ],
-        $allTransitiveDependencies: <ProviderOrFamily>{
-          AuthStateProvider.$allTransitiveDependencies0,
-          AuthStateProvider.$allTransitiveDependencies1,
-          AuthStateProvider.$allTransitiveDependencies2,
-          AuthStateProvider.$allTransitiveDependencies3,
-        },
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
-
-  static final $allTransitiveDependencies0 = sendOtpProvider;
-  static final $allTransitiveDependencies1 = cancelOtpProvider;
-  static final $allTransitiveDependencies2 = verifyOtpProvider;
-  static final $allTransitiveDependencies3 = signOutProvider;
 
   @override
   String debugGetCreateSourceHash() => _$authStateHash();
@@ -56,4 +63,4 @@ final class AuthStateProvider
   }
 }
 
-String _$authStateHash() => r'825090889f699cd335746449008c06cbd1bdf7c2';
+String _$authStateHash() => r'695f9e21aefabdc7adb6762fd7919d99948b1ca0';

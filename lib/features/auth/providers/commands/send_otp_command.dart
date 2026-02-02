@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../shared/mixins/command_provider_base_mixin.dart';
 import '../../data/email_address.dart';
+import '../provider_queries.dart';
 import '../provider_services.dart';
 
 part 'send_otp_command.g.dart';
@@ -23,7 +24,7 @@ class SendOtp extends _$SendOtp with CommandMixin<Unit> {
 
     switch (sendResult) {
       case Ok(:final value):
-        result = result = await authRepo.store(
+        result = await authRepo.store(
           OtpCredentials(
             email: email,
             otpId: value,
@@ -33,6 +34,6 @@ class SendOtp extends _$SendOtp with CommandMixin<Unit> {
         result = sendResult as Result<Unit>;
     }
 
-    emitResult(result);
+    emitResult(result, invalidateProviders: [authStateProvider]);
   }
 }

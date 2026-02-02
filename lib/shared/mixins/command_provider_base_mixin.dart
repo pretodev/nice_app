@@ -12,8 +12,14 @@ mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
     return Err(error, stackTrace ?? StackTrace.current);
   }
 
-  Result<T> emitData(T data) {
+  Result<T> emitData(
+    T data, {
+    List<ProviderOrFamily> invalidateProviders = const [],
+  }) {
     if (ref.mounted) {
+      for (final provider in invalidateProviders) {
+        ref.invalidate(provider, asReload: true);
+      }
       state = AsyncData(data);
     }
     return Ok(data);
@@ -25,8 +31,17 @@ mixin CommandMixin<T> on $Notifier<AsyncValue<T>> {
     }
   }
 
-  Result<T> emitResult(Result<T> result, [StackTrace? stackTrace]) {
+  Result<T> emitResult(
+    Result<T> result, {
+    StackTrace? stackTrace,
+    List<ProviderOrFamily> invalidateProviders = const [],
+  }) {
     if (ref.mounted) {
+      if (result is Ok) {
+        for (final provider in invalidateProviders) {
+          ref.invalidate(provider, asReload: true);
+        }
+      }
       state = switch (result) {
         Ok<T>(value: final data) => AsyncData(data),
         Err<T>(value: final error) => AsyncError(

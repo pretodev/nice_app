@@ -1,7 +1,3 @@
-import 'package:nice/features/auth/providers/commands/cancel_otp_command.dart';
-import 'package:nice/features/auth/providers/commands/send_otp_command.dart';
-import 'package:nice/features/auth/providers/commands/sign_out_command.dart';
-import 'package:nice/features/auth/providers/commands/verify_otp_command.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,18 +6,15 @@ import 'provider_services.dart';
 
 part 'provider_queries.g.dart';
 
-@Riverpod(
-  dependencies: [
-    SendOtp,
-    CancelOtp,
-    VerifyOtp,
-    SignOut,
-  ],
-)
+/// Provides the current authentication state.
+///
+/// This Stream provider listens to PocketBase auth changes and checks
+/// SharedPreferences for OTP credentials to determine the correct state.
+///
+/// Commands (SendOtp, CancelOtp, etc.) explicitly call `ref.invalidate(authStateProvider)`
+/// after modifying local state, which forces this provider to rebuild and re-emit.
+@riverpod
 Stream<AuthState> authState(Ref ref) {
-  ref.watch(sendOtpProvider);
-  ref.watch(cancelOtpProvider);
-
   return ref.watch(authServiceProvider).state.asyncMap((state) async {
     if (state is Unauthenticated) {
       final result = await ref.read(authRepositoryProvider).getOtpCredentials();
