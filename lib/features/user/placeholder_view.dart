@@ -4,9 +4,16 @@ import 'package:nice/features/user/state/commands/sign_out_command.dart';
 import 'package:nice/features/user/state/user_store.dart';
 
 class PlaceholderView extends ConsumerWidget {
-  static MaterialPageRoute<void> route() {
-    return MaterialPageRoute<void>(
-      builder: (context) => const PlaceholderView(),
+  static Route<void> route() {
+    return PageRouteBuilder<void>(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const PlaceholderView(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
 

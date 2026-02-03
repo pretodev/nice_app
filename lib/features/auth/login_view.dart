@@ -6,9 +6,16 @@ import 'package:nice/features/auth/widgets/email_field.dart';
 import 'package:nice/features/auth/widgets/primary_button.dart';
 
 class LoginView extends ConsumerStatefulWidget {
-  static MaterialPageRoute<void> route() {
-    return MaterialPageRoute<void>(
-      builder: (context) => const LoginView(),
+  static Route<void> route() {
+    return PageRouteBuilder<void>(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const LoginView(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
 

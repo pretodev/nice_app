@@ -11,11 +11,18 @@ import 'package:nice/features/auth/widgets/otp_input_field.dart';
 import 'package:nice/features/auth/widgets/primary_button.dart';
 
 class OtpVerificationView extends ConsumerStatefulWidget {
-  static MaterialPageRoute<void> route({required EmailAddress email}) {
-    return MaterialPageRoute<void>(
-      builder: (context) => OtpVerificationView(
-        email: email,
-      ),
+  static Route<void> route({required EmailAddress email}) {
+    return PageRouteBuilder<void>(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          OtpVerificationView(
+            email: email,
+          ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
 
