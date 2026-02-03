@@ -1,0 +1,57 @@
+import 'package:nice/features/training/data/exercise.dart';
+import 'package:nice/features/training/data/exercise_positioned.dart';
+import 'package:nice/features/training/data/exercise_set.dart';
+import 'package:nice/features/training/data/training_selector.dart';
+import 'package:odu_core/odu_core.dart';
+
+class DailyTraining extends GuidEntity {
+  factory DailyTraining.create(DateTime date) {
+    return DailyTraining(
+      id: GuidEntity.newId(),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      isActive: true,
+      date: date,
+    );
+  }
+
+  DailyTraining({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
+    super.isActive,
+    List<ExerciseSet>? sets,
+    this.date,
+  }) : _sets = sets ?? [] {
+    _selector = TrainingSelector(_sets);
+  }
+
+  DateTime? date;
+
+  late TrainingSelector _selector;
+
+  TrainingSelector get selector => _selector;
+
+  final List<ExerciseSet> _sets;
+
+  List<ExerciseSet> get sets => _sets;
+
+  void addExercise(Exercise exercise) {
+    _sets.add(ExerciseSet.straight(_sets.length, exercise));
+    _selector = TrainingSelector(_sets);
+  }
+
+  void removeExercise(PositionedExercise exercise) {
+    _sets.removeExercise(exercise);
+    _selector = TrainingSelector(_sets);
+  }
+
+  void mergeExercises(List<PositionedExercise> exercises) {
+    _sets.mergeExercises(exercises);
+    _selector = TrainingSelector(_sets);
+  }
+
+  void setExercise(PositionedExercise exercise) {
+    _sets.setExercise(exercise);
+  }
+}
