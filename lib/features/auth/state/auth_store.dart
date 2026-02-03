@@ -36,7 +36,7 @@ class AuthState {
     ValueGetter<AuthCredentials?>? credentials,
   }) {
     return AuthState(
-      credentials: credentials?.call() ?? this.credentials,
+      credentials: credentials != null ? credentials() : this.credentials,
     );
   }
 

@@ -9,22 +9,25 @@ import 'package:nice/features/user/placeholder_view.dart';
 import 'package:nice/features/user/state/commands/load_user_command.dart';
 import 'package:nice/features/user/state/user_store.dart';
 
-class MainApp extends ConsumerStatefulWidget {
-  const MainApp({super.key});
+class AuthGuard extends ConsumerStatefulWidget {
+  const AuthGuard({super.key, required this.child});
+
+  final Widget child;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MainAppState();
+  ConsumerState<AuthGuard> createState() => _AuthGuardState();
 }
 
-class _MainAppState extends ConsumerState<MainApp> {
+class _AuthGuardState extends ConsumerState<AuthGuard> {
   @override
   void initState() {
     super.initState();
-    ref.read(loadUserCommandProvider.notifier).call();
+    Future.microtask(() => ref.read(loadUserCommandProvider.notifier).call());
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authStoreProvider);
     ref.listen(userStoreProvider, (previous, next) {
       if (next.status == UserStatus.authenticated) {
         Navigator.of(context).pushReplacement(PlaceholderView.route());
@@ -32,7 +35,6 @@ class _MainAppState extends ConsumerState<MainApp> {
       }
 
       if (next.status == UserStatus.unauthenticated) {
-        final authState = ref.watch(authStoreProvider);
         switch (authState.credentials) {
           case OtpCredentials(:final email):
             Navigator.of(context).pushReplacement(
@@ -46,16 +48,22 @@ class _MainAppState extends ConsumerState<MainApp> {
 
     final loadUserState = ref.watch(loadUserCommandProvider);
 
-    return MaterialApp(
-      title: 'Nice',
-      home: Scaffold(
+    if (loadUserState case AsyncError(:final error)) {
+      return Scaffold(
         body: Center(
-          child: loadUserState.maybeWhen(
-            error: (error, stackTrace) => Text(error.toString()),
-            orElse: () => const CircularProgressIndicator(),
-          ),
+          child: Text(error.toString()),
         ),
-      ),
-    );
+      );
+    }
+
+    if (loadUserState case AsyncLoading()) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return widget.child;
   }
 }

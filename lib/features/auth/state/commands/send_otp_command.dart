@@ -17,7 +17,6 @@ class SendOtp extends _$SendOtp with CommandMixin {
     emitLoading();
     final authService = ref.read(authServiceProvider);
     final authRepo = ref.read(authRepositoryProvider);
-    final authStore = ref.read(authStoreProvider.notifier);
 
     OtpCredentials? otpCredentials;
 
@@ -30,7 +29,9 @@ class SendOtp extends _$SendOtp with CommandMixin {
           },
         )
         .map((_) {
-          authStore.emit(OtpRequest(otpCredentials!));
+          ref
+              .read(authStoreProvider.notifier)
+              .emit(OtpRequest(otpCredentials!));
           return otpCredentials!;
         });
 

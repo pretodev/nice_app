@@ -4,23 +4,25 @@ import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
 import 'package:odu_core/odu_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'cancel_otp_command.g.dart';
+part 'load_credentials_command.g.dart';
 
 @riverpod
-class CancelOtp extends _$CancelOtp with CommandMixin {
+class LoadCredentialsCommand extends _$LoadCredentialsCommand
+    with CommandMixin {
   @override
   AsyncValue<Unit> build() => invalidState();
 
-  /// Cancela a verificação do OTP
   void call() async {
     emitLoading();
+
     final authRepo = ref.read(authRepositoryProvider);
-    final result = await authRepo.deleteCredentials();
+    final authStore = ref.read(authStoreProvider.notifier);
 
-    if (result.isOk) {
-      ref.read(authStoreProvider.notifier).emit(const ClearCredentials());
+    final result = await authRepo.getOtpCredentials();
+
+    if (result case Some(:final value)) {
+      authStore.emit(OtpRequest(value));
     }
-
-    emitResult(result);
+    emitOk();
   }
 }

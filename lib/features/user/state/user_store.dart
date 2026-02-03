@@ -19,7 +19,7 @@ class UserStore extends _$UserStore {
         status: UserStatus.authenticated,
       ),
       UserSignOut() => state.copyWith(
-        user: null,
+        user: () => null,
         status: UserStatus.unauthenticated,
       ),
       UserProfileUpdated(:final user) => state.copyWith(
@@ -44,7 +44,7 @@ class UserState {
     UserStatus? status,
   }) {
     return UserState(
-      user: user?.call() ?? this.user,
+      user: user != null ? user() : this.user,
       status: status ?? this.status,
     );
   }
