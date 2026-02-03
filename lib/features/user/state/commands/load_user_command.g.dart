@@ -20,7 +20,7 @@ final class LoadUserCommandProvider
         argument: null,
         retry: null,
         name: r'loadUserCommandProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class LoadUserCommandProvider
   }
 }
 
-String _$loadUserCommandHash() => r'f9966ce793910b3bd550b73a702e209deb02cd08';
+String _$loadUserCommandHash() => r'b74f0aca2412976fea92c3f961f8dfe91af2ceee';
 
 abstract class _$LoadUserCommand extends $Notifier<AsyncValue<Unit>> {
   AsyncValue<Unit> build();

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:nice/features/auth/data/auth_failures.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/data/pocketbase/pocketbase_exception.dart';
 import 'package:odu_core/odu_core.dart';
@@ -63,12 +62,11 @@ class AuthService {
     required String otp,
   }) async {
     try {
-      await _pb.collection('users').authWithOTP(otpId, otp);
+      final auth = await _pb.collection('users').authWithOTP(otpId, otp);
+      _pb.authStore.save(auth.token, auth.record);
       return ok;
     } on ClientException catch (e, s) {
       return Err(e.toAuthFailure(), s);
-    } catch (e, s) {
-      return Err(UnknownAuthFailure(e.toString()), s);
     }
   }
 }

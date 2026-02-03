@@ -40,7 +40,7 @@ final class UserStoreProvider extends $NotifierProvider<UserStore, UserState> {
   }
 }
 
-String _$userStoreHash() => r'dd3215c34dd2d572e6f0c96aeebe59088afe5232';
+String _$userStoreHash() => r'effc19c0a9586a67c54201b8cccf97e957a720b5';
 
 abstract class _$UserStore extends $Notifier<UserState> {
   UserState build();

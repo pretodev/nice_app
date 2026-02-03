@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
+import 'package:nice/features/auth/data/pocketbase/persistent_auth_store.dart';
 import 'package:nice/features/auth/login_view.dart';
 import 'package:nice/features/auth/otp_verification_view.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
@@ -9,10 +10,28 @@ import 'package:nice/features/user/data/user_status.dart';
 import 'package:nice/features/user/placeholder_view.dart';
 import 'package:nice/features/user/state/commands/load_user_command.dart';
 import 'package:nice/features/user/state/user_store.dart';
+import 'package:nice/shared/data/shared_data_provider.dart';
+import 'package:nice/shared/environment.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: MainApp()));
+
+  // Initialize persistent auth store
+  final authStore = PersistentAuthStore();
+  await authStore.load();
+
+  // Initialize PocketBase with the auth store
+  final pb = PocketBase(Environment.pocketbaseUrl, authStore: authStore);
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        pocketbaseClientProvider.overrideWithValue(pb),
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends ConsumerStatefulWidget {

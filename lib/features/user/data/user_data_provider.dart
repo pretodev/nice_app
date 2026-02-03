@@ -1,5 +1,5 @@
-import 'package:nice/features/auth/data/auth_data_provider.dart';
 import 'package:nice/features/user/data/user_repository.dart';
+import 'package:nice/shared/data/shared_data_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_data_provider.g.dart';

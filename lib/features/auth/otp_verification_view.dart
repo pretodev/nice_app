@@ -188,7 +188,7 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
                 ),
                 const SizedBox(height: 24),
                 PrimaryButton(
-                  onPressed: _otpCode.length == 8 && !isLoading
+                  onPressed: _otpCode.length == 6 && !isLoading
                       ? () {
                           ref.read(verifyOtpProvider.notifier).call(_otpCode);
                         }
