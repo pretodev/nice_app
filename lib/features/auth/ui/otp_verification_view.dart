@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/commands/cancel_otp_command.dart';
 import 'package:nice/features/auth/state/commands/send_otp_command.dart';
@@ -11,7 +10,7 @@ import 'package:nice/features/auth/ui/widgets/otp_input_field.dart';
 import 'package:nice/features/auth/ui/widgets/primary_button.dart';
 import 'package:nice/shared/state/scope.dart';
 
-class OtpVerificationView extends ConsumerStatefulWidget {
+class OtpVerificationView extends StatefulWidget {
   static Route<void> route({required EmailAddress email}) {
     return PageRouteBuilder<void>(
       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -32,11 +31,10 @@ class OtpVerificationView extends ConsumerStatefulWidget {
   final EmailAddress email;
 
   @override
-  ConsumerState<OtpVerificationView> createState() =>
-      _OtpVerificationViewState();
+  State<OtpVerificationView> createState() => _OtpVerificationViewState();
 }
 
-class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
+class _OtpVerificationViewState extends State<OtpVerificationView> {
   Timer? _cooldownTimer;
   int _remainingSeconds = 0;
   String? _errorText;

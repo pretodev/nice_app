@@ -3,13 +3,6 @@ include: package:flutter_lints/flutter.yaml
 formatter:
   trailing_commas: preserve
 
-analyzer:
-  plugins:
-    - riverpod_lint
-
-plugins:
-  riverpod_lint: 3.1.0
-
 linter:
   rules:
     - prefer_single_quotes

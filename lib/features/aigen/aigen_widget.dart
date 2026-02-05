@@ -2,20 +2,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
 import 'package:nice/features/aigen/providers/provider_services.dart';
 import 'package:odu_core/odu_core.dart';
 
-class AigenWidget extends ConsumerStatefulWidget {
+class AigenWidget extends StatefulWidget {
   const AigenWidget({super.key});
 
   @override
-  ConsumerState<AigenWidget> createState() => _AigenWidgetState();
+  State<AigenWidget> createState() => _AigenWidgetState();
 }
 
-class _AigenWidgetState extends ConsumerState<AigenWidget> {
+class _AigenWidgetState extends State<AigenWidget> {
   final TextEditingController _controller = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
 
