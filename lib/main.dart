@@ -1,22 +1,20 @@
 import 'package:auto_injector/auto_injector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/auth_module.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/pocketbase/persistent_auth_store.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
-import 'package:nice/features/auth/state/commands/load_credentials_command.dart';
 import 'package:nice/features/auth/ui/login_view.dart';
 import 'package:nice/features/auth/ui/otp_verification_view.dart';
+import 'package:nice/features/training/training_module.dart';
 import 'package:nice/features/user/data/user_status.dart';
 import 'package:nice/features/user/state/commands/load_user_command.dart';
-import 'package:nice/features/user/state/user_store.dart';
+import 'package:nice/features/user/state/user_state.dart';
 import 'package:nice/features/user/ui/placeholder_view.dart';
 import 'package:nice/features/user/user_module.dart';
-import 'package:nice/shared/data/shared_data_provider.dart';
 import 'package:nice/shared/environment.dart';
 import 'package:nice/shared/state/scope.dart';
-import 'package:pocketbase/pocketbase.dart';
+import 'package:pocketbase/pocketbase.dart' hide AuthStore;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +33,7 @@ void main() async {
           i.addLazySingleton(() => pb);
           i.addInjector(userModule);
           i.addInjector(authModule);
+          i.addInjector(trainingModule);
         },
       ),
       child: const MainApp(),
@@ -61,11 +60,31 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  void _handleRedirection() {
+    final authState = context.read<AuthStore>().state;
+    final userState = context.read<UserStore>().state;
+
+    final Route<dynamic> route;
+    if (userState.status == UserStatus.authenticated) {
+      route = PlaceholderView.route();
+    } else {
+      switch (authState.credentials) {
+        case OtpCredentials(:final email):
+          route = OtpVerificationView.route(email: email);
+          break;
+        default:
+          route = LoginView.route();
+      }
+    }
+    
+    _navigatorKey.currentState?.pushReplacement(route);
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.listen(authRedirectProvider, (previous, next) {
-      _navigatorKey.currentState?.pushReplacement(next);
-    });
+    context.listen<AuthStore>((_) => _handleRedirection());
+    context.listen<UserStore>((_) => _handleRedirection());
+
     return MaterialApp(
       title: 'Nice',
       navigatorKey: _navigatorKey,
@@ -73,19 +92,3 @@ class _MainAppState extends State<MainApp> {
     );
   }
 }
-
-final authRedirectProvider = Provider((ref) {
-  final authState = ref.watch(authStoreProvider);
-  final userState = ref.watch(userStoreProvider);
-
-  if (userState.status == UserStatus.authenticated) {
-    return PlaceholderView.route();
-  }
-
-  switch (authState.credentials) {
-    case OtpCredentials(:final email):
-      return OtpVerificationView.route(email: email);
-    default:
-      return LoginView.route();
-  }
-});

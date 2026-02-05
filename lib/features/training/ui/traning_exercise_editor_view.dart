@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_execution.dart';
@@ -9,9 +8,10 @@ import 'package:nice/features/training/state/commands/add_exercise_command.dart'
 import 'package:nice/features/training/state/commands/update_exercise_command.dart';
 import 'package:nice/features/training/ui/widgets/repetition_counter.dart';
 import 'package:nice/features/training/ui/widgets/series_counter.dart';
+import 'package:nice/shared/state/scope.dart';
 import 'package:nice/shared/widgets/field.dart';
 
-class TraningExerciseEditorView extends ConsumerStatefulWidget {
+class TraningExerciseEditorView extends StatefulWidget {
   static PageRoute<void> route({
     required DailyTraining training,
     PositionedExercise? exercise,
@@ -34,21 +34,17 @@ class TraningExerciseEditorView extends ConsumerStatefulWidget {
   final PositionedExercise? exercise;
 
   @override
-  ConsumerState<TraningExerciseEditorView> createState() =>
+  State<TraningExerciseEditorView> createState() =>
       _TraningExerciseEditorViewState();
 }
 
-class _TraningExerciseEditorViewState
-    extends ConsumerState<TraningExerciseEditorView> {
+class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
   SerializedExerciseExecution _execution =
       SerializedExerciseExecution.initial();
 
   bool _expanded = false;
 
   final _nameController = TextEditingController();
-
-  late final _addExercise = ref.read(addExerciseProvider.notifier);
-  late final _updateExercise = ref.read(updateExerciseProvider.notifier);
 
   void _addSeries() {
     setState(() {
@@ -101,12 +97,12 @@ class _TraningExerciseEditorViewState
       execution: _execution,
     );
     if (widget.exercise != null) {
-      _updateExercise(
-        widget.training,
-        exercise: widget.exercise!.copyWith(value: exercise),
-      );
+      context.read<UpdateExercise>().call(
+            widget.training,
+            exercise: widget.exercise!.copyWith(value: exercise),
+          );
     } else {
-      _addExercise(widget.training, exercise);
+      context.read<AddExercise>().call(widget.training, exercise);
     }
   }
 
@@ -123,33 +119,32 @@ class _TraningExerciseEditorViewState
 
   @override
   Widget build(BuildContext context) {
-    final addExerciseState = ref.watch(addExerciseProvider);
-    final updateExerciseState = ref.watch(updateExerciseProvider);
+    final addExerciseCmd = context.watch<AddExercise>();
+    final updateExerciseCmd = context.watch<UpdateExercise>();
 
-    ref.listen(addExerciseProvider, (previous, next) {
-      if (next is AsyncData) {
+    context.listen<AddExercise>((command) {
+      if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Exercício adicionado com sucesso!'),
           ),
         );
-        Navigator.pop(context, next.value);
+        Navigator.pop(context);
       }
     });
 
-    ref.listen(updateExerciseProvider, (previous, next) {
-      if (next is AsyncData) {
+    context.listen<UpdateExercise>((command) {
+      if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Exercício atualizado com sucesso!'),
           ),
         );
-        Navigator.pop(context, next.value);
+        Navigator.pop(context);
       }
     });
 
-    final isSaving =
-        addExerciseState.isLoading || updateExerciseState.isLoading;
+    final isSaving = addExerciseCmd.isLoading || updateExerciseCmd.isLoading;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -197,7 +192,7 @@ class _TraningExerciseEditorViewState
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const .symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 8.0,
                 horizontal: 16.0,
               ),
@@ -220,7 +215,7 @@ class _TraningExerciseEditorViewState
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return Padding(
-                  padding: const .only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: RepetitionCounter(
                     key: Key('repetition_counter_$index'),
                     value: _execution.repeats[index],

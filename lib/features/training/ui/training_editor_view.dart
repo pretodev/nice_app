@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/data/training_status.dart';
@@ -11,23 +10,22 @@ import 'package:nice/features/training/ui/training_prompt_modal.dart';
 import 'package:nice/features/training/ui/traning_exercise_editor_view.dart';
 import 'package:nice/features/training/ui/widgets/training_editor_body.dart';
 import 'package:nice/features/training/ui/widgets/training_editor_bottom_bar.dart';
+import 'package:nice/shared/state/scope.dart';
 
-class TrainingEditorView extends ConsumerStatefulWidget {
+class TrainingEditorView extends StatefulWidget {
   const TrainingEditorView({super.key});
 
   @override
-  ConsumerState<TrainingEditorView> createState() => _TrainingEditorViewState();
+  State<TrainingEditorView> createState() => _TrainingEditorViewState();
 }
 
-class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
-  late final _mergeExercises = ref.read(mergeExercisesProvider.notifier);
-
+class _TrainingEditorViewState extends State<TrainingEditorView> {
   @override
   void initState() {
     super.initState();
     // Inicia o carregamento do treino 'teste' ao iniciar a view
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(loadTrainingProvider.notifier).call('teste');
+      context.read<LoadTraining>().call('teste');
     });
   }
 
@@ -79,27 +77,12 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
     );
   }
 
-  AsyncValue<DailyTraining> _mapStateToAsyncValue(TrainingState state) {
-    return switch (state.status) {
-      TrainingStatus.idle || TrainingStatus.loading => const AsyncLoading(),
-      TrainingStatus.error => AsyncError(
-        Exception('Error loading training'),
-        StackTrace.current,
-      ),
-      TrainingStatus.loaded when state.training != null => AsyncData(
-        state.training!,
-      ),
-      _ => const AsyncLoading(),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
-    final trainingState = ref.watch(trainingStoreProvider);
-    final trainingAsync = _mapStateToAsyncValue(trainingState);
+    final trainingState = context.watch<TrainingStore>().state;
 
-    ref.listen(mergeExercisesProvider, (prev, next) {
-      if (next is AsyncData && trainingState.training != null) {
+    context.listen<MergeExercises>((command) {
+      if (command.isDone && trainingState.training != null) {
         setState(() => trainingState.training!.selector.clear());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Exercícios mesclados com sucesso')),
@@ -107,14 +90,14 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       }
     });
 
-    ref.listen(generateTrainingProvider, (prev, next) {
-      if (next is AsyncData) {
+    context.listen<GenerateTraining>((command) {
+      if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Treino gerado com sucesso!')),
         );
-      } else if (next is AsyncError) {
+      } else if (command.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao gerar treino: ${next.error}')),
+          SnackBar(content: Text('Erro ao gerar treino: ${command.error}')),
         );
       }
     });
@@ -128,22 +111,22 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
       );
     }
 
-    if (trainingAsync.hasError) {
+    if (trainingState.status == TrainingStatus.error) {
       return Scaffold(
         appBar: _buildAppBar(null),
-        body: Center(
-          child: Text('Erro ao carregar treino: ${trainingAsync.error}'),
+        body: const Center(
+          child: Text('Erro ao carregar treino'),
         ),
       );
     }
 
-    final training = trainingAsync.requireValue;
+    final training = trainingState.training!;
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(training),
       body: TrainingEditorBody(
-        value: trainingAsync,
+        state: trainingState,
         onExerciseClicked: (exercise) => training.selector.isEmpty
             ? _editExercise(
                 training,
@@ -164,14 +147,14 @@ class _TrainingEditorViewState extends ConsumerState<TrainingEditorView> {
               child: const Icon(Icons.add),
             )
           : null,
-      floatingActionButtonLocation: .endContained,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endContained,
       bottomNavigationBar: TrainingEditorBottomBar(
-        training: trainingAsync,
+        state: trainingState,
         mergeClicked: () {
-          _mergeExercises(
-            training,
-            exercises: training.selector.selecteds,
-          );
+          context.read<MergeExercises>().call(
+                training,
+                exercises: training.selector.selecteds,
+              );
         },
         openPromptEditorClicked: () async {
           await TrainingPromptModal.show(

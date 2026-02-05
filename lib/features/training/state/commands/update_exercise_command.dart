@@ -1,33 +1,35 @@
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
-import 'package:nice/features/training/data/training_data_provider.dart';
+import 'package:nice/features/training/data/training_repository.dart';
 import 'package:nice/features/training/state/training_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'update_exercise_command.g.dart';
+class UpdateExercise extends Command {
+  UpdateExercise({
+    required TrainingStore trainingStore,
+    required TrainingRepository trainingRepository,
+  }) : _trainingStore = trainingStore,
+       _trainingRepository = trainingRepository;
 
-@riverpod
-class UpdateExercise extends _$UpdateExercise with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  final TrainingStore _trainingStore;
+  final TrainingRepository _trainingRepository;
 
   void call(
     DailyTraining training, {
     required PositionedExercise exercise,
   }) async {
-    emitLoading();
+    loading();
     training.setExercise(exercise);
-    final result = await ref
-        .read(trainingRepositoryProvider)
+    final result = await _trainingRepository
         .store(training)
         .map((_) => exercise.value);
 
     if (result is Ok) {
-      ref.read(trainingStoreProvider.notifier).emit(TrainingUpdated(training));
+      _trainingStore.update(training);
+      done();
+    } else if (result is Err) {
+      setError((result as Err).value);
     }
-
-    emitResult(result);
   }
 }

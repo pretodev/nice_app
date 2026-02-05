@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
-import 'package:nice/features/training/data/training.dart';
+import 'package:nice/features/training/data/training_status.dart';
+import 'package:nice/features/training/state/training_store.dart';
 import 'package:nice/features/training/ui/widgets/exercise_set_widget.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 class TrainingEditorBody extends StatelessWidget {
   const TrainingEditorBody({
     super.key,
-    required this.value,
+    required this.state,
     this.onExerciseClicked,
     this.onExerciseLongPressed,
   });
 
-  final AsyncValue<DailyTraining> value;
+  final TrainingState state;
   final ValueChanged<PositionedExercise>? onExerciseClicked;
   final ValueChanged<PositionedExercise>? onExerciseLongPressed;
 
   @override
   Widget build(BuildContext context) {
-    if (value.isLoading) {
+    if (state.status == TrainingStatus.loading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (value.hasError) {
-      return Center(child: Text(value.error.toString()));
+    if (state.status == TrainingStatus.error) {
+      // TODO: Improve error message
+      return const Center(child: Text('Error loading training'));
     }
 
-    final training = value.requireValue;
+    if (state.training == null) {
+      return const SizedBox.shrink();
+    }
+
+    final training = state.training!;
 
     if (training.sets.isEmpty) {
       return const Center(

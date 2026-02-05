@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/state/commands/generate_training_command.dart';
+import 'package:nice/shared/state/scope.dart';
 
-class TrainingPromptModal extends ConsumerStatefulWidget {
+class TrainingPromptModal extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     required DailyTraining training,
@@ -24,11 +24,10 @@ class TrainingPromptModal extends ConsumerStatefulWidget {
   const TrainingPromptModal({super.key, required this.training});
 
   @override
-  ConsumerState<TrainingPromptModal> createState() =>
-      _TrainingPromptModalState();
+  State<TrainingPromptModal> createState() => _TrainingPromptModalState();
 }
 
-class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
+class _TrainingPromptModalState extends State<TrainingPromptModal> {
   final TextEditingController _controller = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   File? _selectedImage;
@@ -103,8 +102,8 @@ class _TrainingPromptModalState extends ConsumerState<TrainingPromptModal> {
       return;
     }
 
-    ref
-        .read(generateTrainingProvider.notifier)
+    context
+        .read<GenerateTraining>()
         .call(widget.training, userMessage: message, fileImage: _selectedImage);
 
     Navigator.pop(context);

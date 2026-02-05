@@ -3,8 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nice/features/aigen/data/open_router.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
-import 'package:nice/features/aigen/providers/provider_services.dart';
+import 'package:nice/shared/state/scope.dart';
 import 'package:odu_core/odu_core.dart';
 
 class AigenWidget extends StatefulWidget {
@@ -59,6 +60,7 @@ class _AigenWidgetState extends State<AigenWidget> {
     if (message.isNotEmpty) {
       setState(() => _loading = true);
 
+      final openRouter = context.read<OpenRouter>();
       final OpenRouterMessage userMessage;
       if (_selectedImage != null) {
         final base64Image = await _imageToBase64(_selectedImage!);
@@ -70,12 +72,12 @@ class _AigenWidgetState extends State<AigenWidget> {
         userMessage = OpenRouterMessage.user(message);
       }
 
-      final result = await ref
-          .read(openRouterProvider)
-          .request(
-            model: 'openai/gpt-5-image-mini',
-            messages: [userMessage],
-          );
+      if (!mounted) return;
+
+      final result = await openRouter.request(
+        model: 'openai/gpt-5-image-mini',
+        messages: [userMessage],
+      );
 
       switch (result) {
         case Ok(value: final content):

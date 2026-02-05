@@ -1,18 +1,15 @@
 import 'dart:io';
 
+import 'package:nice/features/aigen/data/open_router.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
-import 'package:nice/features/aigen/providers/provider_services.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
 import 'package:nice/features/training/data/openRouter/generated_exercise_sets_schema.dart';
 import 'package:nice/features/training/data/training.dart';
-import 'package:nice/features/training/data/training_data_provider.dart';
+import 'package:nice/features/training/data/training_repository.dart';
 import 'package:nice/features/training/state/training_store.dart';
 import 'package:nice/shared/image/file_image_extension.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'generate_training_command.g.dart';
 
 const _systemPrompt = '''
 Você é um especialista em treinamento físico, fisiologia do exercício e prevenção de lesões, com experiência em:
@@ -41,10 +38,18 @@ Cada exercício deve ter:
 - "load": número opcional com carga em kg
 ''';
 
-@riverpod
-class GenerateTraining extends _$GenerateTraining with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+class GenerateTraining extends Command {
+  GenerateTraining({
+    required TrainingStore trainingStore,
+    required TrainingRepository trainingRepository,
+    required OpenRouter openRouter,
+  }) : _trainingStore = trainingStore,
+       _trainingRepository = trainingRepository,
+       _openRouter = openRouter;
+
+  final TrainingStore _trainingStore;
+  final TrainingRepository _trainingRepository;
+  final OpenRouter _openRouter;
 
   FutureResult<OpenRouterMessage> _getUserMessage({
     required String userMessage,
@@ -69,9 +74,7 @@ class GenerateTraining extends _$GenerateTraining with CommandMixin {
     required String userMessage,
     File? fileImage,
   }) async {
-    emitLoading();
-
-    final openRouter = ref.read(openRouterProvider);
+    loading();
 
     final result =
         await _getUserMessage(
@@ -79,7 +82,7 @@ class GenerateTraining extends _$GenerateTraining with CommandMixin {
               fileImage: fileImage,
             )
             .flatMapAsync(
-              (message) => openRouter.request(
+              (message) => _openRouter.request(
                 model: 'openai/gpt-5-image-mini',
                 messages: [
                   OpenRouterMessage.system(_systemPrompt),
@@ -97,23 +100,23 @@ class GenerateTraining extends _$GenerateTraining with CommandMixin {
 
     if (exercises.isEmpty) {
       if (result is Err) {
-        emitResult(result.map((_) => unit)); // Propagate error
+        setError((result as Err).value);
       } else {
-        emitOk();
+        done();
       }
       return;
     }
 
     training.sets.addAll(exercises);
-    final storeResult = await ref
-        .read(trainingRepositoryProvider)
+    final storeResult = await _trainingRepository
         .store(training)
         .map((_) => training);
 
     if (storeResult is Ok) {
-      ref.read(trainingStoreProvider.notifier).emit(TrainingUpdated(training));
+      _trainingStore.update(training);
+      done();
+    } else if (storeResult is Err) {
+      setError((storeResult as Err).value);
     }
-
-    emitResult(storeResult);
   }
 }
