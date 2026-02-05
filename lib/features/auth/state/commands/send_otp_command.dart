@@ -1,40 +1,45 @@
 import 'package:nice/features/auth/data/auth_credentials.dart';
-import 'package:nice/features/auth/data/auth_data_provider.dart';
+import 'package:nice/features/auth/data/auth_repository.dart';
+import 'package:nice/features/auth/data/auth_service.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'send_otp_command.g.dart';
+class SendOtp extends Command {
+  final AuthService _authService;
+  final AuthRepository _authRepository;
+  final AuthStore _authStore;
 
-@riverpod
-class SendOtp extends _$SendOtp with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  SendOtp({
+    required AuthService authService,
+    required AuthRepository authRepository,
+    required AuthStore authStore,
+  }) : _authService = authService,
+       _authRepository = authRepository,
+       _authStore = authStore;
 
   void call(EmailAddress email) async {
-    emitLoading();
-    final authService = ref.read(authServiceProvider);
-    final authRepo = ref.read(authRepositoryProvider);
+    loading();
 
     OtpCredentials? otpCredentials;
 
-    final result = await authService
+    final result = await _authService
         .sendOtp(email)
         .flatMapAsync(
           (optId) {
             otpCredentials = OtpCredentials(email: email, otpId: optId);
-            return authRepo.store(otpCredentials!);
+            return _authRepository.store(otpCredentials!);
           },
         )
         .map((_) {
-          ref
-              .read(authStoreProvider.notifier)
-              .emit(OtpRequest(otpCredentials!));
-          return otpCredentials!;
+          _authStore.otpRequest(otpCredentials!);
         });
 
-    emitResult(result);
+    if (result case Err(:final value)) {
+      return setError(value);
+    }
+
+    done();
   }
 }

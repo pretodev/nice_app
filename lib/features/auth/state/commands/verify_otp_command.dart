@@ -1,65 +1,53 @@
-import 'package:nice/features/auth/data/auth_data_provider.dart';
 import 'package:nice/features/auth/data/auth_failures.dart';
+import 'package:nice/features/auth/data/auth_repository.dart';
+import 'package:nice/features/auth/data/auth_service.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
-import 'package:nice/features/user/data/user_data_provider.dart';
-import 'package:nice/features/user/state/user_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'verify_otp_command.g.dart';
+class VerifyOtp extends Command {
+  final AuthService _authService;
+  final AuthRepository _authRepository;
+  final AuthStore _authStore;
 
-@riverpod
-class VerifyOtp extends _$VerifyOtp with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  VerifyOtp({
+    required AuthService authService,
+    required AuthRepository authRepository,
+    required AuthStore authStore,
+  }) : _authService = authService,
+       _authRepository = authRepository,
+       _authStore = authStore;
 
   /// Verifica o código OTP
   /// Usa o otpId armazenado em SharedPreferences
   void call(String otp) async {
-    emitLoading();
-    final authService = ref.read(authServiceProvider);
-    final authRepo = ref.read(authRepositoryProvider);
-    final authStore = ref.read(authStoreProvider.notifier);
-    final userRepo = ref.read(userRepositoryProvider);
-    final userStore = ref.read(userStoreProvider.notifier);
+    loading();
 
-    final otpIdResult = await authRepo.getOtpCredentials();
+    final otpIdResult = await _authRepository.getOtpCredentials();
 
     if (otpIdResult case None()) {
-      emitError(
+      _authStore.clearCredentials();
+      setError(
         const UnknownAuthFailure(
           'OTP code not valid. Please check the code and try again.',
         ),
       );
-      authStore.emit(const ClearCredentials());
       return;
     }
 
     if (otpIdResult case Some(:final value)) {
-      final verifyResult = await authService.verifyOtp(
+      final verifyResult = await _authService.verifyOtp(
         otpId: value.otpId,
         otp: otp,
       );
 
       if (verifyResult case Err()) {
-        emitResult(verifyResult);
+        setError(verifyResult.value);
         return;
       }
-
-      // Carrega o usuário imediatamente após sucesso para garantir estado autenticado
-      final userResult = await userRepo.currentUser;
-
-      if (userResult case Ok(:final value)) {
-        userStore.emit(UserLoaded(value));
-
-        await authRepo.deleteCredentials();
-        authStore.emit(const ClearCredentials());
-        emitOk();
-      } else {
-        // Se falhar ao carregar usuário, emite erro
-        emitResult(userResult.map((_) => unit));
-      }
+      _authStore.clearCredentials();
     }
+
+    done();
   }
 }

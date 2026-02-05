@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/commands/send_otp_command.dart';
-import 'package:nice/features/auth/widgets/email_field.dart';
-import 'package:nice/features/auth/widgets/primary_button.dart';
+import 'package:nice/features/auth/ui/widgets/email_field.dart';
+import 'package:nice/features/auth/ui/widgets/primary_button.dart';
+import 'package:nice/shared/state/scope.dart';
 
-class LoginView extends ConsumerStatefulWidget {
+class LoginView extends StatefulWidget {
   static Route<void> route() {
     return PageRouteBuilder<void>(
       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -22,10 +22,10 @@ class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  ConsumerState<LoginView> createState() => _LoginViewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends ConsumerState<LoginView> {
+class _LoginViewState extends State<LoginView> {
   final _emailController = TextEditingController();
   String? _errorText;
 
@@ -37,23 +37,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(sendOtpProvider, (prev, next) {
-      next.when(
-        data: (_) {},
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString().replaceFirst('Exception: ', '')),
-              backgroundColor: Colors.red,
-            ),
-          );
-        },
-        loading: () {},
+    context.listen<SendOtp>((state) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.error.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
       );
     });
 
-    final commandState = ref.watch(sendOtpProvider);
-    final isLoading = commandState.isLoading;
+    final sendOtp = context.watch<SendOtp>();
 
     return Scaffold(
       body: SafeArea(
@@ -80,7 +73,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
               EmailField(
                 controller: _emailController,
                 errorText: _errorText,
-                enabled: !isLoading,
+                enabled: !sendOtp.isLoading,
                 onChanged: (_) {
                   if (_errorText != null) {
                     setState(() => _errorText = null);
@@ -95,12 +88,10 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     setState(() => _errorText = 'Email é obrigatório');
                     return;
                   }
-                  ref
-                      .read(sendOtpProvider.notifier)
-                      .call(EmailAddress(emailValue));
+                  sendOtp(EmailAddress(emailValue));
                 },
                 text: 'Entrar',
-                isLoading: isLoading,
+                isLoading: sendOtp.isLoading,
               ),
             ],
           ),

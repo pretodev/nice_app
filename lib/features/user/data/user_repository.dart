@@ -16,6 +16,13 @@ class UserRepository {
   }
 
   Stream<UserStatus> get currentStatus async* {
+    if (_pb.authStore.isValid) {
+      try {
+        await _pb.collection('users').authRefresh();
+      } catch (_) {
+        _pb.authStore.clear();
+      }
+    }
     final initialRecord = _pb.authStore.record;
     final initialState = initialRecord != null
         ? UserStatus.authenticated

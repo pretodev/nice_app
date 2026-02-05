@@ -1,26 +1,23 @@
-import 'package:nice/features/auth/data/auth_data_provider.dart';
+import 'package:nice/features/auth/data/auth_repository.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
-import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:nice/shared/state/command.dart';
 
-part 'cancel_otp_command.g.dart';
+class CancelOtp extends Command {
+  final AuthRepository _authRepository;
+  final AuthStore _authStore;
 
-@riverpod
-class CancelOtp extends _$CancelOtp with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  CancelOtp({
+    required AuthRepository authRepository,
+    required AuthStore authStore,
+  }) : _authRepository = authRepository,
+       _authStore = authStore;
 
-  /// Cancela a verificação do OTP
   void call() async {
-    emitLoading();
-    final authRepo = ref.read(authRepositoryProvider);
-    final result = await authRepo.deleteCredentials();
-
+    loading();
+    final result = await _authRepository.deleteCredentials();
     if (result.isOk) {
-      ref.read(authStoreProvider.notifier).emit(const ClearCredentials());
+      _authStore.clearCredentials();
     }
-
-    emitResult(result);
+    done();
   }
 }

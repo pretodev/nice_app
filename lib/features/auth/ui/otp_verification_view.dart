@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nice/features/auth/cancel_otp_verification_view.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/commands/cancel_otp_command.dart';
 import 'package:nice/features/auth/state/commands/send_otp_command.dart';
 import 'package:nice/features/auth/state/commands/verify_otp_command.dart';
-import 'package:nice/features/auth/widgets/otp_input_field.dart';
-import 'package:nice/features/auth/widgets/primary_button.dart';
+import 'package:nice/features/auth/ui/cancel_otp_verification_view.dart';
+import 'package:nice/features/auth/ui/widgets/otp_input_field.dart';
+import 'package:nice/features/auth/ui/widgets/primary_button.dart';
+import 'package:nice/shared/state/scope.dart';
 
 class OtpVerificationView extends ConsumerStatefulWidget {
   static Route<void> route({required EmailAddress email}) {
@@ -73,71 +74,68 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
       _errorText = null;
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
-      ref.read(cancelOtpProvider.notifier).call();
+      context.read<CancelOtp>().call();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(sendOtpProvider, (prev, next) {
-      next.when(
-        data: (_) {
-          _startCooldown();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('OTP code sent successfully'),
-              backgroundColor: Colors.green,
+    context.listen<SendOtp>((state) {
+      if (state.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              state.error.toString().replaceFirst('Exception: ', ''),
             ),
-          );
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString().replaceFirst('Exception: ', '')),
-              backgroundColor: Colors.red,
-            ),
-          );
-        },
-        loading: () {},
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      _startCooldown();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('OTP code sent successfully'),
+          backgroundColor: Colors.green,
+        ),
       );
     });
 
-    ref.listen(verifyOtpProvider, (prev, next) {
-      next.when(
-        data: (_) {},
-        error: (error, _) {
-          setState(() {
-            _errorText = error.toString().replaceFirst('Exception: ', '');
-          });
-        },
-        loading: () {
-          setState(() => _errorText = null);
-        },
-      );
+    context.listen<VerifyOtp>((state) {
+      if (state.isLoading) {
+        setState(() => _errorText = null);
+        return;
+      }
+
+      if (state.hasError) {
+        setState(() {
+          _errorText = state.error.toString().replaceFirst('Exception: ', '');
+        });
+        return;
+      }
     });
 
-    ref.listen(cancelOtpProvider, (prev, next) {
-      next.when(
-        data: (_) {},
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString().replaceFirst('Exception: ', '')),
-              backgroundColor: Colors.red,
+    context.listen<CancelOtp>((state) {
+      if (state.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              state.error.toString().replaceFirst('Exception: ', ''),
             ),
-          );
-        },
-        loading: () {},
-      );
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     });
 
-    final sendOtpState = ref.watch(sendOtpProvider);
-    final verifyOtpState = ref.watch(verifyOtpProvider);
-    final cancelOtpState = ref.watch(cancelOtpProvider);
+    final sendOtp = context.watch<SendOtp>();
+    final verifyOtp = context.watch<VerifyOtp>();
+    final cancelOtp = context.watch<CancelOtp>();
+
     final isLoading =
-        sendOtpState.isLoading ||
-        verifyOtpState.isLoading ||
-        cancelOtpState.isLoading;
+        sendOtp.isLoading || verifyOtp.isLoading || cancelOtp.isLoading;
+
     final canResend = _remainingSeconds <= 0 && !isLoading;
 
     return PopScope(
@@ -196,20 +194,14 @@ class _OtpVerificationViewState extends ConsumerState<OtpVerificationView> {
                 const SizedBox(height: 24),
                 PrimaryButton(
                   onPressed: _otpCode.length == 6 && !isLoading
-                      ? () {
-                          ref.read(verifyOtpProvider.notifier).call(_otpCode);
-                        }
+                      ? () => verifyOtp(_otpCode)
                       : null,
                   text: 'Verify',
-                  isLoading: verifyOtpState.isLoading,
+                  isLoading: verifyOtp.isLoading,
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: canResend
-                      ? () {
-                          ref.read(sendOtpProvider.notifier).call(widget.email);
-                        }
-                      : null,
+                  onPressed: canResend ? () => sendOtp(widget.email) : null,
                   child: Text(
                     _remainingSeconds > 0
                         ? 'Resend code in $_remainingSeconds seconds'

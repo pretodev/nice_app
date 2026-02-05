@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nice/features/user/state/commands/sign_out_command.dart';
-import 'package:nice/features/user/state/user_store.dart';
+import 'package:nice/features/user/state/user_state.dart';
+import 'package:nice/shared/state/scope.dart';
 
-class PlaceholderView extends ConsumerWidget {
+class PlaceholderView extends StatelessWidget {
   static Route<void> route() {
     return PageRouteBuilder<void>(
       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -20,25 +20,22 @@ class PlaceholderView extends ConsumerWidget {
   const PlaceholderView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userState = ref.watch(userStoreProvider);
-
-    ref.listen(signOutProvider, (prev, next) {
-      next.when(
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString().replaceFirst('Exception: ', '')),
-              backgroundColor: Colors.red,
+  Widget build(BuildContext context) {
+    context.listen<SignOut>((action) {
+      if (action.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              action.error.toString().replaceFirst('Exception: ', ''),
             ),
-          );
-        },
-        data: (_) {
-          // Navigation handled by AuthGate
-        },
-        loading: () {},
-      );
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     });
+
+    final userState = context.watch<UserStore>().state;
+    final signOut = context.watch<SignOut>();
 
     return Scaffold(
       appBar: AppBar(
@@ -46,9 +43,7 @@ class PlaceholderView extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              ref.read(signOutProvider.notifier).call();
-            },
+            onPressed: signOut.call,
           ),
         ],
       ),

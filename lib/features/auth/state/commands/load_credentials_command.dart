@@ -1,28 +1,24 @@
-import 'package:nice/features/auth/data/auth_data_provider.dart';
+import 'package:nice/features/auth/data/auth_repository.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'load_credentials_command.g.dart';
+class LoadCredentials extends Command {
+  final AuthRepository _authRepository;
+  final AuthStore _authStore;
 
-@riverpod
-class LoadCredentialsCommand extends _$LoadCredentialsCommand
-    with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  LoadCredentials({
+    required AuthRepository authRepository,
+    required AuthStore authStore,
+  }) : _authRepository = authRepository,
+       _authStore = authStore;
 
   void call() async {
-    emitLoading();
-
-    final authRepo = ref.read(authRepositoryProvider);
-    final authStore = ref.read(authStoreProvider.notifier);
-
-    final result = await authRepo.getOtpCredentials();
-
+    loading();
+    final result = await _authRepository.getOtpCredentials();
     if (result case Some(:final value)) {
-      authStore.emit(OtpRequest(value));
+      _authStore.otpRequest(value);
     }
-    emitOk();
+    done();
   }
 }

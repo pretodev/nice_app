@@ -1,17 +1,21 @@
+import 'package:auto_injector/auto_injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nice/features/auth/auth_module.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/pocketbase/persistent_auth_store.dart';
-import 'package:nice/features/auth/login_view.dart';
-import 'package:nice/features/auth/otp_verification_view.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/features/auth/state/commands/load_credentials_command.dart';
+import 'package:nice/features/auth/ui/login_view.dart';
+import 'package:nice/features/auth/ui/otp_verification_view.dart';
 import 'package:nice/features/user/data/user_status.dart';
-import 'package:nice/features/user/placeholder_view.dart';
 import 'package:nice/features/user/state/commands/load_user_command.dart';
 import 'package:nice/features/user/state/user_store.dart';
+import 'package:nice/features/user/ui/placeholder_view.dart';
+import 'package:nice/features/user/user_module.dart';
 import 'package:nice/shared/data/shared_data_provider.dart';
 import 'package:nice/shared/environment.dart';
+import 'package:nice/shared/state/scope.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 void main() async {
@@ -25,31 +29,35 @@ void main() async {
   final pb = PocketBase(Environment.pocketbaseUrl, authStore: authStore);
 
   runApp(
-    ProviderScope(
-      overrides: [
-        pocketbaseClientProvider.overrideWithValue(pb),
-      ],
+    AppScope(
+      injector: AutoInjector(
+        on: (i) {
+          i.addLazySingleton(() => pb);
+          i.addInjector(userModule);
+          i.addInjector(authModule);
+        },
+      ),
       child: const MainApp(),
     ),
   );
 }
 
-class MainApp extends ConsumerStatefulWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  ConsumerState<MainApp> createState() => _MainAppState();
+  State<MainApp> createState() => _MainAppState();
 }
 
-class _MainAppState extends ConsumerState<MainApp> {
+class _MainAppState extends State<MainApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(loadUserCommandProvider.notifier).call();
-      ref.read(loadCredentialsCommandProvider.notifier).call();
+      if (!mounted) return;
+      context.read<LoadUser>().call();
     });
   }
 

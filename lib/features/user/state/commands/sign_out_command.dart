@@ -1,28 +1,27 @@
-import 'package:nice/features/user/data/user_data_provider.dart';
-import 'package:nice/features/user/state/user_store.dart';
-import 'package:nice/shared/mixins/command_provider_base_mixin.dart';
+import 'package:nice/features/user/data/user_repository.dart';
+import 'package:nice/features/user/state/user_state.dart';
+import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'sign_out_command.g.dart';
+class SignOut extends Command {
+  SignOut({
+    required UserRepository userRepository,
+    required UserStore userStore,
+  }) : _userRepository = userRepository,
+       _userStore = userStore;
 
-@riverpod
-class SignOut extends _$SignOut with CommandMixin {
-  @override
-  AsyncValue<Unit> build() => invalidState();
+  final UserStore _userStore;
+  final UserRepository _userRepository;
 
-  Future<void> call() async {
-    emitLoading();
-    final userRepo = ref.read(userRepositoryProvider);
-    final userStore = ref.read(userStoreProvider.notifier);
-
-    final result = await userRepo.signOut();
+  void call() async {
+    loading();
+    final result = await _userRepository.signOut();
     switch (result) {
       case Ok():
-        userStore.emit(const UserSignOut());
+        _userStore.userLoggedOut();
       case Err():
-        return emitError(result.value);
+        return setError(result.value);
     }
-    return emitOk();
+    return done();
   }
 }
