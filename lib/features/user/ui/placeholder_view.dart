@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/user/state/user_view_model.dart';
-import 'package:nice/shared/state/scope.dart';
 
 class PlaceholderView extends StatelessWidget {
   static Route<void> route() {

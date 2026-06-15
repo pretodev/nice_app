@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nice/core/fp/fp.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/aigen/data/open_router.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
-import 'package:nice/shared/state/scope.dart';
 
 class AigenWidget extends StatefulWidget {
   const AigenWidget({super.key});

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/app/ui/widgets/field.dart';
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_execution.dart';
@@ -8,7 +9,6 @@ import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/state/training_view_model.dart';
 import 'package:nice/features/training/ui/widgets/repetition_counter.dart';
 import 'package:nice/features/training/ui/widgets/series_counter.dart';
-import 'package:nice/shared/state/scope.dart';
 
 class TraningExerciseEditorView extends StatefulWidget {
   static PageRoute<void> route({

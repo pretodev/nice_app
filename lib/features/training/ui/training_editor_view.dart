@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/data/training_status.dart';
@@ -7,7 +8,6 @@ import 'package:nice/features/training/ui/training_prompt_modal.dart';
 import 'package:nice/features/training/ui/traning_exercise_editor_view.dart';
 import 'package:nice/features/training/ui/widgets/training_editor_body.dart';
 import 'package:nice/features/training/ui/widgets/training_editor_bottom_bar.dart';
-import 'package:nice/shared/state/scope.dart';
 
 class TrainingEditorView extends StatefulWidget {
   const TrainingEditorView({super.key});

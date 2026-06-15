@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/auth_view_model.dart';
 import 'package:nice/features/auth/ui/cancel_otp_verification_view.dart';
 import 'package:nice/features/auth/ui/widgets/primary_button.dart';
-import 'package:nice/shared/state/scope.dart';
 
 /// Tela mostrada após o app disparar um sign-in link por email.
 class OtpVerificationView extends StatefulWidget {

@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/state/training_view_model.dart';
-import 'package:nice/shared/state/scope.dart';
 
 class TrainingPromptModal extends StatefulWidget {
   static Future<void> show(
