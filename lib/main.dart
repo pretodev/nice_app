@@ -1,6 +1,6 @@
-import 'package:auto_injector/auto_injector.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:nice/core/injector/module_injector.dart';
 import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/app/ui/application.dart';
 import 'package:nice/features/auth/auth_module.dart';
@@ -15,14 +15,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final injector = AutoInjector(
-    on: (i) {
-      i.addInjector(userModule);
-      i.addInjector(authModule);
-      i.addInjector(trainingModule);
-    },
-  );
-  injector.commit();
+  final injector = createInjector([
+    userModule,
+    authModule,
+    trainingModule,
+  ]);
 
   runApp(
     AppScope(

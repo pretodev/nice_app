@@ -1,8 +1,8 @@
 // ================================================
-// File: lib/shared/state/scope.dart
+// File: lib/core/injector/scope.dart
 // ================================================
-import 'package:auto_injector/auto_injector.dart';
 import 'package:flutter/material.dart';
+import 'package:nice/core/injector/module.dart';
 import 'package:nice/core/state/view_model.dart';
 
 class AppScope extends StatefulWidget {
@@ -12,7 +12,7 @@ class AppScope extends StatefulWidget {
     required this.child,
   });
 
-  final AutoInjector injector;
+  final Injector injector;
   final Widget child;
 
   static AppScopeState of(BuildContext context) {
@@ -26,12 +26,12 @@ class AppScope extends StatefulWidget {
 }
 
 class AppScopeState extends State<AppScope> {
-  AutoInjector get injector => widget.injector;
+  Injector get injector => widget.injector;
 
   final _watchSubscriptions = <Element, Set<_WatchSubscription>>{};
   final _listenSubscriptions = <Element, Set<_ListenSubscription>>{};
 
-  T get<T>() => injector.get<T>();
+  T get<T extends Object>() => injector.get<T>();
 
   T watch<T extends Listenable>(Element element) =>
       watchListenable<T>(element, injector.get<T>());
@@ -199,7 +199,7 @@ class _InheritedInjector extends InheritedWidget {
 
 extension InjectorContextExtension on BuildContext {
   /// Obtém uma instância sem observar mudanças
-  T read<T>() {
+  T read<T extends Object>() {
     final inherited = getInheritedWidgetOfExactType<_InheritedInjector>();
     assert(inherited != null, 'AppScope not found in context');
     return inherited!.state.get<T>();
