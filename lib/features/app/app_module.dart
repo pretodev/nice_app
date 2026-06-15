@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 final appModule = AutoInjector(
   tag: 'AppModule',
   on: (i) {
-    i.addLazySingleton(() => FirebaseAuth.instance);
-    i.addLazySingleton(() => FirebaseFirestore.instance);
+    i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+    i.addLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   },
 );
