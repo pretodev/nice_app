@@ -7,7 +7,7 @@
       "type": "dart",
       "toolArgs": [
         "--enable-experiment=primary-constructors",
-        "--dart-define-from-file=env.development.json"
+        "--dart-define-from-file=env.json"
       ]
     },
     {
@@ -17,7 +17,7 @@
       "flutterMode": "profile",
       "toolArgs": [
         "--enable-experiment=primary-constructors",
-        "--dart-define-from-file=env.development.json"
+        "--dart-define-from-file=env.json"
       ]
     },
     {
@@ -27,7 +27,7 @@
       "flutterMode": "release",
       "toolArgs": [
         "--enable-experiment=primary-constructors",
-        "--dart-define-from-file=env.development.json"
+        "--dart-define-from-file=env.json"
       ]
     }
   ]

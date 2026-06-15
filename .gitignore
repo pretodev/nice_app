@@ -53,5 +53,6 @@ ios/Runner/GoogleService-Info.plist
 
 .trae/documents
 
+env.json
 env.development.json
 env.production.json

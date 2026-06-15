@@ -12,11 +12,11 @@ abstract class Environment {
 
   static const emailLinkAndroidPackageName = String.fromEnvironment(
     'EMAIL_LINK_ANDROID_PACKAGE',
-    defaultValue: 'com.example.nice',
+    defaultValue: 'br.com.odulab.nice',
   );
 
   static const emailLinkIosBundleId = String.fromEnvironment(
     'EMAIL_LINK_IOS_BUNDLE_ID',
-    defaultValue: 'com.example.nice',
+    defaultValue: 'br.com.odulab.nice',
   );
 }
