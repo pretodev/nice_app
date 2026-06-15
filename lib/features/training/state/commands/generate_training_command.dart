@@ -1,15 +1,16 @@
 import 'dart:io';
 
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/aigen/data/open_router.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
 import 'package:nice/features/training/data/openRouter/generated_exercise_sets_schema.dart';
 import 'package:nice/features/training/data/training.dart';
+import 'package:nice/features/training/data/training_failures.dart';
 import 'package:nice/features/training/data/training_repository.dart';
 import 'package:nice/features/training/state/training_store.dart';
 import 'package:nice/shared/image/file_image_extension.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 const _systemPrompt = '''
 Você é um especialista em treinamento físico, fisiologia do exercício e prevenção de lesões, com experiência em:
@@ -63,7 +64,7 @@ class GenerateTraining extends Command {
       }
       return Ok(userMsg);
     } on FormatException catch (e) {
-      return Err(e);
+      return Err(TrainingGenerationFailure(e.message));
     }
   }
 
@@ -98,7 +99,7 @@ class GenerateTraining extends Command {
 
     if (exercises.isEmpty) {
       if (result is Err) {
-        setError((result as Err).value);
+        setError((result as Err).failure);
       } else {
         done();
       }
@@ -114,7 +115,7 @@ class GenerateTraining extends Command {
       _trainingStore.update(training);
       done();
     } else if (storeResult is Err) {
-      setError((storeResult as Err).value);
+      setError((storeResult as Err).failure);
     }
   }
 }

@@ -1,6 +1,6 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-import 'package:odu_core/odu_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _emailCredentialsKey = 'auth.credentials.email_link_email';

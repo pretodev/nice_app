@@ -1,6 +1,5 @@
-class UserNotAuthenticated implements Exception {
-  const UserNotAuthenticated();
+import 'package:nice/core/fp/fp.dart';
 
-  @override
-  String toString() => 'User is not authenticated';
+class UserNotAuthenticated extends Failure {
+  const UserNotAuthenticated() : super('User is not authenticated');
 }

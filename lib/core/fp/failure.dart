@@ -16,7 +16,7 @@ abstract class const Failure(
   final String message, {
   final String? debugDetails,
   final StackTrace? stackTrace,
-}) {
+}) implements Exception {
   @override
   String toString() =>
       '$runtimeType: $message'

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/user/data/user_entity.dart';
 import 'package:nice/features/user/data/user_failures.dart';
 import 'package:nice/features/user/data/user_status.dart';
-import 'package:odu_core/odu_core.dart';
 
 class UserRepository {
   final FirebaseAuth _auth;

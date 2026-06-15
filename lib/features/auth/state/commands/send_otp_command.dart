@@ -1,10 +1,10 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/auth_repository.dart';
 import 'package:nice/features/auth/data/auth_service.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 /// Envia o sign-in link (Firebase Email Link) para o email informado.
 class SendOtp extends Command {
@@ -30,8 +30,8 @@ class SendOtp extends Command {
           _authStore.emailLinkRequest(credentials);
         });
 
-    if (result case Err(:final value)) {
-      return setError(value);
+    if (result case Err(:final failure)) {
+      return setError(failure);
     }
 
     done();

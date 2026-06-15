@@ -2,8 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
-import 'package:odu_core/odu_core.dart';
+
+class OpenRouterFailure extends Failure {
+  OpenRouterFailure(super.message, {super.debugDetails, super.stackTrace});
+}
 
 class OpenRouter {
   final String _apiKey;
@@ -46,9 +50,9 @@ class OpenRouter {
         return Ok(content ?? '');
       }
 
-      return Err(Exception('No choices in response'));
+      return Err(OpenRouterFailure('No choices in response'));
     } catch (e, s) {
-      return Err(e is Exception ? e : Exception('$e'), s);
+      return Err(OpenRouterFailure('$e', debugDetails: '$e'), s);
     }
   }
 

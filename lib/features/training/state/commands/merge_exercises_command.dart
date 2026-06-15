@@ -1,9 +1,9 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/data/training_repository.dart';
 import 'package:nice/features/training/state/training_store.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 class MergeExercises extends Command {
   MergeExercises({
@@ -26,7 +26,7 @@ class MergeExercises extends Command {
       _trainingStore.update(training);
       done();
     } else if (result is Err) {
-      setError((result as Err).value);
+      setError((result as Err).failure);
     }
   }
 }

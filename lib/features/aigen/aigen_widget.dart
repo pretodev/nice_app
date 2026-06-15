@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/aigen/data/open_router.dart';
 import 'package:nice/features/aigen/data/open_router_message.dart';
 import 'package:nice/shared/state/scope.dart';
-import 'package:odu_core/odu_core.dart';
 
 class AigenWidget extends StatefulWidget {
   const AigenWidget({super.key});
@@ -89,7 +89,7 @@ class _AigenWidgetState extends State<AigenWidget> {
               _selectedImage = null;
             });
           }
-        case Err(value: final error):
+        case Err(failure: final error):
           debugPrint('OpenRouter Error: $error');
           if (mounted) {
             ScaffoldMessenger.of(

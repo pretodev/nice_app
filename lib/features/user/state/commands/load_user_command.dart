@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/user/data/user_repository.dart';
 import 'package:nice/features/user/data/user_status.dart';
 import 'package:nice/features/user/state/user_state.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 class LoadUser extends Command {
   LoadUser({

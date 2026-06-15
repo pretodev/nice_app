@@ -1,7 +1,7 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/user/data/user_repository.dart';
 import 'package:nice/features/user/state/user_state.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 class SignOut extends Command {
   SignOut({
@@ -18,8 +18,8 @@ class SignOut extends Command {
     switch (result) {
       case Ok():
         _userStore.userLoggedOut();
-      case Err():
-        return setError(result.value);
+      case Err(:final failure):
+        return setError(failure);
     }
     return done();
   }

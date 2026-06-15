@@ -1,6 +1,6 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/training/data/firebase/firestore_training_document.dart';
 import 'package:nice/features/training/data/training.dart';
-import 'package:odu_core/odu_core.dart';
 
 class TrainingRepository {
   TrainingRepository({required this._trainingDocument});

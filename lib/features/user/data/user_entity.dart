@@ -1,4 +1,4 @@
-import 'package:odu_core/odu_core.dart';
+import 'package:odu_core/odu_core.dart' show GuidEntity;
 
 class UserEntity extends GuidEntity {
   UserEntity({

@@ -1,8 +1,8 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/user/data/user_entity.dart';
 import 'package:nice/features/user/data/user_repository.dart';
 import 'package:nice/features/user/state/user_state.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 class SetProfileData extends Command {
   SetProfileData({
@@ -24,8 +24,8 @@ class SetProfileData extends Command {
     switch (result) {
       case Ok():
         _userStore.userUpdated(user);
-      case Err():
-        return setError(result.value);
+      case Err(:final failure):
+        return setError(failure);
     }
     done();
   }

@@ -2,7 +2,7 @@ import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
 import 'package:nice/features/training/data/training_selector.dart';
-import 'package:odu_core/odu_core.dart';
+import 'package:odu_core/odu_core.dart' show GuidEntity;
 
 class DailyTraining extends GuidEntity {
   factory DailyTraining.create(DateTime date) {

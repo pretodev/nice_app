@@ -1,9 +1,9 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/auth/data/auth_failures.dart';
 import 'package:nice/features/auth/data/auth_repository.dart';
 import 'package:nice/features/auth/data/auth_service.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/shared/state/command.dart';
-import 'package:odu_core/odu_core.dart';
 
 /// Conclui o sign-in com o link enviado por email.
 class VerifyOtp extends Command {
@@ -45,8 +45,8 @@ class VerifyOtp extends Command {
         emailLink: emailLink,
       );
 
-      if (result case Err()) {
-        setError(result.value);
+      if (result case Err(:final failure)) {
+        setError(failure);
         return;
       }
       await _authRepository.deleteCredentials();

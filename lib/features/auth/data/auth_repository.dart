@@ -1,7 +1,7 @@
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
 import 'package:nice/features/auth/data/auth_failures.dart';
 import 'package:nice/features/auth/data/shared_preferences/shared_preferences.dart';
-import 'package:odu_core/odu_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {

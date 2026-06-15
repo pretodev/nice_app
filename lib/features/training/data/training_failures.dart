@@ -1,30 +1,19 @@
-sealed class TrainingFailure implements Exception {
-  const TrainingFailure();
+import 'package:nice/core/fp/fp.dart';
 
-  String get message;
+sealed class TrainingFailure extends Failure {
+  const TrainingFailure(super.message);
 }
 
 class TrainingNotFoundFailure extends TrainingFailure {
-  const TrainingNotFoundFailure();
-
-  @override
-  String get message => 'Training not found';
+  const TrainingNotFoundFailure() : super('Training not found');
 }
 
 class TrainingStorageFailure extends TrainingFailure {
-  const TrainingStorageFailure([this.reason]);
-
-  final String? reason;
-
-  @override
-  String get message => reason ?? 'Failed to save training';
+  const TrainingStorageFailure([String? reason])
+    : super(reason ?? 'Failed to save training');
 }
 
 class TrainingGenerationFailure extends TrainingFailure {
-  const TrainingGenerationFailure([this.reason]);
-
-  final String? reason;
-
-  @override
-  String get message => reason ?? 'Failed to generate training';
+  const TrainingGenerationFailure([String? reason])
+    : super(reason ?? 'Failed to generate training');
 }

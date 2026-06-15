@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/features/auth/data/email_address.dart';
 import 'package:nice/features/auth/data/firebase/firebase_auth_exception.dart';
 import 'package:nice/shared/environment.dart';
-import 'package:odu_core/odu_core.dart';
 
 class AuthService {
   final FirebaseAuth _auth;
