@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:nice/core/fp/fp.dart';
 import 'package:nice/core/state/view_model.dart';
 import 'package:nice/features/training/data/exercise.dart';
-import 'package:odu_core/odu_core.dart';
 
 class PlannerViewModel extends ViewModel<PlannerState> {
   PlannerViewModel() : super(PlannerLoaded());
@@ -26,10 +26,10 @@ sealed class PlannerState extends Equatable {
 
 final class PlannerLoaded extends PlannerState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class PlannerUpdated extends PlannerState {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
