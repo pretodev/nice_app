@@ -40,12 +40,10 @@ Cada exercício deve ter:
 
 class GenerateTraining extends Command {
   GenerateTraining({
-    required TrainingStore trainingStore,
-    required TrainingRepository trainingRepository,
-    required OpenRouter openRouter,
-  }) : _trainingStore = trainingStore,
-       _trainingRepository = trainingRepository,
-       _openRouter = openRouter;
+    required this._trainingStore,
+    required this._trainingRepository,
+    required this._openRouter,
+  });
 
   final TrainingStore _trainingStore;
   final TrainingRepository _trainingRepository;

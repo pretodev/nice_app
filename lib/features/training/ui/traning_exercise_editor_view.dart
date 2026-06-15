@@ -98,9 +98,9 @@ class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
     );
     if (widget.exercise != null) {
       context.read<UpdateExercise>().call(
-            widget.training,
-            exercise: widget.exercise!.copyWith(value: exercise),
-          );
+        widget.training,
+        exercise: widget.exercise!.copyWith(value: exercise),
+      );
     } else {
       context.read<AddExercise>().call(widget.training, exercise);
     }

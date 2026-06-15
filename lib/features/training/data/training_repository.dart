@@ -3,8 +3,7 @@ import 'package:nice/features/training/data/training.dart';
 import 'package:odu_core/odu_core.dart';
 
 class TrainingRepository {
-  TrainingRepository({required PocketBaseTrainingDocument trainingDocument})
-    : _trainingDocument = trainingDocument;
+  TrainingRepository({required this._trainingDocument});
 
   final PocketBaseTrainingDocument _trainingDocument;
 

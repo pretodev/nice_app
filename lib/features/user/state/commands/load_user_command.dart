@@ -8,10 +8,9 @@ import 'package:odu_core/odu_core.dart';
 
 class LoadUser extends Command {
   LoadUser({
-    required UserStore userStore,
-    required UserRepository userRepository,
-  }) : _userStore = userStore,
-       _userRepository = userRepository;
+    required this._userStore,
+    required this._userRepository,
+  });
 
   final UserStore _userStore;
   final UserRepository _userRepository;

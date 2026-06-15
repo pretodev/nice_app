@@ -102,9 +102,11 @@ class _TrainingPromptModalState extends State<TrainingPromptModal> {
       return;
     }
 
-    context
-        .read<GenerateTraining>()
-        .call(widget.training, userMessage: message, fileImage: _selectedImage);
+    context.read<GenerateTraining>().call(
+      widget.training,
+      userMessage: message,
+      fileImage: _selectedImage,
+    );
 
     Navigator.pop(context);
   }

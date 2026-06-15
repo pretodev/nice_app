@@ -11,12 +11,10 @@ class VerifyOtp extends Command {
   final AuthStore _authStore;
 
   VerifyOtp({
-    required AuthService authService,
-    required AuthRepository authRepository,
-    required AuthStore authStore,
-  }) : _authService = authService,
-       _authRepository = authRepository,
-       _authStore = authStore;
+    required this._authService,
+    required this._authRepository,
+    required this._authStore,
+  });
 
   /// Verifica o código OTP
   /// Usa o otpId armazenado em SharedPreferences

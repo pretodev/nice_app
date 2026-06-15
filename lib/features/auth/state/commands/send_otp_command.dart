@@ -12,12 +12,10 @@ class SendOtp extends Command {
   final AuthStore _authStore;
 
   SendOtp({
-    required AuthService authService,
-    required AuthRepository authRepository,
-    required AuthStore authStore,
-  }) : _authService = authService,
-       _authRepository = authRepository,
-       _authStore = authStore;
+    required this._authService,
+    required this._authRepository,
+    required this._authStore,
+  });
 
   void call(EmailAddress email) async {
     loading();

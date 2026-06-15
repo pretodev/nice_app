@@ -152,9 +152,9 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
         state: trainingState,
         mergeClicked: () {
           context.read<MergeExercises>().call(
-                training,
-                exercises: training.selector.selecteds,
-              );
+            training,
+            exercises: training.selector.selecteds,
+          );
         },
         openPromptEditorClicked: () async {
           await TrainingPromptModal.show(

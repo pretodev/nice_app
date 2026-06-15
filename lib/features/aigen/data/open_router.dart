@@ -35,8 +35,8 @@ class OpenRouter {
           'model': model,
           if (messages != null)
             'messages': messages.map((m) => m.toJson()).toList(),
-          if (temperature != null) 'temperature': temperature,
-          if (responseFormat != null) 'response_format': responseFormat,
+          'temperature': ?temperature,
+          'response_format': ?responseFormat,
         },
       );
 
@@ -75,8 +75,8 @@ class OpenRouter {
           'model': model,
           if (messages != null)
             'messages': messages.map((m) => m.toJson()).toList(),
-          if (temperature != null) 'temperature': temperature,
-          if (responseFormat != null) 'response_format': responseFormat,
+          'temperature': ?temperature,
+          'response_format': ?responseFormat,
           'stream': true,
         },
       );

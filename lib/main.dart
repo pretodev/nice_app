@@ -76,7 +76,7 @@ class _MainAppState extends State<MainApp> {
           route = LoginView.route();
       }
     }
-    
+
     _navigatorKey.currentState?.pushReplacement(route);
   }
 

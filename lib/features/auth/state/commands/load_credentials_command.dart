@@ -8,10 +8,9 @@ class LoadCredentials extends Command {
   final AuthStore _authStore;
 
   LoadCredentials({
-    required AuthRepository authRepository,
-    required AuthStore authStore,
-  }) : _authRepository = authRepository,
-       _authStore = authStore;
+    required this._authRepository,
+    required this._authStore,
+  });
 
   void call() async {
     loading();

@@ -6,10 +6,9 @@ import 'package:odu_core/odu_core.dart';
 
 class SetProfileData extends Command {
   SetProfileData({
-    required UserRepository userRepository,
-    required UserStore userStore,
-  }) : _userRepository = userRepository,
-       _userStore = userStore;
+    required this._userRepository,
+    required this._userStore,
+  });
 
   final UserStore _userStore;
 

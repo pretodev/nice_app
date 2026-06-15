@@ -6,10 +6,9 @@ import 'package:nice/shared/state/command.dart';
 
 class LoadTraining extends Command {
   LoadTraining({
-    required TrainingStore trainingStore,
-    required TrainingRepository trainingRepository,
-  }) : _trainingStore = trainingStore,
-       _trainingRepository = trainingRepository;
+    required this._trainingStore,
+    required this._trainingRepository,
+  });
 
   final TrainingStore _trainingStore;
   final TrainingRepository _trainingRepository;
@@ -18,20 +17,22 @@ class LoadTraining extends Command {
 
   void call(String id) async {
     loading();
-    
+
     // Cancel previous subscription if any
     await _subscription?.cancel();
 
-    _subscription = _trainingRepository.fromId(id).listen(
-      (training) {
-        _trainingStore.load(training);
-        done();
-      },
-      onError: (error, stackTrace) {
-        _trainingStore.error();
-        setError(error is Exception ? error : Exception(error));
-      },
-    );
+    _subscription = _trainingRepository
+        .fromId(id)
+        .listen(
+          (training) {
+            _trainingStore.load(training);
+            done();
+          },
+          onError: (error, stackTrace) {
+            _trainingStore.error();
+            setError(error is Exception ? error : Exception(error));
+          },
+        );
   }
 
   @override

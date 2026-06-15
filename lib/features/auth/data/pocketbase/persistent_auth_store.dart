@@ -10,9 +10,8 @@ class PersistentAuthStore extends AuthStore {
 
   PersistentAuthStore({
     FlutterSecureStorage? storage,
-    String storageKey = 'pb_auth',
-  }) : _storage = storage ?? const FlutterSecureStorage(),
-       _storageKey = storageKey;
+    this._storageKey = 'pb_auth',
+  }) : _storage = storage ?? const FlutterSecureStorage();
 
   /// Loads the auth store state from the persistent storage
   Future<void> load() async {

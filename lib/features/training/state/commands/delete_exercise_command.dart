@@ -7,10 +7,9 @@ import 'package:odu_core/odu_core.dart';
 
 class DeleteExercise extends Command {
   DeleteExercise({
-    required TrainingStore trainingStore,
-    required TrainingRepository trainingRepository,
-  }) : _trainingStore = trainingStore,
-       _trainingRepository = trainingRepository;
+    required this._trainingStore,
+    required this._trainingRepository,
+  });
 
   final TrainingStore _trainingStore;
   final TrainingRepository _trainingRepository;

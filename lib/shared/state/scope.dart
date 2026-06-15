@@ -149,8 +149,8 @@ class _ListenSubscription {
 
   _ListenSubscription({
     required this.listenable,
-    required void Function(Listenable state) callback,
-  }) : _callback = callback;
+    required this._callback,
+  });
 
   void updateCallback(void Function(Listenable state) callback) {
     _callback = callback;
