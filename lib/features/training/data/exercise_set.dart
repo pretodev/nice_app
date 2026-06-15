@@ -1,7 +1,7 @@
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 
-sealed class ExerciseSet {
+sealed class const ExerciseSet() {
   factory ExerciseSet.straight(int index, Exercise exercise) {
     return StraightSet(index, exercise);
   }
@@ -22,16 +22,9 @@ sealed class ExerciseSet {
   }) {
     return TriSet(index, first, second, third);
   }
-
-  const ExerciseSet();
 }
 
-class StraightSet extends ExerciseSet {
-  StraightSet(this.index, this._data);
-
-  final int index;
-  final Exercise _data;
-
+class StraightSet(final int index, final Exercise _data) extends ExerciseSet {
   PositionedExercise get data =>
       PositionedExercise(_data, externalIndex: index, internalIndex: 0);
 
@@ -53,13 +46,8 @@ class StraightSet extends ExerciseSet {
   }
 }
 
-class BiSet extends ExerciseSet {
-  BiSet(this.index, this._first, this._second);
-
-  final int index;
-  final Exercise _first;
-  final Exercise _second;
-
+class BiSet(final int index, final Exercise _first, final Exercise _second)
+    extends ExerciseSet {
   PositionedExercise get first =>
       PositionedExercise(_first, externalIndex: index, internalIndex: 0);
 
@@ -88,14 +76,12 @@ class BiSet extends ExerciseSet {
   }
 }
 
-class TriSet extends ExerciseSet {
-  TriSet(this.index, this._first, this._second, this._third);
-
-  final int index;
-  final Exercise _first;
-  final Exercise _second;
-  final Exercise _third;
-
+class TriSet(
+  final int index,
+  final Exercise _first,
+  final Exercise _second,
+  final Exercise _third,
+) extends ExerciseSet {
   PositionedExercise get first =>
       PositionedExercise(_first, externalIndex: index, internalIndex: 0);
 

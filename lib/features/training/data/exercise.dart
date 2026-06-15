@@ -2,22 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:nice/features/training/data/exercise_execution.dart';
 
 @immutable
-class Exercise {
+class const Exercise({
+  required final String name,
+  required final ExerciseExecution execution,
+  final String? observation,
+  final double? load,
+}) {
   factory Exercise.empty() {
     return Exercise(name: '', execution: SerializedExerciseExecution.initial());
   }
-
-  const Exercise({
-    required this.name,
-    required this.execution,
-    this.observation,
-    this.load,
-  });
-
-  final String name;
-  final ExerciseExecution execution;
-  final String? observation;
-  final double? load;
 
   @override
   bool operator ==(Object other) {

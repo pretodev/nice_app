@@ -1,16 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-sealed class ExerciseExecution {
-  const ExerciseExecution();
-
+sealed class const ExerciseExecution() {
   String get formatted;
 }
 
-class TimedExerciseExecution extends ExerciseExecution {
-  final Duration duration;
-
-  TimedExerciseExecution(this.duration);
-
+class TimedExerciseExecution(final Duration duration) extends ExerciseExecution {
   @override
   String get formatted =>
       '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -30,14 +24,11 @@ class TimedExerciseExecution extends ExerciseExecution {
 }
 
 @immutable
-class SerializedExerciseExecution extends ExerciseExecution {
-  final List<int> repeats;
-
+class const SerializedExerciseExecution(final List<int> repeats)
+    extends ExerciseExecution {
   factory SerializedExerciseExecution.initial() {
     return const SerializedExerciseExecution([12, 12, 12]);
   }
-
-  const SerializedExerciseExecution(this.repeats);
 
   bool get isAllEquals {
     if (repeats.isEmpty) {
