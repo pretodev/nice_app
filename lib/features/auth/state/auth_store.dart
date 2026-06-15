@@ -7,9 +7,9 @@ import 'package:nice/shared/state/store.dart';
 class AuthStore extends Store<AuthState> {
   AuthStore() : super(const AuthState());
 
-  void otpRequest(OtpCredentials credentials) {
+  void emailLinkRequest(EmailLinkCredentials credentials) {
     setState(
-      key: 'otpRequest',
+      key: 'emailLinkRequest',
       state.copyWith(
         credentials: () => credentials,
       ),

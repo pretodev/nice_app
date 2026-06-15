@@ -6,22 +6,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
   FutureResult<Unit> store(AuthCredentials credentials) async {
-    if (credentials is OtpCredentials) {
+    if (credentials is EmailLinkCredentials) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setOtpCredentials(credentials);
+      await prefs.setEmailLinkCredentials(credentials);
       return ok;
     }
-    return const Err(UnknownAuthFailure('Credentials are not OTP credentials'));
+    return const Err(
+      UnknownAuthFailure('Credentials are not email link credentials'),
+    );
   }
 
-  FutureOption<OtpCredentials> getOtpCredentials() async {
+  FutureOption<EmailLinkCredentials> getEmailLinkCredentials() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getOtpCredentials();
+    return prefs.getEmailLinkCredentials();
   }
 
   FutureResult<Unit> deleteCredentials() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.deleteOptCredentials();
+    await prefs.deleteEmailLinkCredentials();
     return ok;
   }
 }

@@ -1,71 +1,50 @@
-import 'dart:math';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-import 'package:nice/features/auth/data/pocketbase/pocketbase_exception.dart';
+import 'package:nice/features/auth/data/firebase/firebase_auth_exception.dart';
+import 'package:nice/shared/environment.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:pocketbase/pocketbase.dart';
-
-// Gerar senha aleatória de 12 caracteres com capitalização, números e símbolos
-String _generateRandomPassword() {
-  const chars =
-      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_+-={}[]|\\:;"<>,.?/~`';
-  final random = Random();
-  return List.generate(
-    12,
-    (index) => chars[random.nextInt(chars.length)],
-  ).join();
-}
 
 class AuthService {
-  final PocketBase _pb;
+  final FirebaseAuth _auth;
 
-  AuthService(this._pb);
+  AuthService(this._auth);
 
-  Future<void> _prepareUser(EmailAddress email) async {
+  ActionCodeSettings get _actionCodeSettings => ActionCodeSettings(
+    url: Environment.emailLinkContinueUrl,
+    handleCodeInApp: true,
+    androidPackageName: Environment.emailLinkAndroidPackageName,
+    androidInstallApp: true,
+    iOSBundleId: Environment.emailLinkIosBundleId,
+  );
+
+  /// Dispara o envio de um sign-in link para o email informado.
+  FutureResult<Unit> sendSignInLink(EmailAddress email) async {
     try {
-      final password = _generateRandomPassword();
-      await _pb
-          .collection('users')
-          .create(
-            body: {
-              'email': email.value,
-              'password': password,
-              'passwordConfirm': password,
-            },
-          );
-    } on ClientException catch (e) {
-      final status = e.response['status'];
-      final data = e.response['data'];
-      if (status == 400 && data['email']['code'] == 'validation_not_unique') {
-        return;
-      }
-      rethrow;
-    }
-  }
-
-  /// Envia um código OTP para o email fornecido
-  /// Cria o usuário apenas se não existir
-  /// Retorna o otpId que deve ser armazenado pelo repository
-  FutureResult<String> sendOtp(EmailAddress email) async {
-    try {
-      await _prepareUser(email);
-      final result = await _pb.collection('users').requestOTP(email.value);
-      return Ok(result.otpId);
-    } on ClientException catch (e, s) {
+      await _auth.sendSignInLinkToEmail(
+        email: email.value,
+        actionCodeSettings: _actionCodeSettings,
+      );
+      return ok;
+    } on FirebaseAuthException catch (e, s) {
       return Err(e.toAuthFailure(), s);
     }
   }
 
-  /// Verifica o código OTP usando o otpId fornecido
-  FutureResult<Unit> verifyOtp({
-    required String otpId,
-    required String otp,
+  /// Verifica se a string informada corresponde a um link válido de sign-in.
+  bool isSignInLink(String link) => _auth.isSignInWithEmailLink(link);
+
+  /// Conclui o sign-in usando o link recebido por email.
+  FutureResult<Unit> signInWithLink({
+    required EmailAddress email,
+    required String emailLink,
   }) async {
     try {
-      final auth = await _pb.collection('users').authWithOTP(otpId, otp);
-      _pb.authStore.save(auth.token, auth.record);
+      await _auth.signInWithEmailLink(
+        email: email.value,
+        emailLink: emailLink,
+      );
       return ok;
-    } on ClientException catch (e, s) {
+    } on FirebaseAuthException catch (e, s) {
       return Err(e.toAuthFailure(), s);
     }
   }

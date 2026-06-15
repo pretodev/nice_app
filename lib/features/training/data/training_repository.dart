@@ -1,11 +1,11 @@
-import 'package:nice/features/training/data/pocketbase/pocketbase_training_document.dart';
+import 'package:nice/features/training/data/firebase/firestore_training_document.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:odu_core/odu_core.dart';
 
 class TrainingRepository {
   TrainingRepository({required this._trainingDocument});
 
-  final PocketBaseTrainingDocument _trainingDocument;
+  final FirestoreTrainingDocument _trainingDocument;
 
   FutureResult<Unit> store(DailyTraining trainning) async {
     await _trainingDocument.upsert(trainning);

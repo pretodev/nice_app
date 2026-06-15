@@ -1,15 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_execution.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
 import 'package:nice/features/training/data/training.dart';
-import 'package:nice/shared/data/pocketbase/pocketbase_table_reference.dart';
-import 'package:pocketbase/pocketbase.dart';
+import 'package:nice/shared/data/firebase/firestore_collection_reference.dart';
 
-class PocketBaseTrainingDocument
-    extends PocketBaseTableReference<DailyTraining> {
-  PocketBaseTrainingDocument(PocketBase pb) : super('daily_trainings', pb);
+class FirestoreTrainingDocument
+    extends FirestoreCollectionReference<DailyTraining> {
+  FirestoreTrainingDocument(this._auth, FirebaseFirestore firestore)
+    : super('daily_trainings', firestore);
 
-  String? get _currentUserId => pb.authStore.record?.id;
+  final FirebaseAuth _auth;
+
+  String? get _currentUserId => _auth.currentUser?.uid;
 
   Exercise _exerciseFromRow(Map<String, dynamic> data) {
     final name = data['name'] as String;
@@ -76,31 +80,34 @@ class PocketBaseTrainingDocument
     };
   }
 
+  DateTime _toDateTime(dynamic value) {
+    if (value is Timestamp) return value.toDate();
+    if (value is DateTime) return value;
+    if (value is String) return DateTime.parse(value);
+    return DateTime.now();
+  }
+
   @override
-  DailyTraining fromRecord(RecordModel record) {
-    final id = record.id;
-    final dateStr = record.data['date'] as String?;
-    final setList = record.data['sets'] as List<dynamic>? ?? [];
+  DailyTraining fromSnapshot(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final data = snapshot.data() ?? <String, dynamic>{};
+    final id = snapshot.id;
+    final dateRaw = data['date'];
+    final setList = data['sets'] as List<dynamic>? ?? [];
 
     final sets = <ExerciseSet>[];
     for (var i = 0; i < setList.length; i++) {
       sets.add(_setFromRow(i, setList[i] as Map<String, dynamic>));
     }
 
-    final createdStr = record.get<String>('created');
-    final updatedStr = record.get<String>('updated');
-
     return DailyTraining(
       id: id,
-      date: dateStr != null ? DateTime.parse(dateStr) : null,
+      date: dateRaw != null ? _toDateTime(dateRaw) : null,
       sets: sets,
-      createdAt: createdStr.isNotEmpty
-          ? DateTime.parse(createdStr)
-          : DateTime.now(),
-      updatedAt: updatedStr.isNotEmpty
-          ? DateTime.parse(updatedStr)
-          : DateTime.now(),
-      isActive: record.data['is_active'] as bool? ?? true,
+      createdAt: _toDateTime(data['created_at']),
+      updatedAt: _toDateTime(data['updated_at']),
+      isActive: data['is_active'] as bool? ?? true,
     );
   }
 
@@ -125,11 +132,15 @@ class PocketBaseTrainingDocument
 
   @override
   Map<String, dynamic> toData(DailyTraining entity) {
+    final now = DateTime.now();
     return {
       'id': entity.id,
       'user_id': _currentUserId,
       'date': entity.date?.toIso8601String().split('T').first,
       'sets': entity.sets.map(_setToRow).toList(),
+      'is_active': entity.isActive,
+      'updated_at': Timestamp.fromDate(now),
+      'created_at': Timestamp.fromDate(entity.createdAt),
     };
   }
 

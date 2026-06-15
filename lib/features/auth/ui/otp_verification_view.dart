@@ -6,10 +6,10 @@ import 'package:nice/features/auth/state/commands/cancel_otp_command.dart';
 import 'package:nice/features/auth/state/commands/send_otp_command.dart';
 import 'package:nice/features/auth/state/commands/verify_otp_command.dart';
 import 'package:nice/features/auth/ui/cancel_otp_verification_view.dart';
-import 'package:nice/features/auth/ui/widgets/otp_input_field.dart';
 import 'package:nice/features/auth/ui/widgets/primary_button.dart';
 import 'package:nice/shared/state/scope.dart';
 
+/// Tela mostrada após o app disparar um sign-in link por email.
 class OtpVerificationView extends StatefulWidget {
   static Route<void> route({required EmailAddress email}) {
     return PageRouteBuilder<void>(
@@ -36,13 +36,19 @@ class OtpVerificationView extends StatefulWidget {
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
   Timer? _cooldownTimer;
-  int _remainingSeconds = 0;
-  String? _errorText;
-  String _otpCode = '';
+  int _remainingSeconds = 60;
+  final _linkController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _startCooldown();
+  }
 
   @override
   void dispose() {
     _cooldownTimer?.cancel();
+    _linkController.dispose();
     super.dispose();
   }
 
@@ -68,11 +74,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     if (!mounted) return;
 
     if (confirmed == true) {
-      _otpCode = '';
-      _errorText = null;
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
-      context.read<CancelOtp>().call();
+      if (!mounted) return;
+      this.context.read<CancelOtp>().call();
     }
   }
 
@@ -94,23 +99,22 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
       _startCooldown();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('OTP code sent successfully'),
+          content: Text('Sign-in link sent. Check your inbox.'),
           backgroundColor: Colors.green,
         ),
       );
     });
 
     context.listen<VerifyOtp>((state) {
-      if (state.isLoading) {
-        setState(() => _errorText = null);
-        return;
-      }
-
       if (state.hasError) {
-        setState(() {
-          _errorText = state.error.toString().replaceFirst('Exception: ', '');
-        });
-        return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              state.error.toString().replaceFirst('Exception: ', ''),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     });
 
@@ -144,7 +148,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Verify Your Email'),
+          title: const Text('Check your email'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => _handleCancelOtp(context),
@@ -157,44 +161,56 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.lock_outline, size: 80, color: Colors.blue),
+                const Icon(
+                  Icons.mark_email_read_outlined,
+                  size: 80,
+                  color: Colors.blue,
+                ),
                 const SizedBox(height: 32),
                 Text(
-                  'Enter Verification Code',
+                  'We sent you a sign-in link',
                   style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'We sent an 8-digit code to:',
+                  'Open the email we sent to:',
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   widget.email.value,
-                  style:
-                      Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Tap the link inside the email to finish signing in.',
+                  style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                OtpInputField(
-                  onCompleted: (code) {
-                    setState(() => _otpCode = code);
-                  },
-                  errorText: _errorText,
+                TextField(
+                  controller: _linkController,
                   enabled: !isLoading,
+                  decoration: const InputDecoration(
+                    labelText: 'Paste sign-in link (optional)',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 PrimaryButton(
-                  onPressed: _otpCode.length == 6 && !isLoading
-                      ? () => verifyOtp(_otpCode)
+                  onPressed: !isLoading
+                      ? () {
+                          final link = _linkController.text.trim();
+                          if (link.isEmpty) return;
+                          verifyOtp(link);
+                        }
                       : null,
-                  text: 'Verify',
+                  text: 'Sign in with link',
                   isLoading: verifyOtp.isLoading,
                 ),
                 const SizedBox(height: 16),
@@ -202,8 +218,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                   onPressed: canResend ? () => sendOtp(widget.email) : null,
                   child: Text(
                     _remainingSeconds > 0
-                        ? 'Resend code in $_remainingSeconds seconds'
-                        : 'Resend code',
+                        ? 'Resend link in $_remainingSeconds seconds'
+                        : 'Resend link',
                   ),
                 ),
               ],

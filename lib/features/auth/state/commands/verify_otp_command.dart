@@ -5,6 +5,7 @@ import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
 
+/// Conclui o sign-in com o link enviado por email.
 class VerifyOtp extends Command {
   final AuthService _authService;
   final AuthRepository _authRepository;
@@ -16,33 +17,39 @@ class VerifyOtp extends Command {
     required this._authStore,
   });
 
-  /// Verifica o código OTP
-  /// Usa o otpId armazenado em SharedPreferences
-  void call(String otp) async {
+  /// Recebe o link de sign-in que o usuário clicou (deep link).
+  void call(String emailLink) async {
     loading();
 
-    final otpIdResult = await _authRepository.getOtpCredentials();
+    if (!_authService.isSignInLink(emailLink)) {
+      setError(const InvalidLinkFailure());
+      return;
+    }
 
-    if (otpIdResult case None()) {
+    final credentialsResult = await _authRepository.getEmailLinkCredentials();
+
+    if (credentialsResult case None()) {
       _authStore.clearCredentials();
       setError(
         const UnknownAuthFailure(
-          'OTP code not valid. Please check the code and try again.',
+          'Sign-in link not associated with any pending email. '
+          'Please request a new link.',
         ),
       );
       return;
     }
 
-    if (otpIdResult case Some(:final value)) {
-      final verifyResult = await _authService.verifyOtp(
-        otpId: value.otpId,
-        otp: otp,
+    if (credentialsResult case Some(:final value)) {
+      final result = await _authService.signInWithLink(
+        email: value.email,
+        emailLink: emailLink,
       );
 
-      if (verifyResult case Err()) {
-        setError(verifyResult.value);
+      if (result case Err()) {
+        setError(result.value);
         return;
       }
+      await _authRepository.deleteCredentials();
       _authStore.clearCredentials();
     }
 

@@ -1,6 +1,6 @@
 import 'package:auto_injector/auto_injector.dart';
 import 'package:nice/features/aigen/data/open_router.dart';
-import 'package:nice/features/training/data/pocketbase/pocketbase_training_document.dart';
+import 'package:nice/features/training/data/firebase/firestore_training_document.dart';
 import 'package:nice/features/training/data/training_repository.dart';
 import 'package:nice/features/training/state/commands/add_exercise_command.dart';
 import 'package:nice/features/training/state/commands/delete_exercise_command.dart';
@@ -17,7 +17,7 @@ final trainingModule = AutoInjector(
   on: (i) {
     // Services
     i.addLazySingleton(() => OpenRouter(Environment.openRouterApiKey));
-    i.addLazySingleton(PocketBaseTrainingDocument.new);
+    i.addLazySingleton(FirestoreTrainingDocument.new);
     i.addLazySingleton(TrainingRepository.new);
 
     // State

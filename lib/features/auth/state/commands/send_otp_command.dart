@@ -6,6 +6,7 @@ import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/shared/state/command.dart';
 import 'package:odu_core/odu_core.dart';
 
+/// Envia o sign-in link (Firebase Email Link) para o email informado.
 class SendOtp extends Command {
   final AuthService _authService;
   final AuthRepository _authRepository;
@@ -20,18 +21,13 @@ class SendOtp extends Command {
   void call(EmailAddress email) async {
     loading();
 
-    OtpCredentials? otpCredentials;
+    final credentials = EmailLinkCredentials(email: email);
 
     final result = await _authService
-        .sendOtp(email)
-        .flatMapAsync(
-          (optId) {
-            otpCredentials = OtpCredentials(email: email, otpId: optId);
-            return _authRepository.store(otpCredentials!);
-          },
-        )
+        .sendSignInLink(email)
+        .flatMapAsync((_) => _authRepository.store(credentials))
         .map((_) {
-          _authStore.otpRequest(otpCredentials!);
+          _authStore.emailLinkRequest(credentials);
         });
 
     if (result case Err(:final value)) {

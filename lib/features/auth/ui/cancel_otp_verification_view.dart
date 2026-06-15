@@ -6,9 +6,9 @@ class CancelOtpVerificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Cancel Verification?'),
+      title: const Text('Cancel sign-in?'),
       content: const Text(
-        'Are you sure you want to go back? You\'ll need to enter your email again to receive a new code.',
+        'Are you sure you want to go back? You\'ll need to enter your email again to receive a new sign-in link.',
       ),
       actions: [
         TextButton(

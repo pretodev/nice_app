@@ -14,9 +14,9 @@ class LoadCredentials extends Command {
 
   void call() async {
     loading();
-    final result = await _authRepository.getOtpCredentials();
+    final result = await _authRepository.getEmailLinkCredentials();
     if (result case Some(:final value)) {
-      _authStore.otpRequest(value);
+      _authStore.emailLinkRequest(value);
     }
     done();
   }

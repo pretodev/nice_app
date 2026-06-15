@@ -1,103 +1,113 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nice/features/user/data/user_entity.dart';
 import 'package:nice/features/user/data/user_failures.dart';
 import 'package:nice/features/user/data/user_status.dart';
 import 'package:odu_core/odu_core.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 class UserRepository {
-  final PocketBase _pb;
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
 
-  UserRepository(this._pb);
+  UserRepository(this._auth, this._firestore);
+
+  CollectionReference<Map<String, dynamic>> get _users =>
+      _firestore.collection('users');
 
   DateTime _toDateTime(dynamic value) {
     if (value is DateTime) return value;
+    if (value is Timestamp) return value.toDate();
     if (value is String) return DateTime.parse(value);
     return DateTime.now();
   }
 
-  Stream<UserStatus> get currentStatus async* {
-    if (_pb.authStore.isValid) {
-      try {
-        await _pb.collection('users').authRefresh();
-      } catch (_) {
-        _pb.authStore.clear();
-      }
-    }
-    final initialRecord = _pb.authStore.record;
-    final initialState = initialRecord != null
-        ? UserStatus.authenticated
-        : UserStatus.unauthenticated;
-    yield initialState;
-
-    await for (final authStore in _pb.authStore.onChange) {
-      final state = authStore.record != null
-          ? UserStatus.authenticated
-          : UserStatus.unauthenticated;
-      yield state;
-    }
+  Stream<UserStatus> get currentStatus {
+    return _auth.authStateChanges().map(
+      (user) =>
+          user != null ? UserStatus.authenticated : UserStatus.unauthenticated,
+    );
   }
 
   FutureResult<UserEntity> get currentUser async {
-    final record = _pb.authStore.record;
-    if (record == null) {
+    final user = _auth.currentUser;
+    if (user == null) {
       return const Err(UserNotAuthenticated());
     }
 
     try {
-      final response = await _pb.collection('users').getOne(record.id);
+      final snapshot = await _users.doc(user.uid).get();
+      final data = snapshot.data();
 
-      return Ok(
-        UserEntity(
-          id: response.id,
-          email: response.data['email'] as String,
-          displayName: response.data['name'] as String?,
-          photoURL: response.data['avatar'] as String?,
-          createdAt: _toDateTime(response.get<String>('created')),
-          updatedAt: _toDateTime(response.get<String>('updated')),
-          isActive: response.data['verified'] as bool? ?? false,
-        ),
-      );
-    } on ClientException catch (e) {
-      // If user not found in collection, return minimal entity from authStore
-      if (e.statusCode == 404) {
+      if (!snapshot.exists || data == null) {
+        // Cria registro inicial alinhado ao FirebaseUser.
+        final now = DateTime.now();
+        final initial = <String, dynamic>{
+          'email': user.email ?? '',
+          'name': user.displayName,
+          'avatar': user.photoURL,
+          'created_at': Timestamp.fromDate(now),
+          'updated_at': Timestamp.fromDate(now),
+          'verified': user.emailVerified,
+        };
+        await _users.doc(user.uid).set(initial);
+
         return Ok(
           UserEntity(
-            id: record.id,
-            email: record.data['email'] as String? ?? '',
-            createdAt: _toDateTime(record.get<String>('created')),
-            updatedAt: _toDateTime(record.get<String>('updated')),
+            id: user.uid,
+            email: user.email ?? '',
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            createdAt: now,
+            updatedAt: now,
+            isActive: user.emailVerified,
           ),
         );
       }
+
+      return Ok(
+        UserEntity(
+          id: user.uid,
+          email: (data['email'] as String?) ?? user.email ?? '',
+          displayName: data['name'] as String? ?? user.displayName,
+          photoURL: data['avatar'] as String? ?? user.photoURL,
+          createdAt: _toDateTime(data['created_at']),
+          updatedAt: _toDateTime(data['updated_at']),
+          isActive: data['verified'] as bool? ?? user.emailVerified,
+        ),
+      );
+    } on FirebaseException {
       rethrow;
     }
   }
 
   FutureResult<Unit> set(UserEntity user) async {
-    final record = _pb.authStore.record;
-    if (record == null) {
+    final current = _auth.currentUser;
+    if (current == null) {
       return const Err(UserNotAuthenticated());
     }
 
     try {
-      await _pb
-          .collection('users')
-          .update(
-            record.id,
-            body: {
-              'name': user.displayName,
-              'avatar': user.photoURL,
-            },
-          );
+      await _users.doc(current.uid).set(<String, dynamic>{
+        'name': user.displayName,
+        'avatar': user.photoURL,
+        'updated_at': Timestamp.fromDate(DateTime.now()),
+      }, SetOptions(merge: true));
+
+      if ((current.displayName ?? '') != user.displayName) {
+        await current.updateDisplayName(user.displayName);
+      }
+      if (current.photoURL != user.photoURL) {
+        await current.updatePhotoURL(user.photoURL);
+      }
 
       return ok;
-    } on ClientException {
+    } on FirebaseException {
       rethrow;
     }
   }
 
   FutureResult<Unit> signOut() async {
-    _pb.authStore.clear();
+    await _auth.signOut();
     return ok;
   }
 }

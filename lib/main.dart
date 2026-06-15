@@ -1,8 +1,10 @@
 import 'package:auto_injector/auto_injector.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nice/features/auth/auth_module.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
-import 'package:nice/features/auth/data/pocketbase/persistent_auth_store.dart';
 import 'package:nice/features/auth/state/auth_store.dart';
 import 'package:nice/features/auth/ui/login_view.dart';
 import 'package:nice/features/auth/ui/otp_verification_view.dart';
@@ -12,25 +14,24 @@ import 'package:nice/features/user/state/commands/load_user_command.dart';
 import 'package:nice/features/user/state/user_state.dart';
 import 'package:nice/features/user/ui/placeholder_view.dart';
 import 'package:nice/features/user/user_module.dart';
-import 'package:nice/shared/environment.dart';
+import 'package:nice/firebase_options.dart';
 import 'package:nice/shared/state/scope.dart';
-import 'package:pocketbase/pocketbase.dart' hide AuthStore;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize persistent auth store
-  final authStore = PersistentAuthStore();
-  await authStore.load();
-
-  // Initialize PocketBase with the auth store
-  final pb = PocketBase(Environment.pocketbaseUrl, authStore: authStore);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(
     AppScope(
       injector: AutoInjector(
         on: (i) {
-          i.addLazySingleton(() => pb);
+          i.addLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+          i.addLazySingleton<FirebaseFirestore>(
+            () => FirebaseFirestore.instance,
+          );
           i.addInjector(userModule);
           i.addInjector(authModule);
           i.addInjector(trainingModule);
@@ -69,7 +70,7 @@ class _MainAppState extends State<MainApp> {
       route = PlaceholderView.route();
     } else {
       switch (authState.credentials) {
-        case OtpCredentials(:final email):
+        case EmailLinkCredentials(:final email):
           route = OtpVerificationView.route(email: email);
           break;
         default:
