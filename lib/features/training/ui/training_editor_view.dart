@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
 import 'package:nice/features/training/data/training_status.dart';
-import 'package:nice/features/training/state/commands/generate_training_command.dart';
-import 'package:nice/features/training/state/commands/load_training_command.dart';
-import 'package:nice/features/training/state/commands/merge_exercises_command.dart';
-import 'package:nice/features/training/state/training_store.dart';
+import 'package:nice/features/training/state/training_view_model.dart';
 import 'package:nice/features/training/ui/training_prompt_modal.dart';
 import 'package:nice/features/training/ui/traning_exercise_editor_view.dart';
 import 'package:nice/features/training/ui/widgets/training_editor_body.dart';
@@ -23,9 +20,8 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
   @override
   void initState() {
     super.initState();
-    // Inicia o carregamento do treino 'teste' ao iniciar a view
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LoadTraining>().call('teste');
+      context.read<TrainingViewModel>().loadTraining('teste');
     });
   }
 
@@ -79,9 +75,10 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    final trainingState = context.watch<TrainingStore>().state;
+    final trainingVm = context.watch<TrainingViewModel>();
+    final trainingState = trainingVm.state;
 
-    context.listen<MergeExercises>((command) {
+    context.listenCommand(trainingVm.mergeExercises, (command) {
       if (command.isDone && trainingState.training != null) {
         setState(() => trainingState.training!.selector.clear());
         ScaffoldMessenger.of(context).showSnackBar(
@@ -90,14 +87,18 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
       }
     });
 
-    context.listen<GenerateTraining>((command) {
+    context.listenCommand(trainingVm.generateTraining, (command) {
       if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Treino gerado com sucesso!')),
         );
-      } else if (command.hasError) {
+      } else if (command.isError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao gerar treino: ${command.error}')),
+          SnackBar(
+            content: Text(
+              'Erro ao gerar treino: ${command.failure?.message ?? ''}',
+            ),
+          ),
         );
       }
     });
@@ -151,10 +152,7 @@ class _TrainingEditorViewState extends State<TrainingEditorView> {
       bottomNavigationBar: TrainingEditorBottomBar(
         state: trainingState,
         mergeClicked: () {
-          context.read<MergeExercises>().call(
-            training,
-            exercises: training.selector.selecteds,
-          );
+          trainingVm.mergeExercises(training, training.selector.selecteds);
         },
         openPromptEditorClicked: () async {
           await TrainingPromptModal.show(

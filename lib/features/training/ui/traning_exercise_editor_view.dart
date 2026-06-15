@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:nice/features/app/ui/widgets/field.dart';
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_execution.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/training.dart';
-import 'package:nice/features/training/state/commands/add_exercise_command.dart';
-import 'package:nice/features/training/state/commands/update_exercise_command.dart';
+import 'package:nice/features/training/state/training_view_model.dart';
 import 'package:nice/features/training/ui/widgets/repetition_counter.dart';
 import 'package:nice/features/training/ui/widgets/series_counter.dart';
 import 'package:nice/shared/state/scope.dart';
-import 'package:nice/shared/widgets/field.dart';
 
 class TraningExerciseEditorView extends StatefulWidget {
   static PageRoute<void> route({
@@ -96,13 +95,14 @@ class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
       name: _nameController.text,
       execution: _execution,
     );
+    final vm = context.read<TrainingViewModel>();
     if (widget.exercise != null) {
-      context.read<UpdateExercise>().call(
+      vm.updateExercise(
         widget.training,
-        exercise: widget.exercise!.copyWith(value: exercise),
+        widget.exercise!.copyWith(value: exercise),
       );
     } else {
-      context.read<AddExercise>().call(widget.training, exercise);
+      vm.addExercise(widget.training, exercise);
     }
   }
 
@@ -119,10 +119,11 @@ class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
 
   @override
   Widget build(BuildContext context) {
-    final addExerciseCmd = context.watch<AddExercise>();
-    final updateExerciseCmd = context.watch<UpdateExercise>();
+    final vm = context.read<TrainingViewModel>();
+    final addExerciseCmd = context.watchCommand(vm.addExercise);
+    final updateExerciseCmd = context.watchCommand(vm.updateExercise);
 
-    context.listen<AddExercise>((command) {
+    context.listenCommand(vm.addExercise, (command) {
       if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -133,7 +134,7 @@ class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
       }
     });
 
-    context.listen<UpdateExercise>((command) {
+    context.listenCommand(vm.updateExercise, (command) {
       if (command.isDone) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -144,7 +145,7 @@ class _TraningExerciseEditorViewState extends State<TraningExerciseEditorView> {
       }
     });
 
-    final isSaving = addExerciseCmd.isLoading || updateExerciseCmd.isLoading;
+    final isSaving = addExerciseCmd.isWaiting || updateExerciseCmd.isWaiting;
 
     return Scaffold(
       backgroundColor: Colors.white,

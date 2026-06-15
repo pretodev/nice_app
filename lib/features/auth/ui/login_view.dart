@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-import 'package:nice/features/auth/state/commands/send_otp_command.dart';
+import 'package:nice/features/auth/state/auth_view_model.dart';
 import 'package:nice/features/auth/ui/widgets/email_field.dart';
 import 'package:nice/features/auth/ui/widgets/primary_button.dart';
 import 'package:nice/shared/state/scope.dart';
@@ -37,16 +37,18 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    context.listen<SendOtp>((state) {
+    final authVm = context.read<AuthViewModel>();
+    final sendOtp = context.watchCommand(authVm.sendOtp);
+
+    context.listenCommand(authVm.sendOtp, (command) {
+      if (!command.isError) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.error.toString().replaceFirst('Exception: ', '')),
+          content: Text(command.failure?.message ?? 'Erro inesperado'),
           backgroundColor: Colors.red,
         ),
       );
     });
-
-    final sendOtp = context.watch<SendOtp>();
 
     return Scaffold(
       body: SafeArea(
@@ -73,7 +75,7 @@ class _LoginViewState extends State<LoginView> {
               EmailField(
                 controller: _emailController,
                 errorText: _errorText,
-                enabled: !sendOtp.isLoading,
+                enabled: !sendOtp.isWaiting,
                 onChanged: (_) {
                   if (_errorText != null) {
                     setState(() => _errorText = null);
@@ -88,10 +90,10 @@ class _LoginViewState extends State<LoginView> {
                     setState(() => _errorText = 'Email é obrigatório');
                     return;
                   }
-                  sendOtp(EmailAddress(emailValue));
+                  authVm.sendOtp(EmailAddress(emailValue));
                 },
                 text: 'Entrar',
-                isLoading: sendOtp.isLoading,
+                isLoading: sendOtp.isWaiting,
               ),
             ],
           ),

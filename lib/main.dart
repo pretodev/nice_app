@@ -5,13 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nice/features/auth/auth_module.dart';
 import 'package:nice/features/auth/data/auth_credentials.dart';
-import 'package:nice/features/auth/state/auth_store.dart';
+import 'package:nice/features/auth/state/auth_view_model.dart';
 import 'package:nice/features/auth/ui/login_view.dart';
 import 'package:nice/features/auth/ui/otp_verification_view.dart';
 import 'package:nice/features/training/training_module.dart';
 import 'package:nice/features/user/data/user_status.dart';
-import 'package:nice/features/user/state/commands/load_user_command.dart';
-import 'package:nice/features/user/state/user_state.dart';
+import 'package:nice/features/user/state/user_view_model.dart';
 import 'package:nice/features/user/ui/placeholder_view.dart';
 import 'package:nice/features/user/user_module.dart';
 import 'package:nice/firebase_options.dart';
@@ -57,13 +56,13 @@ class _MainAppState extends State<MainApp> {
     super.initState();
     Future.microtask(() {
       if (!mounted) return;
-      context.read<LoadUser>().call();
+      context.read<UserViewModel>().loadUser();
     });
   }
 
   void _handleRedirection() {
-    final authState = context.read<AuthStore>().state;
-    final userState = context.read<UserStore>().state;
+    final authState = context.read<AuthViewModel>().state;
+    final userState = context.read<UserViewModel>().state;
 
     final Route<dynamic> route;
     if (userState.status == UserStatus.authenticated) {
@@ -83,8 +82,8 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    context.listen<AuthStore>((_) => _handleRedirection());
-    context.listen<UserStore>((_) => _handleRedirection());
+    context.listen<AuthViewModel>((_) => _handleRedirection());
+    context.listen<UserViewModel>((_) => _handleRedirection());
 
     return MaterialApp(
       title: 'Nice',

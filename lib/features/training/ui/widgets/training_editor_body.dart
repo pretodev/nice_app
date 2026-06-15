@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
 import 'package:nice/features/training/data/training_status.dart';
-import 'package:nice/features/training/state/training_store.dart';
+import 'package:nice/features/training/state/training_view_model.dart';
 import 'package:nice/features/training/ui/widgets/exercise_set_widget.dart';
 
 class TrainingEditorBody extends StatelessWidget {

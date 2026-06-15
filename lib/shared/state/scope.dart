@@ -3,6 +3,7 @@
 // ================================================
 import 'package:auto_injector/auto_injector.dart';
 import 'package:flutter/material.dart';
+import 'package:nice/core/state/view_model.dart';
 
 class AppScope extends StatefulWidget {
   const AppScope({
@@ -32,9 +33,10 @@ class AppScopeState extends State<AppScope> {
 
   T get<T>() => injector.get<T>();
 
-  T watch<T extends Listenable>(Element element) {
-    final listenable = injector.get<T>();
+  T watch<T extends Listenable>(Element element) =>
+      watchListenable<T>(element, injector.get<T>());
 
+  L watchListenable<L extends Listenable>(Element element, L listenable) {
     final subs = _watchSubscriptions.putIfAbsent(element, () => {});
     final alreadyWatching = subs.any((s) => s.listenable == listenable);
 
@@ -59,19 +61,31 @@ class AppScopeState extends State<AppScope> {
     void Function(T state) callback, {
     bool fireImmediately = false,
   }) {
-    final listenable = injector.get<T>();
+    listenListenable<T>(
+      element,
+      injector.get<T>(),
+      callback,
+      fireImmediately: fireImmediately,
+    );
+  }
 
+  void listenListenable<L extends Listenable>(
+    Element element,
+    L listenable,
+    void Function(L state) callback, {
+    bool fireImmediately = false,
+  }) {
     final subs = _listenSubscriptions.putIfAbsent(element, () => {});
 
     final existing = subs.where((s) => s.listenable == listenable).firstOrNull;
     if (existing != null) {
-      existing.updateCallback((state) => callback(state as T));
+      existing.updateCallback((state) => callback(state as L));
       return;
     }
 
     final subscription = _ListenSubscription(
       listenable: listenable,
-      callback: (state) => callback(state as T),
+      callback: (state) => callback(state as L),
     );
 
     listenable.addListener(subscription.notify);
@@ -209,6 +223,32 @@ extension InjectorContextExtension on BuildContext {
     final element = this as Element;
     inherited!.state.listen<T>(
       element,
+      callback,
+      fireImmediately: fireImmediately,
+    );
+  }
+
+  /// Observa um [Command] específico (ex.: vm.sendOtp) e causa rebuild
+  /// quando seu status muda.
+  Command<T> watchCommand<T>(Command<T> command) {
+    final inherited = getInheritedWidgetOfExactType<_InheritedInjector>();
+    assert(inherited != null, 'AppScope not found in context');
+    final element = this as Element;
+    return inherited!.state.watchListenable<Command<T>>(element, command);
+  }
+
+  /// Escuta um [Command] específico para side effects (sem rebuild).
+  void listenCommand<T>(
+    Command<T> command,
+    void Function(Command<T> command) callback, {
+    bool fireImmediately = false,
+  }) {
+    final inherited = getInheritedWidgetOfExactType<_InheritedInjector>();
+    assert(inherited != null, 'AppScope not found in context');
+    final element = this as Element;
+    inherited!.state.listenListenable<Command<T>>(
+      element,
+      command,
       callback,
       fireImmediately: fireImmediately,
     );

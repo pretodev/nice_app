@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:nice/features/training/state/training_store.dart';
+import 'package:nice/features/training/state/training_view_model.dart';
 
 class TrainingEditorBottomBar extends StatefulWidget {
   const TrainingEditorBottomBar({

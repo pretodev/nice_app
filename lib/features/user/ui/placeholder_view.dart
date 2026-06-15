@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nice/features/user/state/commands/sign_out_command.dart';
-import 'package:nice/features/user/state/user_state.dart';
+import 'package:nice/features/user/state/user_view_model.dart';
 import 'package:nice/shared/state/scope.dart';
 
 class PlaceholderView extends StatelessWidget {
@@ -21,21 +20,19 @@ class PlaceholderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.listen<SignOut>((action) {
-      if (action.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              action.error.toString().replaceFirst('Exception: ', ''),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    });
+    final userVm = context.watch<UserViewModel>();
+    final userState = userVm.state;
+    final signOut = context.watchCommand(userVm.signOut);
 
-    final userState = context.watch<UserStore>().state;
-    final signOut = context.watch<SignOut>();
+    context.listenCommand(userVm.signOut, (command) {
+      if (!command.isError) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(command.failure?.message ?? 'Erro inesperado'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +40,7 @@ class PlaceholderView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: signOut.call,
+            onPressed: signOut.isWaiting ? null : userVm.signOut.call,
           ),
         ],
       ),

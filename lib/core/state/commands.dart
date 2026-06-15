@@ -84,3 +84,10 @@ typedef Action1fn<T, A> = FutureResult<T> Function(A arg);
 final class Command1<T, A>(final Action1fn<T, A> _fn) extends Command<T> {
   Future<void> call(A arg) => _execute(() => _fn(arg));
 }
+
+typedef Action2fn<T, A, B> = FutureResult<T> Function(A a, B b);
+
+/// [Command] com 2 argumentos posicionais. Chamável: `action(a, b)`.
+final class Command2<T, A, B>(final Action2fn<T, A, B> _fn) extends Command<T> {
+  Future<void> call(A a, B b) => _execute(() => _fn(a, b));
+}

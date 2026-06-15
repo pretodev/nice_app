@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:nice/features/auth/data/email_address.dart';
-import 'package:nice/features/auth/state/commands/cancel_otp_command.dart';
-import 'package:nice/features/auth/state/commands/send_otp_command.dart';
-import 'package:nice/features/auth/state/commands/verify_otp_command.dart';
+import 'package:nice/features/auth/state/auth_view_model.dart';
 import 'package:nice/features/auth/ui/cancel_otp_verification_view.dart';
 import 'package:nice/features/auth/ui/widgets/primary_button.dart';
 import 'package:nice/shared/state/scope.dart';
@@ -77,66 +75,57 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
       _cooldownTimer?.cancel();
       _remainingSeconds = 0;
       if (!mounted) return;
-      this.context.read<CancelOtp>().call();
+      this.context.read<AuthViewModel>().cancelOtp();
     }
+  }
+
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    context.listen<SendOtp>((state) {
-      if (state.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              state.error.toString().replaceFirst('Exception: ', ''),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+    final authVm = context.read<AuthViewModel>();
+
+    context.listenCommand(authVm.sendOtp, (command) {
+      if (command.isError) {
+        _showError(context, command.failure?.message ?? 'Erro inesperado');
         return;
       }
-
-      _startCooldown();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sign-in link sent. Check your inbox.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    });
-
-    context.listen<VerifyOtp>((state) {
-      if (state.hasError) {
+      if (command.isDone) {
+        _startCooldown();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              state.error.toString().replaceFirst('Exception: ', ''),
-            ),
-            backgroundColor: Colors.red,
+          const SnackBar(
+            content: Text('Sign-in link sent. Check your inbox.'),
+            backgroundColor: Colors.green,
           ),
         );
       }
     });
 
-    context.listen<CancelOtp>((state) {
-      if (state.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              state.error.toString().replaceFirst('Exception: ', ''),
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
+    context.listenCommand(authVm.verifyOtp, (command) {
+      if (command.isError) {
+        _showError(context, command.failure?.message ?? 'Erro inesperado');
       }
     });
 
-    final sendOtp = context.watch<SendOtp>();
-    final verifyOtp = context.watch<VerifyOtp>();
-    final cancelOtp = context.watch<CancelOtp>();
+    context.listenCommand(authVm.cancelOtp, (command) {
+      if (command.isError) {
+        _showError(context, command.failure?.message ?? 'Erro inesperado');
+      }
+    });
+
+    final sendOtp = context.watchCommand(authVm.sendOtp);
+    final verifyOtp = context.watchCommand(authVm.verifyOtp);
+    final cancelOtp = context.watchCommand(authVm.cancelOtp);
 
     final isLoading =
-        sendOtp.isLoading || verifyOtp.isLoading || cancelOtp.isLoading;
+        sendOtp.isWaiting || verifyOtp.isWaiting || cancelOtp.isWaiting;
 
     final canResend = _remainingSeconds <= 0 && !isLoading;
 
@@ -207,15 +196,17 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       ? () {
                           final link = _linkController.text.trim();
                           if (link.isEmpty) return;
-                          verifyOtp(link);
+                          authVm.verifyOtp(link);
                         }
                       : null,
                   text: 'Sign in with link',
-                  isLoading: verifyOtp.isLoading,
+                  isLoading: verifyOtp.isWaiting,
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: canResend ? () => sendOtp(widget.email) : null,
+                  onPressed: canResend
+                      ? () => authVm.sendOtp(widget.email)
+                      : null,
                   child: Text(
                     _remainingSeconds > 0
                         ? 'Resend link in $_remainingSeconds seconds'
