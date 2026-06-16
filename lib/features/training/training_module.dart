@@ -34,5 +34,3 @@ class TrainingModule extends Module {
     );
   }
 }
-
-final trainingModule = TrainingModule();
