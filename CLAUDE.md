@@ -5,77 +5,125 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Development Commands
 
 ```bash
-# Generate code (Riverpod providers, freezed models)
-dart run build_runner build --delete-conflicting-outputs
+# Run the app (OpenRouter key passed via dart-define)
+flutter run --dart-define=OPEN_ROUTER_API_KEY=...
 
-# Watch mode for code generation during development
-dart run build_runner watch --delete-conflicting-outputs
-
-# Run tests
+# Run all tests
 flutter test
 
 # Run a single test file
-flutter test test/path/to/test_file.dart
+flutter test test/core/injector/module_injector_test.dart
 
-# Static analysis
+# Static analysis (strict lints — see analysis_options.yaml)
 flutter analyze
 
-# Format code
-dart format lib/
+# Format code (note: trailing_commas are preserved, not auto-added)
+dart format lib/ test/
 ```
+
+> There is **no code generation** in this project — no `build_runner`, `freezed`,
+> or `riverpod`. Do not add codegen steps.
 
 ## Architecture Overview
 
-**Nice App** is a Flutter fitness training application with AI-powered exercise generation. It uses Firebase Firestore for persistence and OpenRouter API for multimodal AI training creation.
+**Nice App** is a Flutter fitness training application with AI-powered exercise
+generation. It uses Firebase Firestore for persistence and the OpenRouter API for
+multimodal AI training creation.
 
 ### Tech Stack
-- Flutter with Dart 3.10.4+
-- Riverpod 3.1.0 with code generation (`@riverpod` annotations)
-- Firebase Firestore
-- OpenRouter API (GPT-4.5-image-mini)
-- Custom `odu_core` package providing Result/Option types
+- Flutter 3.44+ / Dart 3.12+ (the `primary-constructors` experiment is enabled — see `analysis_options.yaml`)
+- Firebase: `cloud_firestore`, `firebase_auth`, `firebase_core`
+- `dio` for HTTP (OpenRouter client)
+- `get_it` as the container behind a custom module injector
+- `equatable` for value equality
+- `mocktail` for test doubles
+- `odu_core` (git dependency) — shared utilities
 
-### Provider Organization Pattern
+### Dependency Injection — custom module injector
 
-Providers are organized into three categories in `/features/*/providers/`:
+DI is **not** Riverpod. It is a hand-rolled module system in `lib/core/injector/`
+built on top of `get_it`:
 
-1. **Service Providers** (`provider_services.dart`): Singleton dependencies (Repository, API clients)
-2. **Query Providers** (`provider_queries.dart`): Stream-based data queries
-3. **Command Providers** (`commands/`): Async operations using `CommandMixin<T>`
+- **`Module`** (`module.dart`): pure configuration. Declares `registry(Registry r)`,
+  and optionally `imports` (non-transitive access to another module's exports) and
+  `parent` (transitive inheritance of a parent's exports). A module holds no runtime
+  state, so it can be recomposed many times — essential for tests.
+- **`Registry`**: registers bindings via `factory` / `singleton` / `lazySingleton`.
+  Bindings are **private by default**; use `r.export.lazySingleton(...)` to expose a
+  binding to importers/children.
+- **`createInjector(modules, {overrides})`** (`module_injector.dart`): composes the
+  tree into a root `Injector`. `overrides` swaps bindings by type — use it to inject
+  test doubles.
+- **`AppScope`** (`scope.dart`): exposes the injector to the widget tree; resolve with
+  `context.read<T>()` / `context.get<T>()`.
 
-Command provider pattern:
+Feature modules live next to their feature (e.g. `features/training/training_module.dart`)
+and are wired in `lib/main.dart` via `createInjector([...])`.
+
 ```dart
-@riverpod
-class MyCommand extends _$MyCommand with CommandMixin<ResultType> {
+class TrainingModule extends Module {
   @override
-  AsyncValue<ResultType> build() => invalidState();
+  List<Module> get imports => [appModule];
 
-  Future<void> call(params) async {
-    emitLoading();
-    final result = await _executeLogic();
-    emitResult(result);  // Converts Result<T> to AsyncValue<T>
+  @override
+  void registry(Registry r) {
+    r.lazySingleton<TrainingRepository>((i) => TrainingRepository(
+          trainingDocument: i.get<FirestoreTrainingDocument>(),
+        ));
+    r.export.lazySingleton<TrainingViewModel>(
+      (i) => TrainingViewModel(i.get<TrainingRepository>(), i.get<OpenRouter>()),
+    );
   }
 }
 ```
 
-### Data Model Patterns
+### State management — `ViewModel` + `Command`
 
-**Sealed classes** for type-safe exercise modeling:
-- `ExerciseSet`: `StraightSet` (1), `BiSet` (2), or `TriSet` (3 exercises)
+State lives in `lib/core/state/`:
+
+- **`ViewModel<T>`** (`view_model.dart`): a `ChangeNotifier` holding immutable state
+  `T`; mutate only through the protected `emit(newState)`. State classes are
+  `Equatable` with a `copyWith`.
+- **`Command<T>`** (`commands.dart`): wraps an async `FutureResult<T>` action with
+  status (`isIdle` / `isWaiting` / `isDone` / `isError`). Expose one per action with
+  `late final addExercise = _addExercise.bind();` and invoke as `await vm.addExercise(...)`.
+
+### Result / error handling — `lib/core/fp/`
+
+Local functional types (barrel: `package:nice/core/fp/fp.dart`): `Result<T>`
+(`Ok`/`Err`), `Option<T>`, `Failure`, `Unit`, and the `FutureResult<T>` /
+`FutureOption<T>` aliases. The sentinel `ok` is `Ok(unit)`. Prefer returning
+`FutureResult<T>` over throwing; reserve exceptions for the injector
+(`DependencyNotFoundException`).
+
+### Data modeling
+
+Sealed-class hierarchies for type-safe exercises:
+- `ExerciseSet`: `StraightSet` (1), `BiSet` (2), `TriSet` (3 exercises)
 - `ExerciseExecution`: `TimedExerciseExecution` or `SerializedExerciseExecution`
 
-**Exercise positioning**: External index (set position in list) + internal index (position within set) enables precise editing of combined sets.
+**Exercise positioning**: external index (set position in the list) + internal index
+(position within a set) enables precise editing of combined sets.
 
 ### Key Directories
 
-- `lib/features/trainning/` - Main training feature (note: folder has typo "trainning")
-- `lib/features/aigen/` - OpenRouter AI integration
-- `lib/shared/` - Shared utilities, Firestore base classes, CommandMixin
-
-### Result/Error Handling
-
-Uses `Result<T>` from `odu_core` package (Ok/Err pattern). CommandMixin converts Results to AsyncValue for UI consumption.
+- `lib/core/` — `injector/`, `state/` (ViewModel/Command), `fp/` (Result/Option)
+- `lib/features/<feature>/` — each with `data/`, `state/`, `ui/`, and a `*_module.dart`
+- `lib/features/training/` — main training feature
+- `lib/features/aigen/` — OpenRouter AI integration
+- `lib/shared/` — shared utilities, Firebase base classes, `environment.dart`
 
 ### Environment Configuration
 
-OpenRouter API key loaded via `String.fromEnvironment('OPEN_ROUTER_API_KEY')` - see `env.example.json` for template.
+Secrets/config are compile-time constants in `lib/shared/environment.dart` via
+`String.fromEnvironment(...)`. Pass them with `--dart-define` (e.g.
+`OPEN_ROUTER_API_KEY`). Never hardcode keys.
+
+### Conventions
+
+- Strict lints (`analysis_options.yaml`): single quotes, `package:` imports only
+  (no relative imports), explicit return types, `prefer_const_constructors`, trailing
+  commas preserved (don't reflow argument lists). Code in Portuguese doc comments is
+  the norm — match it.
+- New features follow the `data/` + `state/` + `ui/` + `*_module.dart` shape;
+  register the module in `main.dart`.

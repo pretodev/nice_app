@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dart format:*)",
+      "Bash(dart analyze:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter test:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/dart-quality.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
