@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nice/core/injector/module_injector.dart';
 import 'package:nice/core/injector/scope.dart';
 import 'package:nice/features/app/ui/application.dart';
-import 'package:nice/features/auth/auth_module.dart';
 import 'package:nice/features/training/training_module.dart';
 import 'package:nice/features/user/user_module.dart';
 import 'package:nice/firebase_options.dart';
@@ -17,7 +16,6 @@ void main() async {
 
   final injector = createInjector([
     UserModule(),
-    authModule,
     trainingModule,
   ]);
 
