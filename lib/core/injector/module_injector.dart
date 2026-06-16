@@ -60,18 +60,17 @@ class _ModuleContext {
   late final _ModuleInjector injector;
 }
 
-/// Implementação do [Registrar]. Privados e exports vão ambos para o [GetIt] do
+/// Implementação do [Registry]. Privados e exports vão ambos para o [GetIt] do
 /// módulo; o flag [exporting] apenas decide se o tipo entra em
 /// [_ModuleContext.exportedTypes].
-class _RegistrarImpl implements Registrar {
+class _RegistrarImpl implements Registry {
   _RegistrarImpl(this._context, this._exporting);
 
   final _ModuleContext _context;
   final bool _exporting;
 
   @override
-  Registrar get export =>
-      _exporting ? this : _RegistrarImpl(_context, true);
+  Registry get export => _exporting ? this : _RegistrarImpl(_context, true);
 
   void _mark<T extends Object>() {
     if (_exporting) _context.exportedTypes.add(T);

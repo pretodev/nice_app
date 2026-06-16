@@ -4,9 +4,11 @@ import 'package:nice/core/injector/module.dart';
 
 class AppModule extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<FirebaseAuth>((i) => FirebaseAuth.instance);
-    r.export.lazySingleton<FirebaseFirestore>((i) => FirebaseFirestore.instance);
+    r.export.lazySingleton<FirebaseFirestore>(
+      (i) => FirebaseFirestore.instance,
+    );
   }
 }
 

@@ -16,7 +16,7 @@ void main() async {
   );
 
   final injector = createInjector([
-    userModule,
+    UserModule(),
     authModule,
     trainingModule,
   ]);

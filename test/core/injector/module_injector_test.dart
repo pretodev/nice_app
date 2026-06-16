@@ -26,7 +26,7 @@ class Car {
 /// Exporta [Engine]; mantém [GearBox] privado.
 class CoreModule extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<Engine>((i) => Engine(1));
     r.lazySingleton<GearBox>((i) => GearBox());
   }
@@ -42,7 +42,7 @@ class CarModule extends Module {
   List<Module> get imports => [_dependency];
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<Car>((i) => Car(i.get<Engine>()));
   }
 }
@@ -57,7 +57,7 @@ class IntrusiveModule extends Module {
   List<Module> get imports => [_core];
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     // Resolve um tipo privado do core na hora de construir o Car.
     r.export.lazySingleton<Car>((i) {
       i.get<GearBox>();
@@ -69,7 +69,7 @@ class IntrusiveModule extends Module {
 /// Exporta um [GearBox] — usado para verificar isolamento entre irmãos.
 class SiblingProducer extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<GearBox>((i) => GearBox());
   }
 }
@@ -78,7 +78,7 @@ class SiblingProducer extends Module {
 /// resolver o [GearBox] exportado por ele.
 class SiblingConsumer extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.factory<Car>((i) {
       i.get<GearBox>();
       return Car(Engine(0));
@@ -96,7 +96,7 @@ class ChildModule extends Module {
   Module? get parent => _parent;
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<Car>((i) => Car(i.get<Engine>()));
   }
 }
@@ -122,20 +122,23 @@ class CounterViewModel extends ViewModel<CounterState> {
 
 class CounterModule extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<CounterViewModel>((i) => CounterViewModel());
   }
 }
 
 void main() {
   group('visibilidade entre módulos', () {
-    test('um import enxerga apenas os tipos exportados do módulo importado', () {
-      final core = CoreModule();
-      final injector = createInjector([CarModule(core)]);
+    test(
+      'um import enxerga apenas os tipos exportados do módulo importado',
+      () {
+        final core = CoreModule();
+        final injector = createInjector([CarModule(core)]);
 
-      final car = injector.get<Car>();
-      expect(car.engine.serial, 1);
-    });
+        final car = injector.get<Car>();
+        expect(car.engine.serial, 1);
+      },
+    );
 
     test('binding privado não é alcançável por quem importa', () {
       final core = CoreModule();
@@ -248,7 +251,7 @@ void main() {
 
 class _FactoryModule extends Module {
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     var serial = 0;
     r.export.factory<Engine>((i) => Engine(serial++));
   }
@@ -260,7 +263,7 @@ class _EagerModule extends Module {
   final void Function() _onCreate;
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.singleton<Engine>((i) {
       _onCreate();
       return Engine(1);

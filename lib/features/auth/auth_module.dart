@@ -10,7 +10,7 @@ class AuthModule extends Module {
   List<Module> get imports => [appModule];
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.lazySingleton<AuthRepository>((i) => AuthRepository());
     r.lazySingleton<AuthService>((i) => AuthService(i.get<FirebaseAuth>()));
     r.export.lazySingleton<AuthViewModel>(

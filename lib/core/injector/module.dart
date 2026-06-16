@@ -1,6 +1,6 @@
 /// Resolvedor de dependências escopado a um módulo.
 ///
-/// É entregue às closures de fábrica em [Registrar] e também é o tipo exposto
+/// É entregue às closures de fábrica em [Registry] e também é o tipo exposto
 /// pela raiz da composição (consumido por `AppScope`/`context.read`).
 abstract interface class Injector {
   /// Resolve uma instância de [T] respeitando as regras de visibilidade do
@@ -19,7 +19,7 @@ typedef Create<T extends Object> = T Function(Injector i);
 /// Por padrão os bindings são **privados** (visíveis apenas dentro do próprio
 /// módulo). Use [export] para também expô-los a módulos que importam ou herdam
 /// deste.
-abstract interface class Registrar {
+abstract interface class Registry {
   /// Registra uma fábrica: uma nova instância é criada a cada resolução.
   void factory<T extends Object>(Create<T> create);
 
@@ -36,7 +36,7 @@ abstract interface class Registrar {
   /// r.lazySingleton((i) => AuthService(i.get())); // privado
   /// r.export.lazySingleton((i) => AuthViewModel(i.get(), i.get())); // exportado
   /// ```
-  Registrar get export;
+  Registry get export;
 }
 
 /// Configuração de um escopo de injeção de dependências.
@@ -46,7 +46,7 @@ abstract interface class Registrar {
 /// mesmo módulo várias vezes (essencial para testes).
 ///
 /// Regras de visibilidade:
-/// - bindings são privados por padrão; só [Registrar.export] os expõe;
+/// - bindings são privados por padrão; só [Registry.export] os expõe;
 /// - [imports] dá acesso aos exports dos módulos listados (não transitivo);
 /// - [parent] dá acesso aos exports do pai e de toda a cadeia de pais
 ///   (transitivo).
@@ -60,7 +60,7 @@ abstract class Module {
   Module? get parent => null;
 
   /// Declara os bindings do módulo.
-  void registry(Registrar r);
+  void registry(Registry r);
 }
 
 /// Lançada quando um tipo não está registrado ou não está acessível no escopo

@@ -13,7 +13,7 @@ class TrainingModule extends Module {
   List<Module> get imports => [appModule];
 
   @override
-  void registry(Registrar r) {
+  void registry(Registry r) {
     r.export.lazySingleton<OpenRouter>(
       (i) => OpenRouter(Environment.openRouterApiKey),
     );
@@ -24,10 +24,13 @@ class TrainingModule extends Module {
       ),
     );
     r.lazySingleton<TrainingRepository>(
-      (i) => TrainingRepository(trainingDocument: i.get<FirestoreTrainingDocument>()),
+      (i) => TrainingRepository(
+        trainingDocument: i.get<FirestoreTrainingDocument>(),
+      ),
     );
     r.export.lazySingleton<TrainingViewModel>(
-      (i) => TrainingViewModel(i.get<TrainingRepository>(), i.get<OpenRouter>()),
+      (i) =>
+          TrainingViewModel(i.get<TrainingRepository>(), i.get<OpenRouter>()),
     );
   }
 }
