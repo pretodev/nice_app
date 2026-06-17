@@ -24,6 +24,21 @@ dart format lib/ test/
 > There is **no code generation** in this project — no `build_runner`, `freezed`,
 > or `riverpod`. Do not add codegen steps.
 
+### Agentic Hot Reload (Dart 3.12 / Flutter 3.44)
+
+This project is wired for **Agentic Hot Reload**. The Dart & Flutter MCP server is
+registered project-scoped in `.mcp.json` (`dart mcp-server`), so Claude Code can
+discover a running app via the Dart Tooling Daemon and push UI changes without a
+manual reload.
+
+Workflow: start the app once with `flutter run --dart-define=OPEN_ROUTER_API_KEY=...`,
+then after editing Dart code, hot reload through the MCP server instead of asking
+the user to reload. The core loop tools (`mcp__dart__hot_reload`,
+`get_runtime_errors`, `get_app_logs`, `get_active_location`, `list_running_apps`,
+`analyze_files`, `dart_format`, `widget_inspector`) are pre-approved in
+`.claude/settings.json`. `hot_restart`, `launch_app`, and `stop_app` are intentionally
+left to prompt.
+
 ## Architecture Overview
 
 **Nice App** is a Flutter fitness training application with AI-powered exercise
