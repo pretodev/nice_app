@@ -1,26 +1,18 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-sealed class const ExerciseExecution() {
+sealed class const ExerciseExecution() extends Equatable {
   String get formatted;
 }
 
-class TimedExerciseExecution(final Duration duration) extends ExerciseExecution {
+class const TimedExerciseExecution(final Duration duration)
+    extends ExerciseExecution {
   @override
   String get formatted =>
       '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TimedExerciseExecution && other.duration == duration;
-  }
-
-  @override
-  int get hashCode => duration.hashCode;
-
-  @override
-  String toString() => '''TimedExerciseExecution(duration: $duration)''';
+  List<Object?> get props => [duration];
 }
 
 @immutable
@@ -50,20 +42,5 @@ class const SerializedExerciseExecution(final List<int> repeats)
   String get formatted => '$countSeries Séries x ${repeats.first} reps';
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is SerializedExerciseExecution &&
-        listEquals(other.repeats, repeats);
-  }
-
-  @override
-  int get hashCode => repeats.hashCode;
-
-  SerializedExerciseExecution copyWith({List<int>? repeats}) {
-    return SerializedExerciseExecution(repeats ?? this.repeats);
-  }
-
-  @override
-  String toString() => '''SerializedExerciseExecution(repeats: $repeats)''';
+  List<Object?> get props => [repeats];
 }

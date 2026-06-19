@@ -1,57 +1,47 @@
+import 'package:flutter/cupertino.dart';
+import 'package:nice/core/data/guid_entity.dart';
 import 'package:nice/features/training/data/exercise.dart';
 import 'package:nice/features/training/data/exercise_positioned.dart';
 import 'package:nice/features/training/data/exercise_set.dart';
-import 'package:nice/features/training/data/training_selector.dart';
-import 'package:odu_core/odu_core.dart' show GuidEntity;
 
-class DailyTraining extends GuidEntity {
+@immutable
+class const DailyTraining._({
+  required super.id,
+  final List<ExerciseSet> sets = const [],
+  final DateTime? date,
+}) extends GuidEntity {
   factory DailyTraining.create(DateTime date) {
-    return DailyTraining(
-      id: GuidEntity.newId(),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      isActive: true,
-      date: date,
+    return ._(id: GuidId(), date: date);
+  }
+
+  DailyTraining copyWith({
+    List<ExerciseSet>? sets,
+    DateTime? date,
+  }) {
+    return DailyTraining._(
+      id: id,
+      sets: sets ?? this.sets,
+      date: date ?? this.date,
     );
   }
 
-  DailyTraining({
-    required super.id,
-    required super.createdAt,
-    required super.updatedAt,
-    super.isActive,
-    List<ExerciseSet>? sets,
-    this.date,
-  }) : _sets = sets ?? [] {
-    _selector = TrainingSelector(_sets);
+  DailyTraining addExercise(Exercise exercise) {
+    final updated = [...sets, ExerciseSet.straight(sets.length, exercise)];
+    return copyWith(sets: updated);
   }
 
-  DateTime? date;
-
-  late TrainingSelector _selector;
-
-  TrainingSelector get selector => _selector;
-
-  final List<ExerciseSet> _sets;
-
-  List<ExerciseSet> get sets => _sets;
-
-  void addExercise(Exercise exercise) {
-    _sets.add(ExerciseSet.straight(_sets.length, exercise));
-    _selector = TrainingSelector(_sets);
+  DailyTraining removeExercise(PositionedExercise exercise) {
+    final updated = [...sets]..removeExercise(exercise);
+    return copyWith(sets: updated);
   }
 
-  void removeExercise(PositionedExercise exercise) {
-    _sets.removeExercise(exercise);
-    _selector = TrainingSelector(_sets);
+  DailyTraining mergeExercises(List<PositionedExercise> exercises) {
+    final updated = [...sets]..mergeExercises(exercises);
+    return copyWith(sets: updated);
   }
 
-  void mergeExercises(List<PositionedExercise> exercises) {
-    _sets.mergeExercises(exercises);
-    _selector = TrainingSelector(_sets);
-  }
-
-  void setExercise(PositionedExercise exercise) {
-    _sets.setExercise(exercise);
+  DailyTraining setExercise(PositionedExercise exercise) {
+    final updated = [...sets]..setExercise(exercise);
+    return copyWith(sets: updated);
   }
 }

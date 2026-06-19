@@ -1,0 +1,5 @@
+components:
+  - NiceButton:
+      description: "Botão de customizado para aplicativo"
+      path: lib/features/app/ui/widgets
+      link: https://www.figma.com/design/kzovEnT8UvksVXv99B1lXM/Fitness-App?node-id=64-420&t=bnWsoLDpT2QOaz93-4
